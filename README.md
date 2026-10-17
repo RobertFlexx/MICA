@@ -1,4 +1,5 @@
 # MICA 1.0
+> *Microcontroller Instruction Core Architecture*
 
 MICA is an experimental 32/64-bit RISC architecture for embedded systems. It has its own compact machine code, a C++23 assembler and disassembler, a functional emulator, freestanding assembly routines, and a small SystemVerilog CPU.
 
