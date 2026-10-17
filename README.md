@@ -5,7 +5,7 @@ MICA is a small experimental 32/64-bit RISC architecture for embedded controller
 
 The ISA version is still **1.0**. This engineering update doesn't reassign any existing instruction encoding. The binaries in `examples/firmware` are frozen compatibility fixtures.
 
-There are interesting ideas here, but no miracle processor. If you can show that this core finishes real MCU work for fewer joules than a comparable Ibex or CORE-V setup, *then* there is a compelling argument. That's what the project is building toward.
+MICA explores a different approach to embedded processor design, focusing on compact instruction encoding, efficient execution, and reducing unnecessary hardware activity. The goal is to develop a practical architecture that can compete with established embedded cores in performance, power consumption, and implementation complexity. Hardware benchmarks and real-world workloads will determine where these design choices offer meaningful advantages.
 
 ## Build the tools
 
