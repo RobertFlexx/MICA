@@ -5,6 +5,9 @@
 module mica_arty_a7
     #(parameter integer XLEN = 32,
       parameter integer FLOW = 1,
+      parameter integer BITOPS = 0,
+      parameter integer TRAP = 0,
+      parameter integer PERF = 0,
       parameter integer RAM_BYTES = 4096,
       parameter INIT_FILE = "program.mem8")
     (input logic CLK100MHZ,
@@ -24,12 +27,16 @@ module mica_arty_a7
   assign rst_ni = rst_release[1];
   mica_soc #(.XLEN(XLEN),
              .FLOW(FLOW),
+             .BITOPS(BITOPS),
+             .TRAP(TRAP),
+             .PERF(PERF),
              .RAM_BYTES(RAM_BYTES),
              .CLOCK_HZ(100000000),
              .BAUD(115200),
              .INIT_FILE(INIT_FILE))
       soc(.clk_i(CLK100MHZ),
           .rst_ni(rst_ni),
+          .irq_i(1'b0),
           .uart_tx_o(uart_txd),
           .leds_o(gpio),
           .halted_o(halted),

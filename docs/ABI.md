@@ -29,3 +29,7 @@ On reset the emulator initializes x7 to `(RAM_BYTES - 16) & ~15`. The current RT
 ## Limits that matter when porting C
 
 A C compiler still has to specify aggregate passing, varargs, long double, `setjmp`, structure returns, exception unwinding, TLS, relocation types, stack probes and the instruction used for a system call. None are settled. Calling the header `include/mica.h` is not a promise that the assembly library can currently be linked from arbitrary C.
+
+## Interrupt handler note
+
+MICA-T has no automatic stack frame. `ecall` enters the handler with `epc` set to the next instruction and `eret` resumes at `epc`. `x6` remains the ordinary link register and is not saved by hardware. A handler that modifies application registers must preserve them itself. Nested handlers and privileged task isolation are outside the current profile. See [EXTENSIONS.md](EXTENSIONS.md).

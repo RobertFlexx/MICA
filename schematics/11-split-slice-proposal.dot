@@ -1,0 +1,13 @@
+digraph mica_slices {
+  graph [label="MICA research proposal: 64-bit split-slice execution (NOT IMPLEMENTED)",labelloc=t,rankdir=LR,fontsize=17,fontname="DejaVu Sans",pad=.3];
+  node [shape=box,style="rounded,filled",fillcolor="#eff4fc",color="#395b7d",fontname="DejaVu Sans",fontsize=10];
+  edge [color="#395b7d",fontsize=9,fontname="DejaVu Sans"];
+  opcode [label="Decoded operation\nXLEN64 or explicit W32"];
+  mode [label="Slice control\nW32: lower 32 only\n64 add: carry required\n64 shift: cross-slice",fillcolor="#fff0d6"];
+  low [label="LOW ALU 32\n[31:0] operands"];
+  hi [label="HIGH ALU 32\n[63:32] operands\nclock enable candidate"];
+  carry [label="carry, shift crossbar\nbehavior preserving"];
+  mux [label="64-bit result merge\nW32 sign extend\nfull 64-bit result"];
+  measure [label="Post-synthesis power\nFF/LUT counts, Fmax\nJoules per workload",fillcolor="#e4f4e4"];
+  opcode->mode;mode->low;mode->hi [label="gated only when safe"];low->carry;carry->hi;low->mux;hi->mux;mux->measure;
+}

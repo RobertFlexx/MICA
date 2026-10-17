@@ -73,6 +73,252 @@ class SDKTest(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
+    def test_bitops_examples_and_feature_discovery(self):
+        r, _, _ = self.example("bitops32.mica", ["--bitops"])
+        self.assertEqual(
+            (r[1], r[2], r[3], r[4], r[5], r[6]), (32 | 128, 0, 0, 0, 8, 0xFF000000)
+        )
+        r, _, _ = self.example("bitops64.mica", ["--xlen", "64", "--bitops"])
+        self.assertEqual(
+            (r[1], r[3], r[4], r[5], r[6]),
+            (32 | 128, 0xEFCDAB8967452301, 0xEF0123456789ABCD, 32, 7),
+        )
+        r, _ = self.runsource(
+            ".arch mica64\ncsrr x1,arch\ncsrr x2,features\nwfi\n", ["--xlen", "64"]
+        )
+        self.assertEqual((r[1], r[2]), (64, 128))
+        r, _ = self.runsource(
+            ".arch mica32\ncsrr x1,features\nwfi\n", ["--flow", "--mul", "--bitops"]
+        )
+        self.assertEqual(r[1], 2 | 4 | 32 | 128)
+
+    def test_bitops_randomized_reference(self):
+        def signed(a, w):
+            return a - (1 << w) if a >> (w - 1) else a
+
+        def oracle(op, a, b, w):
+            mask = (1 << w) - 1
+            shift = b & (w - 1)
+            if op == "clz3":
+                return w - a.bit_length()
+            if op == "ctz3":
+                return ((a & -a).bit_length() - 1) if a else w
+            if op == "popcnt3":
+                return a.bit_count()
+            if op == "rev8":
+                return int.from_bytes(a.to_bytes(w // 8, "little"), "big")
+            if op == "ror3":
+                return ((a >> shift) | (a << ((w - shift) & (w - 1)))) & mask
+            if op == "rol3":
+                return ((a << shift) | (a >> ((w - shift) & (w - 1)))) & mask
+            if op == "min3":
+                return a if signed(a, w) < signed(b, w) else b
+            if op == "max3":
+                return a if signed(a, w) > signed(b, w) else b
+            if op == "minu3":
+                return min(a, b)
+            if op == "maxu3":
+                return max(a, b)
+            if op == "bset3":
+                return a | (1 << shift)
+            if op == "bclr3":
+                return a & ~(1 << shift)
+            if op == "binv3":
+                return a ^ (1 << shift)
+            if op == "bext3":
+                return (a >> shift) & 1
+            if op == "andn3":
+                return a & ~b
+            if op == "orn3":
+                return a | ~b
+            if op == "xnor3":
+                return ~(a ^ b)
+            if op == "sextb3":
+                return signed(a & 255, 8)
+            if op == "sexth3":
+                return signed(a & 65535, 16)
+            if op == "zexth3":
+                return a & 65535
+            raise AssertionError(op)
+
+        rand = random.Random(0x4D494341)
+        unary = {"clz3", "ctz3", "popcnt3", "rev8", "sextb3", "sexth3", "zexth3"}
+        ops = [
+            "clz3",
+            "ctz3",
+            "popcnt3",
+            "rev8",
+            "ror3",
+            "rol3",
+            "min3",
+            "max3",
+            "minu3",
+            "maxu3",
+            "bset3",
+            "bclr3",
+            "binv3",
+            "bext3",
+            "andn3",
+            "orn3",
+            "xnor3",
+            "sextb3",
+            "sexth3",
+            "zexth3",
+        ]
+        for w in (32, 64):
+            flags = ["--bitops", "--xlen", str(w)]
+            for op in ops:
+                for a, b in [
+                    (0, 0),
+                    ((1 << w) - 1, w),
+                    (rand.getrandbits(w), rand.getrandbits(w)),
+                ]:
+                    asm = "li32" if w == 32 else "li64"
+                    operands = "x3,x1" if op in unary else "x3,x1,x2"
+                    source = f".arch mica{w}\n{asm} x1,{a}\n{asm} x2,{b}\n{op} {operands}\nwfi\n"
+                    r, _ = self.runsource(source, flags)
+                    self.assertEqual(
+                        r[3], oracle(op, a, b, w) & ((1 << w) - 1), (w, op, a, b)
+                    )
+
+    def test_bitops_encodings_errors_and_disassembly(self):
+        binary = self.asm(
+            ".arch mica32\npopcnt3 x3,x1\nror3 x4,x1,x2\nwfi\n", ["--bitops"]
+        )
+        self.assertEqual(len(binary), 10)
+        import shutil
+
+        tool = str(ROOT / "build/mica-dis")
+        proc = subprocess.run(
+            [tool, str(Path(self.tmp.name) / "test.bin")],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("popcnt3 x3,x1", proc.stdout)
+        self.assertIn("ror3 x4,x1,x2", proc.stdout)
+        for source, flags in [
+            ("popcnt3 x1,x2\n", []),
+            ("popcnt3 x1,x2,x3\n", ["--bitops"]),
+            ("ror3 x1,x2\n", ["--bitops"]),
+            ("clz3 x8,x1\n", ["--bitops"]),
+        ]:
+            with self.subTest(source=source):
+                self.asm(".arch mica32\n" + source, flags, expect_ok=False)
+        # Hardware feature registers cannot be rewritten by firmware.
+        r, p2 = self.runsource(
+            ".arch mica32\nli8 x1,8\ncsrw features,x1\nwfi\n", [], expect_ok=False
+        )
+        self.assertEqual(p2.returncode, 2)
+        self.assertIn("read-only", p2.stderr)
+
+    def test_buffer_library_memxor(self):
+        path = (ROOT / "stdlib/buffer.mica").as_posix()
+        for w in (32, 64):
+            source = f""".arch mica{w}
+li32 x1,dst
+li32 x2,src
+li8 x3,4
+li8 x5,27
+call mica_memxor
+li32 x2,dst
+ldbu x3,[x2+0]
+ldbu x4,[x2+3]
+wfi
+.include "{path}"
+src: .byte 0x12,0x23,0x34,0x45
+dst: .byte 0x11,0x22,0x33,0x44
+"""
+            regs, _ = self.runsource(source, ["--xlen", str(w)])
+            self.assertEqual((regs[3], regs[4], regs[5]), (3, 1, 27))
+
+    def test_bitops_runtime_helpers(self):
+        path = (ROOT / "stdlib/bits_hw.mica").as_posix()
+        for w in (32, 64):
+            source = (
+                f'.arch mica{w}\nli8 x1,0\ncall mica_ctz_b\nwfi\n.include "{path}"\n'
+            )
+            regs, _ = self.runsource(source, ["--xlen", str(w), "--bitops"])
+            self.assertEqual(regs[1], w)
+
+    def test_trap_software_exception_and_irq(self):
+        regs, _, _ = self.example("trap32.mica", ["--trap"])
+        self.assertEqual((regs[3], regs[4]), (18, 11))
+        regs, _, _ = self.example("trap_irq32.mica", ["--trap"])
+        self.assertEqual((regs[3], regs[4], regs[5]), (12, 42, 0x80000001))
+        # Same encoding works with widened scalar architecture.
+        path = ROOT / "examples/trap32.mica"
+        regs, _ = self.runsource(
+            path.read_text().replace("mica32", "mica64"), ["--trap", "--xlen", "64"]
+        )
+        self.assertEqual((regs[3], regs[4]), (18, 11))
+
+    def test_trap_errors_and_interrupt_mask(self):
+        _, proc = self.runsource(
+            ".arch mica32\neret\nwfi\n", ["--trap"], expect_ok=False
+        )
+        self.assertIn("eret outside trap", proc.stderr)
+        _, proc = self.runsource(
+            ".arch mica32\necall\nwfi\n", ["--trap"], expect_ok=False
+        )
+        self.assertIn("invalid trap vector", proc.stderr)
+        source = """.arch mica32
+li32 x1, handler
+csrw tvec,x1
+li8 x2,1
+csrw ip,x2
+csrw ie,x2
+li8 x3,23
+wfi
+handler:
+li8 x3,99
+eret
+"""
+        regs, _ = self.runsource(source, ["--trap"])
+        self.assertEqual(regs[3], 23)  # interrupts disabled by default
+
+    def test_trap_feature_discovery(self):
+        regs, _ = self.runsource(
+            ".arch mica64\ncsrr x1,features\ncsrr x2,arch\nwfi\n",
+            ["--xlen", "64", "--bitops", "--trap"],
+        )
+        self.assertEqual((regs[1], regs[2]), (32 | 64 | 128, 64))
+
+    def test_buffer_memeq_and_zero(self):
+        path = (ROOT / "stdlib/buffer.mica").as_posix()
+        for w in (32, 64):
+            for buf, equal in [('"abc"', 1), ('"abd"', 0)]:
+                source = f""".arch mica{w}
+li32 x1,first
+li32 x2,second
+li8 x3,3
+li8 x5,99
+call mica_memeq_full
+mov x4,x1
+li32 x1,first
+li8 x2,3
+call mica_memzero
+li32 x2,first
+ldbu x3,[x2+2]
+wfi
+.include "{path}"
+first: .ascii "abc"
+second: .ascii {buf}
+"""
+                regs, _ = self.runsource(source, ["--xlen", str(w)])
+                self.assertEqual((regs[4], regs[3], regs[5]), (equal, 0, 99))
+
+    def test_instruction_retirement_counter(self):
+        src = ".arch mica32\ncsrr x1,instret_lo\nli8 x2,55\ncsrr x3,instret_lo\nwfi\n"
+        regs, proc = self.runsource(src)
+        self.assertEqual((regs[1], regs[2], regs[3]), (0, 55, 2))
+        self.assertIn("retired=4", proc.stderr)
+        self.assertNotIn(" cycles=", proc.stderr)
+        _, proc = self.runsource(
+            ".arch mica32\ncsrw instret_lo,x1\nwfi\n", expect_ok=False
+        )
+        self.assertIn("read-only", proc.stderr)
+
     def test_examples_32(self):
         r, _, _ = self.example("arithmetic32.mica")
         self.assertEqual((r[1], r[4]), (42, 42))
@@ -461,9 +707,8 @@ dst: .quad 0,0
     def test_rtl_halt_transition_static_regression(self):
         # Source-level regression only, NOT a replacement for HDL simulation.
         rtl = (ROOT / "rtl/mica_core.sv").read_text()
-        rtl = re.sub(r"\s+", "", rtl)
-        self.assertIn("elseif(stop_requested)state<=HALTED;", rtl)
-        self.assertIn("elsestop_requested=1;", rtl)
+        self.assertIn("else if(stop_requested)state<=HALTED;", rtl)
+        self.assertIn("else stop_requested=1;", rtl)
 
     def test_old_v01_encodings(self):
         old = Path("/mnt/data/mica32/assembler.py")

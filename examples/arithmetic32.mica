@@ -1,11 +1,10 @@
 .arch mica32
-    li8 x1, 25
-    li8 x2, 17
-    add3 x1, x1, x2
-    li32 x3, data
-    stw x1, [x3]
-    ldw x4, [x3]
-    wfi
+li8 x1, 25
+li8 x2, 17
+add3 x1, x1, x2
+li32 x3, data
+stw x1, [x3]
+ldw x4, [x3]
+wfi
 .align 4
-data:
-    .word 0
+data: .word 0

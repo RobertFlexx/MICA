@@ -47,3 +47,7 @@ Record all of these before calling an architecture superior. An RV32EC core such
 ## Failure criteria
 
 Treat an architecture idea as unsuccessful if it wins instruction count but loses total energy on representative workload families, if state/decoder overhead wipes out the register-file savings, or if its interrupt latency becomes unacceptable for motor-control loops. Document negative results. They are still engineering results.
+
+## B software comparison, fixed input
+
+The repeatable script `python3 benchmarks/compare_bitops.py` assembles and executes a 32-bit population count on `0xf0f0f0f0` through the existing scalar loop and through B `popcnt3`. Both call a small helper from the same test program shape and return the same result, 16. In the reference emulator, the scalar program retires 200 instructions and occupies 32 image bytes, while B retires 6 instructions and occupies 20 image bytes. The program includes the setup, call and return, not just the bit opcode. It is a deliberately favorable case for a special instruction and proves **nothing** about frequency, transistor activity or joules. Try sparse inputs, different compilers, and post-synthesis timing before presenting a headline.

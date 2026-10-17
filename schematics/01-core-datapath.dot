@@ -1,69 +1,30 @@
-digraph G {
-  rankdir=LR;
-  label="MICA 1.0 | scalar datapath and external ports";
-  graph [
-    fontname="DejaVu Sans",
-    fontsize=17,
-    labelloc=t,
-    labeljust=l,
-    pad="0.32",
-    nodesep="0.48",
-    ranksep="0.8",
-    bgcolor="white"
-  ];
-  node [
-    fontname="DejaVu Sans",
-    fontsize=11,
-    style="rounded,filled",
-    shape=box,
-    color="#335277",
-    fillcolor="#f3f7fb",
-    penwidth=1.5,
-    margin="0.16,0.12"
-  ];
-  edge [fontname="DejaVu Sans", fontsize=9, color="#56718f", arrowsize=.7];
-  clk [label="clk_i, rst_ni\nCLK / RESET", fillcolor="#e0eef7"];
-  rom [
-    label="IMEM port\nimem_addr_o[XLEN-1:0]\nimem_rdata_i[15:0]",
-    fillcolor="#dff6f2"
-  ];
-  fetch [label="FETCH0 / FETCH1\n16-bit halfwords\nPC + 2 / PC + 4"];
-  decode [label="DECODE in EXECUTE\nclass[1:0], major[3:0]\npayload[25:0]"];
-  regs [
-    label="Scalar register file\nx0 hardwired zero\nx1..x7 mandatory\nx8..x15 optional",
-    fillcolor="#ffeecf"
-  ];
-  alu [
-    label="XLEN-bit ALU\nadd, logic, shifts, compare\n32-bit W operations on XLEN64"
-  ];
-  branch [
-    label="Branch target mux\nPC relative / register\nflow dbnz (major 9)"
-  ];
-  lsu [
-    label="Memory access and flow\nbyte-lane mux, alignment\npost-increment commit"
-  ];
-  dmem [
-    label="DMEM port\ndmem_addr_o[XLEN-1:0]\ndmem_wdata_o[XLEN-1:0]\ndmem_wstrb_o[XLEN/8-1:0]\ndmem_rdata_i[XLEN-1:0]",
-    fillcolor="#dff6f2"
-  ];
-  state [
-    label="Control FSM\nFETCH0, FETCH1\nEXECUTE, HALTED",
-    fillcolor="#dce9fa"
-  ];
-  rom -> fetch [label="16 bits"];
-  fetch -> decode [label="instruction"];
-  decode -> alu [label="op, source indices"];
-  regs -> alu [label="rr(s), rr(t)"];
-  alu -> regs [label="writeback"];
-  decode -> lsu [label="memop, stride"];
-  regs -> lsu [label="base, store data"];
-  lsu -> dmem [label="bus read / write"];
-  dmem -> lsu [label="load data"];
-  lsu -> regs [label="load + base update"];
-  decode -> branch;
-  regs -> branch [label="test register"];
-  branch -> fetch [label="next PC"];
-  clk -> state;
-  state -> fetch [style=dashed];
-  state -> decode [style=dashed];
+digraph G { rankdir=LR; label="MICA 1.0 | scalar datapath and external ports";
+graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
+
+clk [label="clk_i, rst_ni\nCLK / RESET",fillcolor="#e0eef7"];
+rom [label="IMEM port\nimem_addr_o[XLEN-1:0]\nimem_rdata_i[15:0]",fillcolor="#dff6f2"];
+fetch [label="FETCH0 / FETCH1\n16-bit halfwords\nPC + 2 / PC + 4"];
+decode [label="DECODE in EXECUTE\nclass[1:0], major[3:0]\npayload[25:0]"];
+regs [label="Scalar register file\nx0 hardwired zero\nx1..x7 mandatory\nx8..x15 optional",fillcolor="#ffeecf"];
+alu [label="XLEN-bit ALU\nadd, logic, shifts, compare\n32-bit W operations on XLEN64"];
+branch [label="Branch target mux\nPC relative / register\nflow dbnz (major 9)"];
+lsu [label="Memory access and flow\nbyte-lane mux, alignment\npost-increment commit"];
+dmem [label="DMEM port\ndmem_addr_o[XLEN-1:0]\ndmem_wdata_o[XLEN-1:0]\ndmem_wstrb_o[XLEN/8-1:0]\ndmem_rdata_i[XLEN-1:0]",fillcolor="#dff6f2"];
+state [label="Control FSM\nFETCH0, FETCH1\nEXECUTE, HALTED",fillcolor="#dce9fa"];
+rom -> fetch [label="16 bits"];
+fetch -> decode [label="instruction"];
+decode -> alu [label="op, source indices"];
+regs -> alu [label="rr(s), rr(t)"];
+alu -> regs [label="writeback"];
+decode -> lsu [label="memop, stride"];
+regs -> lsu [label="base, store data"];
+lsu -> dmem [label="bus read / write"];
+dmem -> lsu [label="load data"];
+lsu -> regs [label="load + base update"];
+decode -> branch;
+regs -> branch [label="test register"];
+branch -> fetch [label="next PC"];
+clk -> state;
+state -> fetch [style=dashed];state -> decode [style=dashed];
+
 }

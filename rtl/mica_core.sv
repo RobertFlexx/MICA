@@ -8,9 +8,13 @@ module mica_core
       parameter integer XREG = 0,
       parameter integer MUL = 0,
       parameter integer FLOW = 0,
+      parameter integer BITOPS = 0,
+      parameter integer TRAP = 0,
+      parameter integer PERF = 0,
       parameter integer RAM_BYTES = 65536)
     (input logic clk_i,
      input logic rst_ni,
+     input logic irq_i,
      output logic [XLEN - 1 : 0] imem_addr_o,
      input logic [15 : 0] imem_rdata_i,
      output logic [XLEN - 1 : 0] dmem_addr_o,
@@ -27,6 +31,8 @@ module mica_core
   typedef enum logic [1 : 0] { FETCH0, FETCH1, EXECUTE, HALTED } state_t;
   state_t state;
   logic [XLEN - 1 : 0] pc;
+  logic [XLEN - 1 : 0] status_reg, epc_reg, cause_reg, tvec_reg, ie_reg, ip_reg;
+  logic [63 : 0] instret;
   logic [15 : 0] inst_lo, inst_hi;
   logic [XLEN - 1 : 0] regs[0 : 15];
   logic [31 : 0] ir;
@@ -98,6 +104,79 @@ module mica_core
         default:
           arithmetic = '0;
       endcase
+    end
+  endfunction
+
+  // Optional B datapath. Variable rotate and population counts are combinational
+  // in the reference core; critical path should be measured after synthesis.
+  function automatic[XLEN - 1 : 0] bit_arithmetic
+      (input logic [5 : 0] op,
+       input logic [XLEN - 1 : 0] a,
+       input logic [XLEN - 1 : 0] b);
+    integer k, n, shift_amount;
+    logic [XLEN - 1 : 0] result, selector;
+    begin
+      result = '0;
+      n = 0;
+      shift_amount = integer'(b & XLEN'(XLEN - 1));
+      selector = XLEN'(1) << shift_amount;
+      case (op)
+        0: begin
+          result = XLEN'(XLEN);
+          for (k = XLEN - 1; k >= 0; k = k - 1)
+            if (a[k] && result == XLEN'(XLEN))
+              result = XLEN'(XLEN - 1 - k);
+        end
+        1: begin
+          result = XLEN'(XLEN);
+          for (k = 0; k < XLEN; k = k + 1)
+            if (a[k] && result == XLEN'(XLEN))
+              result = XLEN'(k);
+        end
+        2: begin
+          for (k = 0; k < XLEN; k = k + 1)
+            result = result + XLEN'(a[k]);
+        end
+        3: begin
+          for (k = 0; k < XLEN / 8; k = k + 1)
+            result[8 * k +: 8] = a[XLEN - 8 - 8 * k +: 8];
+        end
+        4:
+          result = (a >> shift_amount) | (a << ((XLEN - shift_amount) % XLEN));
+        5:
+          result = (a << shift_amount) | (a >> ((XLEN - shift_amount) % XLEN));
+        6:
+          result = ($signed(a) < $signed(b)) ? a : b;
+        7:
+          result = ($signed(a) > $signed(b)) ? a : b;
+        8:
+          result = (a < b) ? a : b;
+        9:
+          result = (a > b) ? a : b;
+        10:
+          result = a | selector;
+        11:
+          result = a & ~selector;
+        12:
+          result = a ^ selector;
+        13:
+          result = (a >> shift_amount) & XLEN'(1);
+        14:
+          result = a & ~b;
+        15:
+          result = a | ~b;
+        16:
+          result = ~(a ^ b);
+        17:
+          result = sext(XLEN'(a[7 : 0]), 8);
+        18:
+          result = sext(XLEN'(a[15 : 0]), 16);
+        19:
+          result = XLEN'(a[15 : 0]);
+        default:
+          result = '0;
+      endcase
+      bit_arithmetic = result;
     end
   endfunction
 
@@ -214,17 +293,35 @@ module mica_core
       inst_lo <= 0;
       inst_hi <= 0;
       fault_o <= 0;
+      status_reg <= '0;
+      epc_reg <= '0;
+      cause_reg <= '0;
+      tvec_reg <= '0;
+      ie_reg <= '0;
+      ip_reg <= '0;
+      instret <= '0;
       for (i = 0; i < 16; i = i + 1)
         regs[i] <= '0;
       regs[7] <= XLEN'(RAM_BYTES - 16);
     end else begin
       case (state)
         FETCH0: begin
-          inst_lo <= imem_rdata_i;
-          if (imem_rdata_i[15 : 14] == 2'b11)
-            state <= FETCH1;
-          else
-            state <= EXECUTE;
+          if (TRAP != 0 && status_reg[0] && ie_reg[0] && (ip_reg[0] || irq_i) &&
+              tvec_reg != 0 && !tvec_reg[0] && !status_reg[2]) begin
+            epc_reg <= pc;
+            cause_reg <= (XLEN'(1) << (XLEN - 1)) | XLEN'(1);
+            status_reg[1] <= status_reg[0];
+            status_reg[0] <= 0;
+            status_reg[2] <= 1;
+            pc <= tvec_reg;
+            state <= FETCH0;
+          end else begin
+            inst_lo <= imem_rdata_i;
+            if (imem_rdata_i[15 : 14] == 2'b11)
+              state <= FETCH1;
+            else
+              state <= EXECUTE;
+          end
         end
         FETCH1: begin
           inst_hi <= imem_rdata_i;
@@ -300,13 +397,33 @@ module mica_core
               end else if (operation == 18 || operation == 20) begin
                 if (d != 0 || s != 0)
                   illegal = 1;
-                else
+                else if (operation == 20 && TRAP != 0) begin
+                  if (tvec_reg == 0 || tvec_reg[0] || status_reg[2])
+                    illegal = 1;
+                  else begin
+                    epc_reg <= nextpc;
+                    cause_reg <= XLEN'(11);
+                    status_reg[1] <= status_reg[0];
+                    status_reg[0] <= 0;
+                    status_reg[2] <= 1;
+                    nextpc = tvec_reg;
+                  end
+                end else
                   stop_requested = 1;
               end else if (operation == 19 || operation == 22) begin
                 if (d != 0 || s != 0)
                   illegal = 1;
+              end else if (operation == 21 && TRAP != 0) begin
+                if (d != 0 || s != 0 || !status_reg[2])
+                  illegal = 1;
+                else begin
+                  nextpc = epc_reg;
+                  status_reg[0] <= status_reg[1];
+                  status_reg[1] <= 0;
+                  status_reg[2] <= 0;
+                end
               end else
-                illegal = 1; // eret, privilege/interrupt support absent
+                illegal = 1;
             end
             2'b01: begin
               operation = {3'b0, inst_lo[13 : 11]};
@@ -470,6 +587,100 @@ module mica_core
                         nextpc + sext(XLEN'(payload[23 : 0]), 24) * XLEN'(2);
                   end
                 end
+                11: begin
+                  operation = payload[25 : 20];
+                  d = payload[19 : 16];
+                  s = payload[15 : 12];
+                  t = payload[11 : 8];
+                  if (BITOPS == 0 || payload[7 : 0] != 0 || operation > 19 ||
+                      ((operation <= 3 || operation >= 17) && t != 0) ||
+                      ((d >= 8 || s >= 8 || t >= 8) && XREG == 0))
+                    illegal = 1;
+                  else
+                    regs[d] <= bit_arithmetic(operation, rr(s), rr(t));
+                end
+                5: begin
+                  operation = payload[25 : 20];
+                  d = payload[19 : 16];
+                  s = payload[15 : 12];
+                  t = payload[11 : 8];
+                  if (operation == 0 && s == 0 && t == 0 &&
+                      (XREG != 0 || d < 8)) begin
+                    case (payload[7 : 0])
+                      0:
+                        regs[d] <= '0; // coreid
+                      1:
+                        if (TRAP != 0)
+                          regs[d] <= status_reg;
+                        else
+                          illegal = 1;
+                      2:
+                        if (TRAP != 0)
+                          regs[d] <= epc_reg;
+                        else
+                          illegal = 1;
+                      3:
+                        if (TRAP != 0)
+                          regs[d] <= cause_reg;
+                        else
+                          illegal = 1;
+                      4:
+                        if (TRAP != 0)
+                          regs[d] <= tvec_reg;
+                        else
+                          illegal = 1;
+                      5:
+                        if (TRAP != 0)
+                          regs[d] <= ie_reg;
+                        else
+                          illegal = 1;
+                      6:
+                        if (TRAP != 0)
+                          regs[d] <= ip_reg | XLEN'(irq_i);
+                        else
+                          illegal = 1;
+                      7:
+                        regs[d] <= '0; // cycle counter not implemented in RTL
+                      8:
+                        regs[d] <= '0;
+                      15:
+                        regs[d] <=
+                            XLEN'((XREG != 0 ? 1 : 0) | (MUL != 0 ? 2 : 0) |
+                                  (FLOW != 0 ? 4 : 0) | (BITOPS != 0 ? 32 : 0) |
+                                  (TRAP != 0 ? 64 : 0) | (PERF != 0 ? 128 : 0));
+                      16:
+                        regs[d] <= XLEN'(XLEN);
+                      17:
+                        regs[d] <= PERF != 0 ? XLEN'(instret[31 : 0]) : '0;
+                      18:
+                        regs[d] <= PERF != 0 ? XLEN'(instret[63 : 32]) : '0;
+                      default:
+                        illegal = 1;
+                    endcase
+                  end else if (operation == 1 && d == 0 && t == 0 &&
+                               TRAP != 0 && (XREG != 0 || s < 8)) begin
+                    case (payload[7 : 0])
+                      1:
+                        status_reg[0] <= rr(s) & XLEN'(1);
+                      2:
+                        epc_reg <= rr(s);
+                      3:
+                        cause_reg <= rr(s);
+                      4:
+                        if ((rr(s) & XLEN'(1)) != 0)
+                          illegal = 1;
+                        else
+                          tvec_reg <= rr(s);
+                      5:
+                        ie_reg <= rr(s);
+                      6:
+                        ip_reg <= rr(s);
+                      default:
+                        illegal = 1;
+                    endcase
+                  end else
+                    illegal = 1;
+                end
                 7: begin
                   operation = payload[25 : 20];
                   d = payload[19 : 16];
@@ -573,6 +784,8 @@ module mica_core
             end
           endcase
           regs[0] <= '0;
+          if (PERF != 0 && !illegal && !nextpc[0])
+            instret <= instret + 64'd1;
           if (illegal || nextpc[0]) begin
             fault_o <= 1;
             state <= HALTED;

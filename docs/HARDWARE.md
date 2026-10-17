@@ -103,3 +103,9 @@ No fabricated/synthesized gate area, Fmax, current draw or power/energy number i
 ## MICA 1.0 Arty A7 target
 
 For a concrete starting point use `boards/arty_a7/mica_arty_a7.sv`, its matching `arty_a7.xdc`, and `boards/arty_a7/program.mem8`. The target maps a 100 MHz clock at E3, button 0 at D9, four onboard LEDs, and transmit UART at D10. The wrapper chooses 4096 bytes of on-chip memory instead of the default 65536 bytes because the current byte-array model has asynchronous reads. Confirm resource inference in Vivado and STOP on timing failure. The input reset is synchronized on release. This is not an assurance of 100 MHz Fmax. For schematics and physical board details, see `SCHEMATICS.md` and the board README.
+
+## B and T prototype datapaths
+
+The `mica_core.sv` parameters `BITOPS=1` and `TRAP=1` enable two more scalar features. B uses a combinational rotate/bit-count datapath; the population-count logic is not pipelined and will need synthesis/timing review before using a high clock. T has `irq_i` (active high) plus software-pending CSR bit0, `status`, `epc`, `cause`, `tvec`, `ie`, and `ip` registers. The SoC exposes the irq port, and the Arty wrapper ties the port low. T does not provide an MPU, automatic register save, or precise memory fault traps. Use the `rtl/tb_bits.sv` and `rtl/tb_trap.sv` testbenches with `make -C rtl sim-bits32`, `sim-bits64`, `sim-trap` and `sim-trap-irq`. The HDL was not simulated in this authoring environment.
+
+The `PERF` core/SoC parameter defaults to 0. Set `PERF=1` to build the 64-bit retirement counter. With `PERF=0`, feature bit7 is zero and the retirement CSRs return zero. This matters for a tiny MCU because an always-incrementing 64-bit counter consumes extra registers and switching.

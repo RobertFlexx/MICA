@@ -1,0 +1,12 @@
+; MICA-T software exception entry and eret. x3 should finish at 18.
+.arch mica32
+li32 x1, handler
+csrw tvec,x1
+li8 x3,7
+ecall
+addi x3,1
+wfi
+handler:
+addi x3,10
+csrr x4,cause
+eret

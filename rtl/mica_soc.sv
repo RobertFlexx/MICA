@@ -7,11 +7,15 @@ module mica_soc
     #(parameter integer XLEN = 32,
       parameter integer RAM_BYTES = 65536,
       parameter integer FLOW = 0,
+      parameter integer BITOPS = 0,
+      parameter integer TRAP = 0,
+      parameter integer PERF = 0,
       parameter integer CLOCK_HZ = 12000000,
       parameter integer BAUD = 115200,
       parameter INIT_FILE = "program.mem8")
     (input logic clk_i,
      input logic rst_ni,
+     input logic irq_i,
      output logic uart_tx_o,
      output logic [7 : 0] leds_o,
      output logic halted_o,
@@ -60,9 +64,13 @@ module mica_soc
   end
   mica_core #(.XLEN(XLEN),
               .RAM_BYTES(RAM_BYTES),
-              .FLOW(FLOW))
+              .FLOW(FLOW),
+              .BITOPS(BITOPS),
+              .TRAP(TRAP),
+              .PERF(PERF))
       core(.clk_i(clk_i),
            .rst_ni(rst_ni),
+           .irq_i(irq_i),
            .imem_addr_o(ia),
            .imem_rdata_i(ird),
            .dmem_addr_o(da),

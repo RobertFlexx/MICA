@@ -7,9 +7,9 @@
     addi $r, -1
     bnz $r, %%again
 .endm
-    li8 x1, 3
-    twice x1
-    decrement_to_zero x1
-    li8 x2, 5
-    decrement_to_zero x2
-    wfi
+li8 x1, 3
+twice x1
+decrement_to_zero x1
+li8 x2, 5
+decrement_to_zero x2
+wfi

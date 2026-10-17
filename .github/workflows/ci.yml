@@ -26,3 +26,7 @@ jobs:
           make -C rtl sim64
           make -C rtl sim-flow32
           make -C rtl sim-flow64
+          make -C rtl sim-bits32
+          make -C rtl sim-bits64
+          make -C rtl sim-trap
+          make -C rtl sim-trap-irq

@@ -1,38 +1,18 @@
-digraph G {
-  rankdir=LR;
-  label="MICA 1.0 | current multicycle controller state machine";
-  graph [
-    fontname="DejaVu Sans",
-    fontsize=17,
-    labelloc=t,
-    labeljust=l,
-    pad="0.32",
-    nodesep="0.48",
-    ranksep="0.8",
-    bgcolor="white"
-  ];
-  node [
-    fontname="DejaVu Sans",
-    fontsize=11,
-    style="rounded,filled",
-    shape=box,
-    color="#335277",
-    fillcolor="#f3f7fb",
-    penwidth=1.5,
-    margin="0.16,0.12"
-  ];
-  edge [fontname="DejaVu Sans", fontsize=9, color="#56718f", arrowsize=.7];
-  node [shape=ellipse, style=filled];
-  reset [label="reset", fillcolor="#fbe8e6"];
-  f0 [label="FETCH0\nlatch low halfword", fillcolor="#dff6f2"];
-  f1 [label="FETCH1\nlatch high halfword", fillcolor="#dff6f2"];
-  ex [label="EXECUTE\ndecode + commit", fillcolor="#ffeecf"];
-  halt [label="HALTED\nno further fetch", fillcolor="#fbe8e6"];
-  reset -> f0;
-  f0 -> f1 [label="inst[15:14] == 11"];
-  f0 -> ex [label="inst[15:14] != 11"];
-  f1 -> ex;
-  ex -> f0 [label="legal and not stop"];
-  ex -> halt [label="wfi / ecall or fault"];
-  halt -> halt;
+digraph G {rankdir=LR; label="MICA 1.0 | current multicycle controller state machine";
+graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
+
+node [shape=ellipse,style=filled];
+reset [label="reset",fillcolor="#fbe8e6"];
+f0 [label="FETCH0\nlatch low halfword",fillcolor="#dff6f2"];
+f1 [label="FETCH1\nlatch high halfword",fillcolor="#dff6f2"];
+ex [label="EXECUTE\ndecode + commit",fillcolor="#ffeecf"];
+halt [label="HALTED\nno further fetch",fillcolor="#fbe8e6"];
+reset -> f0;
+f0 -> f1 [label="inst[15:14] == 11"];
+f0 -> ex [label="inst[15:14] != 11"];
+f1 -> ex;
+ex -> f0 [label="legal and not stop"];
+ex -> halt [label="wfi / ecall or fault"];
+halt -> halt;
+
 }

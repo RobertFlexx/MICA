@@ -1,0 +1,16 @@
+; MICA-T software-pending interrupt, no clock/device dependency.
+.arch mica32
+li32 x1, handler
+csrw tvec,x1
+li8 x2,1
+li8 x3,7
+csrw ie,x2
+csrw ip,x2
+csrw status,x2
+addi x3,5
+wfi
+handler:
+csrw ip,x0
+li8 x4,42
+csrr x5,cause
+eret

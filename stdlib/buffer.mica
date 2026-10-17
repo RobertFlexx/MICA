@@ -1,0 +1,62 @@
+; MICA freestanding byte buffer operations, XLEN32/64. MIT.
+; mica_memxor(dst,src,count) returns dst. x5 and x6 are preserved.
+; Source and destination must not overlap, unless identical.
+mica_memxor:
+    push x5
+    push x6
+    mov x5,x1
+memxor_loop:
+    bz x3,memxor_done
+    ldbu x4,[x1]
+    ldbu x6,[x2]
+    xor x4,x6
+    stb x4,[x1]
+    addi x1,1
+    addi x2,1
+    addi x3,-1
+    b memxor_loop
+memxor_done:
+    mov x1,x5
+    pop x6
+    pop x5
+    ret
+
+; mica_memeq_full(a,b,count): 1 when equal, 0 otherwise.
+; Every byte is read regardless of data. Memory timing is platform dependent.
+; x5 and x6 preserved; other caller-saved registers clobbered.
+mica_memeq_full:
+    push x5
+    push x6
+    li8 x5,0
+memeq_next:
+    bz x3,memeq_done
+    ldbu x4,[x1]
+    ldbu x6,[x2]
+    xor x4,x6
+    or x5,x4
+    addi x1,1
+    addi x2,1
+    addi x3,-1
+    b memeq_next
+memeq_done:
+    seq x5,x0
+    mov x1,x5
+    pop x6
+    pop x5
+    ret
+
+; mica_memzero(dst,count): explicitly stores one zero per byte.
+; Compiler-level non-elision requires a compiler intrinsic, which does not exist yet.
+mica_memzero:
+    push x5
+    mov x5,x1
+memzero_loop:
+    bz x2,memzero_done
+    stb x0,[x1]
+    addi x1,1
+    addi x2,-1
+    b memzero_loop
+memzero_done:
+    mov x1,x5
+    pop x5
+    ret

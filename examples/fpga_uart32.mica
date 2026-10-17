@@ -1,8 +1,7 @@
 .arch mica32
-    li32 x1, message
-    call mica_puts
-    wfi
+li32 x1, message
+call mica_puts
+wfi
 .include "../stdlib/console32.mica"
 .align 2
-message:
-    .asciz "MICA FPGA UART online!\n"
+message: .asciz "MICA FPGA UART online!\n"

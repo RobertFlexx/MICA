@@ -1,0 +1,11 @@
+; Check B extension and CPU capability report, MICA 32.
+.arch mica32
+li32 x1, 0xf000000f
+li8 x2, 4
+clz3 x3,x1
+ctz3 x4,x1
+popcnt3 x5,x1
+ror3 x6,x1,x2
+bext3 x2,x6,x2
+csrr x1,features
+wfi

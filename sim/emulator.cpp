@@ -36,12 +36,13 @@ class CPU {
   std::array<U, 16> x{};
   std::array<V, 8> v{};
   std::array<U, 256> csr{};
-  U pc = 0, cycles = 0, reservation = 0;
+  U pc = 0, cycles = 0, retired = 0, reservation = 0;
   int reservation_bytes = 0;
   bool have_reservation = false;
   U led_register = 0;
   bool halted = false, trace = false, xreg = false, simd = false,
-       atomic = false, multiply = false, flow = false;
+       atomic = false, multiply = false, flow = false, bitops = false,
+       traps = false;
   int xlen = 32;
   U xmax() {
     return mask(xlen);
@@ -187,6 +188,58 @@ class CPU {
       q++;
     return U(q) & mask(bits);
   }
+  U bits_alu(int op, U aa, U bb) {
+    const U a = aa & xmax(), b = bb & xmax();
+    const unsigned shift = unsigned(b & U(xlen - 1));
+    switch (op) {
+    case 0:
+      return a ? U(std::countl_zero(a) - (xlen == 32 ? 32 : 0)) : U(xlen);
+    case 1:
+      return a ? U(std::countr_zero(a)) : U(xlen);
+    case 2:
+      return U(std::popcount(a));
+    case 3: {
+      U z = 0;
+      for (int i = 0; i < xlen / 8; i++)
+        z = (z << 8) | ((a >> (8 * i)) & 255);
+      return z;
+    }
+    case 4:
+      return ((a >> shift) | (a << ((xlen - shift) & (xlen - 1)))) & xmax();
+    case 5:
+      return ((a << shift) | (a >> ((xlen - shift) & (xlen - 1)))) & xmax();
+    case 6:
+      return sx(a, xlen) < sx(b, xlen) ? a : b;
+    case 7:
+      return sx(a, xlen) > sx(b, xlen) ? a : b;
+    case 8:
+      return std::min(a, b);
+    case 9:
+      return std::max(a, b);
+    case 10:
+      return a | (U(1) << shift);
+    case 11:
+      return a & ~(U(1) << shift);
+    case 12:
+      return a ^ (U(1) << shift);
+    case 13:
+      return (a >> shift) & 1;
+    case 14:
+      return a & ~b;
+    case 15:
+      return a | ~b;
+    case 16:
+      return ~(a ^ b);
+    case 17:
+      return U(sx(a & 255, 8));
+    case 18:
+      return U(sx(a & 65535, 16));
+    case 19:
+      return a & 65535;
+    default:
+      throw Fault("illegal bit operation");
+    }
+  }
   void vecop(U p) {
     int op = int((p >> 20) & 63), d = int((p >> 17) & 7),
         a = int((p >> 14) & 7), b = int((p >> 11) & 7);
@@ -303,7 +356,21 @@ class CPU {
     }
     v[d] = dst;
   }
+  void enter_trap(U cause, U saved_pc) {
+    if ((csr[4] & 1) || csr[4] == 0 || csr[4] >= ram.size())
+      throw Fault("invalid trap vector");
+    if (csr[1] & 4)
+      throw Fault("double trap without handler stack");
+    csr[2] = saved_pc & xmax();
+    csr[3] = cause & xmax();
+    csr[1] = (csr[1] & ~U(7)) | ((csr[1] & 1) ? U(2) : U(0)) | 4;
+    pc = csr[4];
+    have_reservation = false;
+  }
   void step() {
+    if (traps && (csr[1] & 1) && (csr[5] & (csr[6] | U(0)) & 1))
+      enter_trap((U(1) << (xlen - 1)) | 1, pc);
+
     if (pc % 2 || pc + 2 > ram.size())
       throw Fault("invalid fetch alignment/range");
     U here = pc;
@@ -354,14 +421,23 @@ class CPU {
       } else if (op == 18 || op == 20) {
         if (d || s)
           throw Fault("bad system reserved bits");
-        halted = true;
+        if (op == 20 && traps)
+          enter_trap(11, pc);
+        else
+          halted = true;
       } else if (op == 19 || op == 22) {
         if (d || s)
           throw Fault("bad fence reserved bits");
       } else if (op == 21) {
         if (d || s)
           throw Fault("bad eret reserved bits");
-        pc = csr[2];
+        if (traps) {
+          if (!(csr[1] & 4))
+            throw Fault("eret outside trap");
+          pc = csr[2] & xmax();
+          csr[1] = (csr[1] & ~U(7)) | ((csr[1] & 2) ? U(1) : U(0));
+        } else
+          pc = csr[2];
       } else
         throw Fault("illegal short R opcode");
     } else if (klass == 1) {
@@ -507,12 +583,28 @@ class CPU {
             wr(d, cycles & 0xffffffff);
           else if (aux == 8)
             wr(d, cycles >> 32);
+          else if (aux == 15)
+            wr(d, U(xreg) | U(multiply) << 1 | U(flow) << 2 | U(atomic) << 3 |
+                      U(simd) << 4 | U(bitops) << 5 | U(traps) << 6 |
+                      U(1) << 7);
+          else if (aux == 16)
+            wr(d, U(xlen));
+          else if (aux == 17)
+            wr(d, retired & 0xffffffffULL);
+          else if (aux == 18)
+            wr(d, retired >> 32);
           else
             wr(d, csr[size_t(aux)]);
         } else if (op == 1) {
           if (d || b)
             throw Fault("bad csrw reserved");
-          csr[size_t(aux)] = xr(a);
+          if (aux == 0 || aux == 7 || aux == 8 || aux == 15 || aux == 16 ||
+              aux == 17 || aux == 18)
+            throw Fault("CSR is read-only");
+          if (traps && aux == 1)
+            csr[1] = (csr[1] & ~U(1)) | (xr(a) & 1);
+          else
+            csr[size_t(aux)] = xr(a) & xmax();
         } else {
           if (!atomic)
             throw Fault("atomic disabled");
@@ -543,6 +635,14 @@ class CPU {
             wr(d, old);
           }
         }
+      } else if (maj == 11) {
+        if (!bitops)
+          throw Fault("bit manipulation extension disabled");
+        int op = int((p >> 20) & 63), d = int((p >> 16) & 15),
+            a = int((p >> 12) & 15), b = int((p >> 8) & 15);
+        if ((p & 255) || op > 19 || ((op <= 3 || op >= 17) && b != 0))
+          throw Fault("illegal bit encoding");
+        wr(d, bits_alu(op, xr(a), xr(b)));
       } else if (maj == 9) {
         if (!flow)
           throw Fault("flow disabled");
@@ -597,14 +697,15 @@ class CPU {
     }
     x[0] = 0;
     pc &= xmax();
+    retired++;
   }
 
 public:
   U exit_value = 0;
   CPU(int width, size_t memory, bool tr, bool xr, bool ve, bool at, bool mul,
-      bool fl)
+      bool fl, bool bits, bool trap)
       : ram(memory, 0), trace(tr), xreg(xr), simd(ve), atomic(at),
-        multiply(mul), flow(fl), xlen(width) {
+        multiply(mul), flow(fl), bitops(bits), traps(trap), xlen(width) {
     x[7] = (memory - 16) & ~size_t(15);
   }
   void load(const std::vector<std::uint8_t> &code) {
@@ -639,8 +740,8 @@ public:
     std::cerr << std::dec << "\n";
   }
   void dump() {
-    std::cerr << "pc=0x" << hex(pc) << " cycles=" << std::dec << cycles
-              << " exit=" << exit_value << "\n";
+    std::cerr << "pc=0x" << hex(pc) << " retired=" << std::dec << retired
+              << " model_steps=" << cycles << " exit=" << exit_value << "\n";
     for (int i = 0; i < 16; i++)
       std::cerr << "x" << i << "=0x" << hex(x[size_t(i)])
                 << ((i % 4 == 3) ? "\n" : " ");
@@ -653,7 +754,7 @@ int main(int argc, char **argv) {
     size_t memory = 1024 * 1024;
     U steps = 200000;
     bool dump = true, tr = false, xr = false, v = false, a = false, m = false,
-         fl = false;
+         fl = false, bits = false, trap = false;
     std::string peek_range;
     for (int i = 1; i < argc; i++) {
       std::string opt = argv[i];
@@ -678,6 +779,10 @@ int main(int argc, char **argv) {
         dump = false;
       else if (opt == "--xreg")
         xr = true;
+      else if (opt == "--trap")
+        trap = true;
+      else if (opt == "--bitops")
+        bits = true;
       else if (opt == "--flow")
         fl = true;
       else if (opt == "--simd")
@@ -688,7 +793,7 @@ int main(int argc, char **argv) {
         m = true;
       else if (opt == "--help") {
         std::cout
-            << "mica-run [--xlen 32|64] [--steps N] [--memory N] [--mul] [--simd] [--atomic] [--flow] [--xreg] [--trace] [--quiet] code.bin\n";
+            << "mica-run [--xlen 32|64] [--steps N] [--memory N] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [--xreg] [--trace] [--quiet] code.bin\n";
         return 0;
       } else if (opt.starts_with('-'))
         throw Fault("unknown flag: " + opt);
@@ -704,7 +809,7 @@ int main(int argc, char **argv) {
       throw Fault("cannot read " + binary);
     std::vector<std::uint8_t> data((std::istreambuf_iterator<char>(f)),
                                    std::istreambuf_iterator<char>());
-    CPU cpu(width, memory, tr, xr, v, a, m, fl);
+    CPU cpu(width, memory, tr, xr, v, a, m, fl, bits, trap);
     cpu.load(data);
     cpu.run(steps);
     if (dump)

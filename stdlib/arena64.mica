@@ -35,7 +35,5 @@ arena64_failed:
     ret
 
 .align 8
-mica_arena_cursor:
-    .quad 0
-mica_arena_limit:
-    .quad 0
+mica_arena_cursor: .quad 0
+mica_arena_limit: .quad 0

@@ -1,14 +1,13 @@
 .arch mica32
-    li32 x1, dest
-    li8 x2, 65
-    li8 x3, 6
-    call mica_memset
-    li32 x1, dest
-    li8 x2, 4
-    call mica_strnlen
+li32 x1, dest
+li8 x2, 65
+li8 x3, 6
+call mica_memset
+li32 x1, dest
+li8 x2, 4
+call mica_strnlen
 ; result is 4
-    wfi
+wfi
 .include "../stdlib/string.mica"
 .align 4
-dest:
-    .space 16
+dest: .space 16

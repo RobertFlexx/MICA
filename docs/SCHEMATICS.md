@@ -45,3 +45,12 @@ The bus is not AXI, Wishbone or TileLink. It has no ready/valid/error handshake.
 Use `boards/arty_a7/mica_arty_a7.sv` and `boards/arty_a7/arty_a7.xdc`. The wrapper already maps FPGA pins for the 100 MHz oscillator, button reset, onboard LEDs and USB UART. There is no soldering required for this board-level configuration. For custom external sensors use voltage-safe buffers, consult the manufacturer I/O voltage tables, and use a common ground. Never connect a motor or relay coil directly to FPGA pins; use a suitable driver with appropriate transient suppression.
 
 For a custom PCB, you still need the FPGA symbol/footprint, bypass capacitors, voltage regulators and sequencing, configuration flash, crystal/oscillator selection, JTAG connector, ESD protection, power budget, pin bank voltage constraints and an electrically checked board design. None of those board files are created or validated by these logical diagrams.
+
+## Additional 1.0 diagrams
+
+- `09-bit-unit` maps the extended major 11 controls into the optional B ALU, with width selection and writeback.
+- `10-trap-control` describes the implemented T trap-state registers and machine-only interrupt path.
+- `11-split-slice-proposal` is a proposed 64-bit datapath experiment. This drawing is **not implemented RTL**.
+- `12-validation-chain` distinguishes SDK software testing, RTL simulation, synthesis, and measured power.
+
+Each new diagram has `.dot`, `.svg` and `.png` files in `schematics/`. The trap drawing includes `irq_i`, which the Arty top-level currently ties low.

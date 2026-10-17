@@ -1,0 +1,15 @@
+; MICA-B helpers, 32/64. Requires --bitops. MIT.
+; x1 = input and return. x2..x5 preserved.
+; These are convenience entry points, not a C ABI implementation.
+mica_popcount_b:
+    popcnt3 x1,x1
+    ret
+mica_clz_b:
+    clz3 x1,x1
+    ret
+mica_ctz_b:
+    ctz3 x1,x1
+    ret
+mica_bswap_b:
+    rev8 x1,x1
+    ret

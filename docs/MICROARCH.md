@@ -61,3 +61,7 @@ Until then the multi-hart schematic is a design study, not a hardware feature.
 **Quiet SIMD.** Support instruction-level isolation of inactive vector slices and a runtime policy that only powers or clocks vector datapaths when actively used. Real clock gating needs a technology-appropriate integrated gate and clock-tree analysis. A random RTL AND gate on a clock is not acceptable.
 
 **Fetch-byte budget.** Instead of judging the ISA on average instruction length, optimize instruction fetch bytes *per useful operation*. Flow demonstrates a concrete reduction for a common loop. A compiler backend is needed to find out if the advantage survives realistic code generation.
+
+## Newly implemented optional logic
+
+B adds a register-to-register bit operation in extended major 11. The reference core calculates it in the existing EXECUTE state. T adds minimal machine trap state registers and an interrupt check in FETCH0; entry from `ecall` happens during EXECUTE. These paths are architecturally useful but not yet independently HDL-simulated or placed and routed. `instret` increments at successfully decoded instruction retirement, not at every fetch state. It excludes fetch stalls, which the core does not model. See [EXTENSIONS.md](EXTENSIONS.md) and [RESEARCH_PROGRAM.md](RESEARCH_PROGRAM.md).

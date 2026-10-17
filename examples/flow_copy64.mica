@@ -1,14 +1,12 @@
 .arch mica64
-    li32 x1, destination
-    li32 x2, source
-    li8 x3, 4
-    call mica_memcpy_words_flow
-    li32 x4, destination
-    ldq x1, [x4]
-    wfi
+li32 x1, destination
+li32 x2, source
+li8 x3, 4
+call mica_memcpy_words_flow
+li32 x4, destination
+ldq x1, [x4]
+wfi
 .include "../stdlib/flow.mica"
 .align 8
-source:
-    .word 1, 2, 3, 4
-destination:
-    .space 16
+source: .word 1,2,3,4
+destination: .space 16

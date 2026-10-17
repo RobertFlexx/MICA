@@ -1,0 +1,8 @@
+; MICA-B: population count in one instruction, same callable ABI.
+.arch mica32
+li32 x1,0xf0f0f0f0
+call my_popcnt
+wfi
+my_popcnt:
+popcnt3 x1,x1
+ret

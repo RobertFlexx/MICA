@@ -381,6 +381,12 @@ static const std::map<std::string, int> SYS = {
     {"csrr", 0},     {"csrw", 1},      {"lr.w", 2}, {"sc.w", 3},
     {"amoadd.w", 4}, {"amoswap.w", 5}, {"lr.q", 6}, {"sc.q", 7},
     {"amoadd.q", 8}, {"amoswap.q", 9}};
+static const std::map<std::string, int> BITOPS = {
+    {"clz3", 0},   {"ctz3", 1},    {"popcnt3", 2}, {"rev8", 3},
+    {"ror3", 4},   {"rol3", 5},    {"min3", 6},    {"max3", 7},
+    {"minu3", 8},  {"maxu3", 9},   {"bset3", 10},  {"bclr3", 11},
+    {"binv3", 12}, {"bext3", 13},  {"andn3", 14},  {"orn3", 15},
+    {"xnor3", 16}, {"sextb3", 17}, {"sexth3", 18}, {"zexth3", 19}};
 static const std::map<std::string, int> W32 = {
     {"addw3", 0}, {"subw3", 1}, {"shlw3", 2}, {"shrw3", 3}, {"sarw3", 4},
     {"andw3", 5}, {"orw3", 6},  {"xorw3", 7}, {"mulw3", 8}};
@@ -397,10 +403,11 @@ static const std::map<std::string, int> V = {
     {"vld", 16},      {"vst", 17},     {"vziplo", 18}, {"vziphi", 19},
     {"vunziplo", 20}, {"vunziphi", 21}};
 static const std::map<std::string, int> CSRS = {
-    {"coreid", 0},   {"status", 1},     {"epc", 2},         {"cause", 3},
-    {"tvec", 4},     {"ie", 5},         {"ip", 6},          {"cycle_lo", 7},
-    {"cycle_hi", 8}, {"timer_lo", 9},   {"timer_hi", 10},   {"cmp_lo", 11},
-    {"cmp_hi", 12},  {"vec_dirty", 13}, {"vec_enabled", 14}};
+    {"coreid", 0},   {"status", 1},      {"epc", 2},          {"cause", 3},
+    {"tvec", 4},     {"ie", 5},          {"ip", 6},           {"cycle_lo", 7},
+    {"cycle_hi", 8}, {"timer_lo", 9},    {"timer_hi", 10},    {"cmp_lo", 11},
+    {"cmp_hi", 12},  {"vec_dirty", 13},  {"vec_enabled", 14}, {"features", 15},
+    {"arch", 16},    {"instret_lo", 17}, {"instret_hi", 18}};
 struct Src {
   std::string filename, text;
   int line = 0;
@@ -419,7 +426,7 @@ struct Macro {
 class Assembler {
   int xlen = 32;
   bool xreg = false, simd = false, atomic = false, multiply = false,
-       flow = false;
+       flow = false, bitops = false;
   U unique = 0;
   std::map<std::string, Macro> macros;
   std::vector<Line> lines;
@@ -773,6 +780,15 @@ class Assembler {
       return alu3(0, it->second, reg(a[0], xreg), reg(a[1], xreg),
                   reg(a[2], xreg));
     }
+    if (auto it = BITOPS.find(op); it != BITOPS.end()) {
+      if (!bitops)
+        throw Error(op + " needs --bitops");
+      const int opcode = it->second;
+      const bool unary = (opcode <= 3 || opcode >= 17);
+      nargs(l, unary ? 2 : 3);
+      return alu3(11, opcode, reg(a[0], xreg), reg(a[1], xreg),
+                  unary ? 0 : reg(a[2], xreg));
+    }
     if (auto it = IMM.find(op); it != IMM.end()) {
       nargs(l, 3);
       int d = reg(a[0], xreg), ra = reg(a[1], xreg);
@@ -992,8 +1008,9 @@ class Assembler {
   }
 
 public:
-  Assembler(int w, bool xr, bool v, bool a, bool m, bool f)
-      : xlen(w), xreg(xr), simd(v), atomic(a), multiply(m), flow(f) {}
+  Assembler(int w, bool xr, bool v, bool a, bool m, bool f, bool bits)
+      : xlen(w), xreg(xr), simd(v), atomic(a), multiply(m), flow(f),
+        bitops(bits) {}
   std::pair<Bytes, std::vector<Line>> assemble(const fs::path &path) {
     lines.clear();
     sy.clear();
@@ -1071,7 +1088,7 @@ int main(int argc, char **argv) {
   try {
     fs::path input, output, hex, listing;
     int xlen = 32;
-    bool xr = false, v = false, a = false, m = false, fl = false;
+    bool xr = false, v = false, a = false, m = false, fl = false, bit = false;
     for (int i = 1; i < argc; i++) {
       std::string s = argv[i];
       auto next = [&]() {
@@ -1084,7 +1101,10 @@ int main(int argc, char **argv) {
         if (w != "32" && w != "64")
           throw Error("--xlen must be 32 or 64");
         xlen = std::stoi(w);
-      } else if (s == "--flow")
+      } else if (s == "--trap") {
+      } else if (s == "--bitops")
+        bit = true;
+      else if (s == "--flow")
         fl = true;
       else if (s == "--xreg")
         xr = true;
@@ -1102,7 +1122,7 @@ int main(int argc, char **argv) {
         listing = next();
       else if (s == "--help") {
         std::cout
-            << "mica-as [--xlen 32|64] [--xreg] [--mul] [--simd] [--atomic] [--flow] [-o path] [--hex path] [--listing path] file.mica\n";
+            << "mica-as [--xlen 32|64] [--xreg] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [-o path] [--hex path] [--listing path] file.mica\n";
         return 0;
       } else if (s.starts_with('-'))
         throw Error("unknown flag: " + s);
@@ -1117,7 +1137,7 @@ int main(int argc, char **argv) {
       output = input;
       output.replace_extension(".bin");
     }
-    auto [bytes, lines] = Assembler(xlen, xr, v, a, m, fl).assemble(input);
+    auto [bytes, lines] = Assembler(xlen, xr, v, a, m, fl, bit).assemble(input);
     std::ofstream f(output, std::ios::binary);
     if (!f)
       throw Error("cannot write " + output.string());

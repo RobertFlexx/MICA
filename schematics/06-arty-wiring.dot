@@ -1,43 +1,16 @@
-digraph G {
-  rankdir=LR;
-  label="MICA 1.0 | Digilent Arty A7 on-board connections";
-  graph [
-    fontname="DejaVu Sans",
-    fontsize=17,
-    labelloc=t,
-    labeljust=l,
-    pad="0.32",
-    nodesep="0.48",
-    ranksep="0.8",
-    bgcolor="white"
-  ];
-  node [
-    fontname="DejaVu Sans",
-    fontsize=11,
-    style="rounded,filled",
-    shape=box,
-    color="#335277",
-    fillcolor="#f3f7fb",
-    penwidth=1.5,
-    margin="0.16,0.12"
-  ];
-  edge [fontname="DejaVu Sans", fontsize=9, color="#56718f", arrowsize=.7];
-  osc [label="100 MHz onboard oscillator\nFPGA pin E3", fillcolor="#dff6f2"];
-  button [label="Button 0\nFPGA pin D9", fillcolor="#dff6f2"];
-  top [
-    label="mica_arty_a7\nreset synchronizer (2 FF)\nSoC RAM 4096 bytes",
-    fillcolor="#ffeecf"
-  ];
-  led [
-    label="Onboard green LEDs\nH5 GPIO bit 0\nJ5 GPIO bit 1\nT9 halted\nT10 fault"
-  ];
-  usb [label="Onboard FTDI USB UART\nFPGA pin D10 (TX out)\n115200 8N1"];
-  jtag [
-    label="USB / JTAG programmer\nFPGA configured separately\nbitstream via Vivado"
-  ];
-  osc -> top [label="CLK100MHZ"];
-  button -> top [label="btn_reset high asserts reset"];
-  top -> led [label="led[3:0]"];
-  top -> usb [label="uart_txd"];
-  jtag -> top [style=dashed, label="FPGA configuration"];
+digraph G { rankdir=LR; label="MICA 1.0 | Digilent Arty A7 on-board connections";
+graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
+
+osc [label="100 MHz onboard oscillator\nFPGA pin E3",fillcolor="#dff6f2"];
+button [label="Button 0\nFPGA pin D9",fillcolor="#dff6f2"];
+top [label="mica_arty_a7\nreset synchronizer (2 FF)\nSoC RAM 4096 bytes",fillcolor="#ffeecf"];
+led [label="Onboard green LEDs\nH5 GPIO bit 0\nJ5 GPIO bit 1\nT9 halted\nT10 fault"];
+usb [label="Onboard FTDI USB UART\nFPGA pin D10 (TX out)\n115200 8N1"];
+jtag [label="USB / JTAG programmer\nFPGA configured separately\nbitstream via Vivado"];
+osc -> top [label="CLK100MHZ"];
+button -> top [label="btn_reset high asserts reset"];
+top -> led [label="led[3:0]"];
+top -> usb [label="uart_txd"];
+jtag -> top [style=dashed,label="FPGA configuration"];
+
 }

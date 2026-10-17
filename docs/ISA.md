@@ -12,7 +12,7 @@
 - Scalar calculations wrap modulo `2^XLEN`, except defined 64-bit W32 operations and comparisons. Signed numbers use two's complement. Signed right shifts are arithmetic. Register shifts are modulo XLEN, immediate shifts must be less than XLEN. `x0` writes are ignored.
 - Natural alignment is required for 2/4/8-byte data. Misaligned memory accesses are faults. There are no branch delay slots, no condition flags, and no automatic program-address canonicalization.
 - The minimum core uses in-order memory operations and no caches or external fabric. A multi-hart core must explicitly implement the chosen shared-memory and device ordering model.
-- The v1.0 simulator maps memory in a flat byte array, starts PC=0, sets SP to `(RAM_SIZE-16)&~15`, and stops on `wfi/ecall`; this **host simulator behavior is not a privileged trap specification**.
+- The v1.0 simulator maps memory in a flat byte array, starts PC=0, sets SP to `(RAM_SIZE-16)&~15`, and stops on `wfi/ecall` without the T option. With T enabled, `ecall` performs a machine-only software trap; see [EXTENSIONS.md](EXTENSIONS.md).
 
 ## 2. ABI draft (subject to compiler-driven revision)
 
@@ -44,7 +44,7 @@ M  15..14=10 | 13..11 op3| 10..8 reg3 | 7..5 base3 | 4..0 off5
 | 17 | `mul` | low XLEN bits of product, M extension only |
 | 18,19,20,21,22 | `wfi`, `fence`, `ecall`, `eret`, `fence.i` | system opcodes; all operand fields zero; see §8 |
 
-`fence` is a full order barrier in the proposed multicore memory model. On the sequential one-hart simulator and minimal uncached RTL it is operationally a no-op. `fence.i` is an instruction-stream synchronization point; software simulators have coherent code bytes, while RTL instruction caching is absent. `eret` requires privilege/exception hardware not implemented by the sample RTL. In the emulator it assigns `pc = epc` CSR. `wfi` and `ecall` stop the emulator / minimal hardware core rather than entering proper low-power or trap modes.
+`fence` is a full order barrier in the proposed multicore memory model. On the sequential one-hart simulator and minimal uncached RTL it is operationally a no-op. `fence.i` is an instruction-stream synchronization point; software simulators have coherent code bytes, while RTL instruction caching is absent. `eret` requires the optional T trap mechanism in the RTL. The T emulator checks an active handler before returning to `epc`. `wfi` still stops both reference engines, while `ecall` traps with T enabled and stops in the legacy base profile.
 
 ### I opcode (op3) enumeration
 
@@ -90,7 +90,8 @@ The 32-bit machine operation is defined by `major` and 26-bit payload:
 | 8 | `op4 reg4 base4 off14` | XLEN64 load/store with signed byte offset |
 | 9 | `op2 counter4 rel20` | F: `dbnz` |
 | 10 | `op4 reg4 base4 stride14` | F: extended streaming load/store |
-| 11..15 | reserved | illegal instruction |
+| 11 | `op6 rd4 ra4 rb4 zero8` | B bit operations (optional) |
+| 12..15 | reserved | illegal instruction |
 
 **major0 op6:** `add3=0,sub3=1,and3=2,or3=3,xor3=4,shl3=5,shr3=6,sar3=7,slt3=8,sltu3=9,seq3=10,mul3=11(M)`.
 
@@ -116,7 +117,7 @@ The 32-bit machine operation is defined by `major` and 26-bit payload:
 
 **Unresolved for real silicon:** the full cross-location memory model, LR/SC fairness/progress, acquire/release variations, reservation granularity, coherent DMA, MMIO ordering and multi-hart cache protocol. These must be formalized **before** any multicore silicon claim. The one-hart simulator implements a reservation and correct sequential behavior for basic tests, not a global coherent multicore interconnect. The provided RTL does not implement A.
 
-**CSR names:** `coreid=0, status=1, epc=2, cause=3, tvec=4, ie=5, ip=6, cycle_lo=7, cycle_hi=8, timer_lo=9, timer_hi=10, cmp_lo=11, cmp_hi=12, vec_dirty=13, vec_enabled=14`. Others 15..255 reserved; the emulator's storage is permissive for experimentation, but software must not infer standard semantics from otherwise unspecified CSRs. In a future privileged core, machine-mode, priority masks, interrupt entry/return rules and saved state will be mandatory.
+**CSR names:** `coreid=0, status=1, epc=2, cause=3, tvec=4, ie=5, ip=6, cycle_lo=7, cycle_hi=8, timer_lo=9, timer_hi=10, cmp_lo=11, cmp_hi=12, vec_dirty=13, vec_enabled=14`. `features=15, arch=16, instret_lo=17, instret_hi=18` are read-only discovery and retirement CSRs. Other IDs 19..255 reserved; the emulator's storage is permissive for experimentation, but software must not infer standard semantics from otherwise unspecified CSRs. In a future privileged core, machine-mode, priority masks, interrupt entry/return rules and saved state will be mandatory.
 
 ## 7. Vector extension V
 
@@ -190,3 +191,7 @@ F does not introduce new interrupt-save state. Every instruction retires with or
 A normal byte-copy iteration can be written as `ldbu; stb; addi; addi; addi; bnz` using 6 short instructions (12 bytes) or as `ldpi.b; stpi.b; dbnz` using 2 short and 1 long instruction (8 bytes). That is 3 instead of 6 dynamically decoded instructions. The 1.0 ISA can be smaller on this workload; not all programs will improve and no power number follows from the byte count alone.
 
 The assembler command-line feature switches define the model at assemble time. Raw firmware does not currently encode target XLEN or extension capabilities in a header, so a loader must know the profile out-of-band. A future standardized executable format should include a feature bitmap, minimum memory requirement, ROM integrity and entry point.
+
+## 11. B, T and feature-discovery additions (1.0 compatible)
+
+Extended major 11 implements the optional B bit instructions. Details, field requirements, and trap semantics are in [EXTENSIONS.md](EXTENSIONS.md). Existing major numbers and 16-bit scalar encodings did not change. CSR IDs 15 and 16 report hardware capabilities and XLEN, and CSR IDs 17/18 report retired instructions. T reuses existing `ecall`, `eret` and CSR encodings. The reference emulator uses `--trap` to opt into T.

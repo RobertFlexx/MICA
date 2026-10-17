@@ -1,6 +1,6 @@
 .arch mica64
-    li64 x1, 0x10000000005
-    li8 x2, 3
-    call mica_udivmod
-    wfi
+li64 x1, 0x10000000005
+li8 x2, 3
+call mica_udivmod
+wfi
 .include "../stdlib/math64.mica"

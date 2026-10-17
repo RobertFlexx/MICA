@@ -37,3 +37,9 @@ The next sensible deliverable is an ELF object format and linker with relocation
 ## Fixed arena allocator
 
 `mica_arena_init` takes a 16-byte aligned base pointer in x1 and the capacity in bytes in x2. It stores a cursor and a limit in internal global words. `mica_arena_alloc` rounds its requested size up to 16, returns the current cursor, and advances on success. If a request would exceed the capacity or wrap arithmetic, it returns zero without advancing the cursor. There is no free operation, there is one arena globally, and no lock or stack guard. It is useful for early bring-up and deterministic buffers, not a drop-in replacement for hosted malloc.
+
+## Additional assembly modules
+
+`stdlib/bits_hw.mica` contains `mica_popcount_b`, `mica_clz_b`, `mica_ctz_b`, and `mica_bswap_b`. Pass `--bitops`. They take a scalar in x1 and return x1 without touching the ordinary caller-saved registers.
+
+`stdlib/buffer.mica` contains `mica_memxor(dst,src,count)`, `mica_memeq_full(a,b,count)` and `mica_memzero(dst,count)`. `mica_memeq_full` consumes the requested length without a data-dependent early exit and returns 1 for equal input, 0 otherwise. This **does not certify constant-time execution** on processors with data-dependent memory latency. `mica_memxor` assumes nonoverlapping regions or identical pointers. `mica_memzero` performs explicit byte stores but no C compiler non-elision guarantee exists. x5 and x6 are preserved, x1 carries results. See source comments.

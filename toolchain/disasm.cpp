@@ -51,6 +51,10 @@ static const std::array<const char *, 7> a3i = {
     "add3i", "and3i", "or3i", "xor3i", "shl3i", "shr3i", "sar3i"};
 static const std::array<const char *, 6> branches = {"beq", "bne",  "blt",
                                                      "bge", "bltu", "bgeu"};
+static const std::array<const char *, 20> bitnames = {
+    "clz3",  "ctz3",  "popcnt3", "rev8",   "ror3",   "rol3",  "min3",
+    "max3",  "minu3", "maxu3",   "bset3",  "bclr3",  "binv3", "bext3",
+    "andn3", "orn3",  "xnor3",   "sextb3", "sexth3", "zexth3"};
 static const std::array<const char *, 9> words = {"addw3", "subw3", "shlw3",
                                                   "shrw3", "sarw3", "andw3",
                                                   "orw3",  "xorw3", "mulw3"};
@@ -111,6 +115,17 @@ static std::string decode(U pc, U h, U p, int xlen) {
       return std::string(a3[op]) + " " + x(d) + "," + x(a) + "," + x(b);
     if (maj == 7 && op < int(words.size()) && xlen == 64)
       return std::string(words[op]) + " " + x(d) + "," + x(a) + "," + x(b);
+  }
+  if (maj == 11) {
+    int op = int((p >> 20) & 63), d = int((p >> 16) & 15),
+        a = int((p >> 12) & 15), b = int((p >> 8) & 15);
+    if (op < int(bitnames.size()) && !(p & 255) &&
+        (op > 3 && op < 17 || b == 0)) {
+      std::string s = std::string(bitnames[op]) + " " + x(d) + "," + x(a);
+      if (op > 3 && op < 17)
+        s += "," + x(b);
+      return s;
+    }
   }
   if (maj == 1) {
     int op = int((p >> 22) & 15), d = int((p >> 18) & 15),

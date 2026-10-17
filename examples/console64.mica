@@ -1,12 +1,11 @@
 .arch mica64
-    li32 x1, hello
-    call mica_puts
-    li64 x1, 0x0123456789abcdef
-    call mica_print_hex
-    li8 x1, 10
-    call mica_putchar
-    wfi
+li32 x1, hello
+call mica_puts
+li64 x1, 0x0123456789abcdef
+call mica_print_hex
+li8 x1, 10
+call mica_putchar
+wfi
 .include "../stdlib/console64.mica"
 .align 2
-hello:
-    .asciz "MICA64: "
+hello: .asciz "MICA64: "

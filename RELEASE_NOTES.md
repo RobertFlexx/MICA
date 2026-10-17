@@ -36,3 +36,7 @@ python3 benchmarks/flow_density.py
 ```
 
 See `SDK_STATUS.md` for tested and untested feature boundaries.
+
+## MICA 1.0 SDK update, same version
+
+This update keeps the architecture version and existing binary encodings. It adds optional B and T implementations, feature discovery CSRs, an instruction-retirement counter, buffer and bit runtime helpers, RTL testbench sources, and research notes. Software has 41 passing integration test methods. The new RTL paths are not HDL-simulator verified. See `SDK_STATUS.md` for the exact limits.

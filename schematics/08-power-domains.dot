@@ -1,39 +1,19 @@
-digraph G {
-  rankdir=LR;
-  label="MICA 1.0 | candidate power partitioning, NOT an RTL power claim";
-  graph [
-    fontname="DejaVu Sans",
-    fontsize=17,
-    labelloc=t,
-    labeljust=l,
-    pad="0.32",
-    nodesep="0.48",
-    ranksep="0.8",
-    bgcolor="white"
-  ];
-  node [
-    fontname="DejaVu Sans",
-    fontsize=11,
-    style="rounded,filled",
-    shape=box,
-    color="#335277",
-    fillcolor="#f3f7fb",
-    penwidth=1.5,
-    margin="0.16,0.12"
-  ];
-  edge [fontname="DejaVu Sans", fontsize=9, color="#56718f", arrowsize=.7];
-  node [style="rounded,dashed,filled", fillcolor="#fff3e8", color="#a8794b"];
-  clock [label="Clock controller\nGlitch-free clock enables\nReset sequencing"];
-  base [label="Always-on scalar core\nMinimum registers + ALU"];
-  vec [label="Optional SIMD slice\nOperand isolation + enable"];
-  mul [label="Optional multiply unit\nOperand gating on inactive cycle"];
-  ram [label="SRAM banks\nSelectively enabled read/write"];
-  perf [label="Event counters\nMemory beats, stalls, active cycles"];
-  clock -> base;
-  clock -> vec;
-  clock -> mul;
-  clock -> ram;
-  base -> perf [label="activity events"];
-  vec -> perf [label="activity events"];
-  ram -> perf [label="activity events"];
+digraph G { rankdir=LR; label="MICA 1.0 | candidate power partitioning, NOT an RTL power claim";
+graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
+
+node [style="rounded,dashed,filled",fillcolor="#fff3e8",color="#a8794b"];
+clock [label="Clock controller\nGlitch-free clock enables\nReset sequencing"];
+base [label="Always-on scalar core\nMinimum registers + ALU"];
+vec [label="Optional SIMD slice\nOperand isolation + enable"];
+mul [label="Optional multiply unit\nOperand gating on inactive cycle"];
+ram [label="SRAM banks\nSelectively enabled read/write"];
+perf [label="Event counters\nMemory beats, stalls, active cycles"];
+clock -> base;
+clock -> vec;
+clock -> mul;
+clock -> ram;
+base -> perf [label="activity events"];
+vec -> perf [label="activity events"];
+ram -> perf [label="activity events"];
+
 }

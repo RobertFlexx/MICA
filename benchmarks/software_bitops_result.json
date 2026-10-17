@@ -1,0 +1,18 @@
+{
+  "benchmark": "popcount_of_f0f0f0f0",
+  "platform": "MICA32 functional emulator",
+  "includes_call_setup": true,
+  "baseline": {
+    "output": 16,
+    "retired_instructions": 200,
+    "image_bytes": 32,
+    "image_sha256": "74e7b9fecb27e2a5a0f6616b3c6da6d5bd156287ec3479edbcdf3dbc0d82c3be"
+  },
+  "bitops": {
+    "output": 16,
+    "retired_instructions": 6,
+    "image_bytes": 20,
+    "image_sha256": "26472c655514be6c1e2bb0aa1964a5ff378048dc5486fd4fc6f066d1e25a52be"
+  },
+  "note": "retired instructions and image bytes only; no time, power, or Fmax measurements"
+}

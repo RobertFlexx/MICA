@@ -1,58 +1,14 @@
-digraph G {
-  rankdir=TB;
-  label="MICA 1.0 | byte-level instruction envelopes";
-  graph [
-    fontname="DejaVu Sans",
-    fontsize=17,
-    labelloc=t,
-    labeljust=l,
-    pad="0.32",
-    nodesep="0.48",
-    ranksep="0.8",
-    bgcolor="white"
-  ];
-  node [
-    fontname="DejaVu Sans",
-    fontsize=11,
-    style="rounded,filled",
-    shape=box,
-    color="#335277",
-    fillcolor="#f3f7fb",
-    penwidth=1.5,
-    margin="0.16,0.12"
-  ];
-  edge [fontname="DejaVu Sans", fontsize=9, color="#56718f", arrowsize=.7];
-  node [shape=record, fontname="DejaVu Sans Mono", fontsize=12];
-  r [
-    label="16-bit R form|{class 00: 2|op: 8|rd: 3|rs: 3}",
-    fillcolor="#e0eef7"
-  ];
-  i [
-    label="16-bit I form|{class 01: 2|op: 3|rd: 3|imm: 8}",
-    fillcolor="#e0eef7"
-  ];
-  m [
-    label="16-bit M form|{class 10: 2|op: 3|reg: 3|base: 3|off: 5}",
-    fillcolor="#e0eef7"
-  ];
-  e [
-    label="32-bit escape|{class 11: 2|major: 4|payload upper: 10}|{payload lower: 16}",
-    fillcolor="#dff6f2"
-  ];
-  db [
-    label="Major 9: dbnz|{op: 2, must be 0|counter: 4|relative halfwords: 20}",
-    fillcolor="#ffeecf"
-  ];
-  str [
-    label="Major 10: flow stride|{op: 4|data: 4|base: 4|signed stride: 14}",
-    fillcolor="#ffeecf"
-  ];
-  e -> db [label="major=9"];
-  e -> str [label="major=10"];
-  {
-    rank=same;
-    r;
-    i;
-    m;
-  }
+digraph G { rankdir=TB; label="MICA 1.0 | byte-level instruction envelopes";
+graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
+
+node [shape=record,fontname="DejaVu Sans Mono",fontsize=12];
+r [label="16-bit R form|{class 00: 2|op: 8|rd: 3|rs: 3}",fillcolor="#e0eef7"];
+i [label="16-bit I form|{class 01: 2|op: 3|rd: 3|imm: 8}",fillcolor="#e0eef7"];
+m [label="16-bit M form|{class 10: 2|op: 3|reg: 3|base: 3|off: 5}",fillcolor="#e0eef7"];
+e [label="32-bit escape|{class 11: 2|major: 4|payload upper: 10}|{payload lower: 16}",fillcolor="#dff6f2"];
+db [label="Major 9: dbnz|{op: 2, must be 0|counter: 4|relative halfwords: 20}",fillcolor="#ffeecf"];
+str [label="Major 10: flow stride|{op: 4|data: 4|base: 4|signed stride: 14}",fillcolor="#ffeecf"];
+e -> db [label="major=9"];e -> str [label="major=10"];
+{rank=same; r;i;m;}
+
 }

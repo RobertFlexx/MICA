@@ -1,0 +1,10 @@
+; Wide operand paths and byte reversal. MICA 64 + B.
+.arch mica64
+li64 x1,0x0123456789abcdef
+li8 x2,8
+rev8 x3,x1
+ror3 x4,x1,x2
+popcnt3 x5,x1
+clz3 x6,x1
+csrr x1,features
+wfi

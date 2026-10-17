@@ -1,0 +1,12 @@
+digraph mica_validation {
+ graph [label="MICA 1.0 verification and physical implementation gates",labelloc=t,rankdir=TB,fontname="DejaVu Sans",fontsize=19,pad=.3];
+ node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=11,color="#45647b",fillcolor="#eef3fa"];
+ edge [color="#45647b",fontname="DejaVu Sans",fontsize=10];
+ source [label="ISA text + frozen encoding samples"];
+ software [label="C++23 assembler / emulator / disassembler\n40 passing integration test methods\nrandomized B op reference checks",fillcolor="#e1f2e6"];
+ rtl [label="RTL smoke testbenches\nB, T, Flow, 32/64\nNOT EXECUTED IN THIS ENVIRONMENT",fillcolor="#fff0d2"];
+ trace [label="Core vs emulator retirement traces\nNOT IMPLEMENTED",fillcolor="#fff0d2"];
+ synth [label="FPGA synthesis / timing closure\nresource + critical path reports\nNOT MEASURED",fillcolor="#fff0d2"];
+ power [label="Equal workload, equal SRAM/timing\nmeasure rail power and joules/task\nNOT MEASURED",fillcolor="#fff0d2"];
+ source->software->rtl->trace->synth->power;
+}

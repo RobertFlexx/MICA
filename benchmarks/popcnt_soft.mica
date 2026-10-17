@@ -1,0 +1,17 @@
+; Baseline: population count in scalar software, same callable ABI.
+.arch mica32
+li32 x1,0xf0f0f0f0
+call my_popcnt
+wfi
+my_popcnt:
+li8 x2,0
+popcnt_loop:
+bz x1,popcnt_done
+mov x3,x1
+andi x3,1
+add x2,x3
+shri x1,1
+b popcnt_loop
+popcnt_done:
+mov x1,x2
+ret

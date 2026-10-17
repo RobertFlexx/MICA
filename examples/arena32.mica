@@ -1,25 +1,23 @@
 .arch mica32
-    li32 x1, pool
-    li8 x2, 64
-    call mica_arena_init
-    li8 x1, 5
-    call mica_arena_alloc
-    mov x5, x1
-    li8 x1, 34
-    call mica_arena_alloc
-    li32 x3, returned_ptr
-    stw x1, [x3]
-    li8 x1, 17
-    call mica_arena_alloc
-    li32 x3, returned_ptr
-    ldw x4, [x3]
-    li32 x3, mica_arena_cursor
-    ldw x3, [x3]
-    wfi
+li32 x1, pool
+li8 x2, 64
+call mica_arena_init
+li8 x1, 5
+call mica_arena_alloc
+mov x5, x1
+li8 x1, 34
+call mica_arena_alloc
+li32 x3, returned_ptr
+stw x1,[x3]
+li8 x1, 17
+call mica_arena_alloc
+li32 x3, returned_ptr
+ldw x4,[x3]
+li32 x3, mica_arena_cursor
+ldw x3,[x3]
+wfi
 .include "../stdlib/arena32.mica"
 .align 4
-returned_ptr:
-    .word 0
+returned_ptr: .word 0
 .align 16
-pool:
-    .space 64
+pool: .space 64

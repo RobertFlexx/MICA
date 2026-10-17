@@ -1,78 +1,63 @@
 # MICA 1.0
 
-A small 32/64-bit processor architecture with its own machine code, assembler, functional emulator, assembly runtime, SystemVerilog core, and FPGA bring-up files.
+MICA is an experimental 32/64-bit RISC architecture for embedded systems. It has its own compact machine code, a C++23 assembler and disassembler, a functional emulator, freestanding assembly routines, and a small SystemVerilog CPU.
 
-MICA started as a question: what if the cheap instructions were the operations small embedded programs actually use, instead of making a full-size CPU mandatory? Version 1.0 keeps the 16-bit scalar encoding, 8-register minimum, and optional wider extensions. It adds **F**, a compact flow extension for byte/halfword/word/quadword streaming operations and counted loops. F has actual encodings, C++23 execution support, and a first-pass RTL implementation.
+The 1.0 tag stays put. This SDK update fills in missing work without changing the existing 1.0 instruction encodings. New instructions are all opt-in.
 
-The reference CPU is still a multicycle design. It is not a polished commercial CPU or a measured replacement for RISC-V. The ISA is distinct from RISC-V. The flow operations are a distinct MICA encoding and set of semantics, not a claim to have invented post-increment loads or decrement-and-branch.
-
-## Build and run
-
-Requirements: CMake 3.20+, GCC or Clang capable of C++23, Python 3 for tests. SIMD's reference arithmetic uses `__int128` (GCC/Clang extension). The assembler itself only uses ISO C++23.
+## Build
 
 ```sh
-cmake -S . -B build -G Ninja
-cmake --build build
+cmake -S . -B build
+cmake --build build -j
 ctest --test-dir build --output-on-failure
 
-build/mica-as --xlen 32 --flow examples/flow_copy32.mica -o /tmp/flow.bin
-build/mica-run --xlen 32 --flow /tmp/flow.bin
-
-build/mica-as --xlen 64 --flow examples/flow_copy64.mica -o /tmp/flow64.bin
-build/mica-run --xlen 64 --flow /tmp/flow64.bin
+build/mica-as --xlen 64 --bitops examples/bitops64.mica -o /tmp/bit.bin
+build/mica-dis --xlen 64 /tmp/bit.bin
+build/mica-run --xlen 64 --bitops /tmp/bit.bin
 ```
 
-The `mica-dis --xlen 32 image.bin` tool prints decoded addresses, instructions and bytes from raw binary images.
+Python 3 and a C++23 compiler are needed for the tests and programs. GCC and Clang can build the tools. The SIMD emulator uses a GCC/Clang `__int128` extension.
 
-The emulator starts at address 0, allocates 1 MiB RAM by default, and prints registers at halt. `wfi` and `ecall` halt this prototype instead of doing privileged exception entry. Use `--help` on both tools for options.
+## Profiles
 
-## What is in 1.0
+| Feature | Purpose | Software model | Reference scalar RTL |
+| --- | --- | --- | --- |
+| 32/64-bit scalar | two architectures, same short encoding | yes | prototype |
+| X | 16 scalar registers | yes | parameter |
+| M | integer multiply | yes | parameter |
+| F | streaming pointer updates, counted loop | yes | prototype |
+| B | bits, rotates, min/max, byte swap | yes | prototype |
+| T | machine-level `ecall`/`eret`, pending interrupt | yes | prototype |
+| A | atomic read-modify-write | single-core emulator | not implemented |
+| V | 128-bit packed SIMD | emulator | not implemented |
 
-| Part | Delivered today | Not delivered |
-| --- | --- | --- |
-| ISA | 16-bit common instructions, 32-bit extension envelope, 32/64-bit scalar, F extension | Frozen production ABI, virtual memory |
-| Assembler | C++23, two passes, labels, expressions, macros, includes, typed SIMD syntax, raw binary, Intel HEX, listing; plus mica-dis disassembler | ELF relocatable objects, system linker |
-| Emulator | C++23 functional interpreter, M, X, A, V, F execution, MMIO | Cycle accuracy, coherence, user/kernel separation |
-| Runtime | Freestanding assembly string, memory, math, console, atomic, flow and checksum routines | ISO C/C++ libc, C compiler, dynamic allocation/runtime loader |
-| RTL | Multicycle XLEN32/64 scalar, F operations, minimal UART TX + LEDs | SIMD RTL, A RTL, MPU, interrupts, low-power measured silicon |
-| Hardware | Arty A7 wrapper, board pins, signal diagrams, generated ROM files | Guaranteed FPGA bitstream, timing reports, PCB fabrication files |
-| Verification | End-to-end software tests and smoke-test HDL sources | Executed HDL simulation, formal equivalence, measured Fmax/watts |
+The base is still eight named registers, with a 16-bit common instruction format and 32-bit escapes. XLEN64 includes explicit sign-extending 32-bit arithmetic. Neither a scheduler nor a general-purpose OS is included.
 
-This is a **1.0 SDK release**, not a production ISA ratification. Hardware work is at prototype maturity. Read [SDK_STATUS.md](SDK_STATUS.md) before trusting a feature in RTL.
+## New things in this SDK update
 
-## Architecture in a paragraph
+- MICA-B: 20 bit-manipulation instructions with exact XLEN32/64 behavior. The assembler and disassembler know their encodings, the interpreter executes them, and the optional RTL datapath has matching operations.
+- MICA-T: explicit trap state, handler return, software-pending interrupts, and an external `irq_i` on the RTL core. It does not pretend to be an MPU or a user/kernel architecture.
+- Hardware discovery: `features` and `arch` CSRs. `instret_lo` and `instret_hi` expose retired instruction counts in the emulator, and in RTL with the optional `PERF=1` parameter. Cycle measurements still need real hardware.
+- More assembly modules: bit helpers, buffer XOR, full-scan byte comparison, and explicit byte clearing.
+- A/B software tests, HDL testbench sources for B/T, new connection drawings, and a research program with measurable go/no-go criteria.
 
-MICA32 and MICA64 use 32- or 64-bit scalar registers. Most short instructions read and write three-bit register names, so x0..x7 are enough for the smallest implementation. x0 is zero, x6 is the link register and x7 is the stack pointer. A 32-bit escape carries three-register operations, long branches, atomics, SIMD and 64-bit-specific operations. Most instructions work the same way in 32-bit and 64-bit mode. MICA64 has explicit signed-extended W operations for math that wants 32-bit results. Everything is little-endian.
+## Important limits
 
-The extra F instructions reduce common inner-loop instruction traffic. For example, a `memcpy` byte iteration with an ordinary loop uses six short instructions (12 bytes). The F version uses two short streaming operations and one extended `dbnz` (three instructions, eight bytes). That is an **instruction count and encoding** result; it is not an energy measurement.
+The software integration tests and byte compatibility checks have been executed. The HDL files are intended for FPGA simulation and synthesis, but no HDL simulator was available during this update. No FPGA timing, power, or ASIC silicon result is claimed. The current FPGA SoC still has asynchronous memory reads and no ready/valid wait-state interface. Atomics and SIMD are emulator-only. Trap handling is minimal and doesn't intercept illegal memory operations. There is no C compiler backend, object linker, ISO C library, virtual memory, coherent multicore, or finished physical PCB.
 
-## The actual developer workflow
+A short instruction and a high clock do not automatically make a processor efficient. MICA has to beat properly configured RISC-V, CORE-V and Arm-class alternatives in measured energy per task before anyone can claim an edge.
 
-1. Choose an ISA profile, XLEN 32 or 64, and options such as `--flow` or `--simd`.
-2. Write `.mica` source using the [dialect manual](docs/DIALECT.md).
-3. Assemble to raw firmware, optionally emit `.hex` and `.lst`.
-4. Check the firmware in `mica-run` with a step limit and optional trace.
-5. Run `tests/integration.py` after modifying the assembler or simulator.
-6. Only then attempt an FPGA build. The [Arty board guide](boards/arty_a7/README.md) describes the I/O mapping and its limitations.
+## Read this first
 
-Documentation: [ISA](docs/ISA.md), [ABI](docs/ABI.md), [microarchitecture](docs/MICROARCH.md), [runtime](docs/RUNTIME.md), [schematics](docs/SCHEMATICS.md), [hardware](docs/HARDWARE.md), [research](docs/RESEARCH.md), [verification](docs/VERIFICATION.md), [benchmarks](docs/BENCHMARKS.md).
+- [ISA](docs/ISA.md) and [B/T extension contract](docs/EXTENSIONS.md)
+- [Assembly dialect](docs/DIALECT.md) and [ABI](docs/ABI.md)
+- [Freestanding runtime](docs/RUNTIME.md)
+- [Microarchitecture](docs/MICROARCH.md) and [hardware integration](docs/HARDWARE.md)
+- [Schematics](docs/SCHEMATICS.md), [research program](docs/RESEARCH_PROGRAM.md) and [older research notes](docs/RESEARCH.md)
+- [Verification](docs/VERIFICATION.md), [current status](SDK_STATUS.md) and [release notes](RELEASE_NOTES.md)
 
-## Code formatting
+All original sources and tests are included. MIT license. External architecture documentation is used as reference material, not bundled implementation code.
 
-C/C++ and SystemVerilog use the LLVM-based `.clang-format` configuration. Python uses Black (88 columns), and CMake uses cmake-format (80 columns). Install these development tools separately, then run from the repository root:
+## Reproducible micro-benchmark
 
-```sh
-clang-format -i include/mica.h sim/*.cpp toolchain/*.cpp rtl/*.sv boards/arty_a7/*.sv
-python3 -m black tests benchmarks toolchain
-cmake-format -i CMakeLists.txt
-```
-
-Use a clang-format version with Verilog support (21 or newer). `.editorconfig` defines whitespace for the other source files. MICA assembly uses four spaces for instructions and data directives, labels on their own lines, and a space after operand commas. Graphviz sources use two spaces, one statement per line, and wrapped attribute lists. Makefile recipes use tabs. Generated firmware, executables, and rendered schematics retain their existing formats.
-
-## Why bother?
-
-A tiny base CPU can avoid a lot of architectural baggage, and a carefully chosen short instruction can reduce fetch traffic. On the other hand, eight registers often means extra spills, MICA's 32-bit escapes are comparatively expensive in the current multicycle implementation, and RISC-V's compressed and embedded profiles have a significant head start. The interesting experiment is whether the combination gives a better *energy per completed embedded workload* once both systems are equally optimized.
-
-See the [research notes](docs/RESEARCH.md) for lowRISC Ibex, RISC-V compressed, CORE-V hardware loops, and MCU power benchmarking. We want proper A/B data, not processor fandom.
-
-MIT-licensed SDK source. Third-party links are references, not bundled derivatives.
+`python3 benchmarks/compare_bitops.py` compares a portable scalar popcount loop with B's `popcnt3`, including setup and call overhead. The fixed input produces 200 versus 6 retired instructions and 32 versus 20 binary bytes. This isolates one task where B helps instruction traffic. It is not a measured energy or clock-speed result.

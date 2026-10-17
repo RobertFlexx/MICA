@@ -16,6 +16,7 @@ module tb_mica;
              .INIT_FILE("program.mem8"))
       dut(.clk_i(clk),
           .rst_ni(rst_n),
+          .irq_i(1'b0),
           .uart_tx_o(uart_tx),
           .leds_o(leds),
           .halted_o(halted),
