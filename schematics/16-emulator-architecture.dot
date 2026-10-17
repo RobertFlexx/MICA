@@ -1,0 +1,20 @@
+digraph Engine {
+ graph [rankdir=TB,nodesep=0.48,ranksep=0.9,fontname="DejaVu Sans",labelloc=t,labeljust=l,pad=0.4,bgcolor="#ffffff",label="MICA 1.0 SDK | emulator execution architecture\nAll engines share CPU state and the reference interpreter remains authoritative"];
+ node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=11,color="#365779",penwidth=1.3,fillcolor="#eff6fb",margin="0.15,0.12"];
+ edge [fontname="DejaVu Sans",fontsize=9,color="#365779",arrowsize=0.7];
+ cli [label="mica-run CLI\n--fast / --native-loops / default"];
+ select [shape=diamond,label="engine?",fillcolor="#fff1dc"];
+ ref [label="Reference step()\nall documented scalar, SIMD,\nA, B, F, T profiles",fillcolor="#dff5eb"];
+ fast [label="fast_step()\ninlined short scalar + dbnz\nfall back on unusual opcodes",fillcolor="#e3eefb"];
+ trans [label="native_counted_loop()\nonly addi + backward dbnz\nno traps or trace / full step budget",fillcolor="#e3eefb"];
+ state [label="Shared CPU state\nx[16], v[8], csr[256], RAM, PC\nretired count and modeled steps",fillcolor="#fff1d8"];
+ bad [label="No x86 code emission\nNo general JIT\nNo cycles-per-instruction claim",fillcolor="#fff0f0",color="#b23838"];
+ cli -> select;
+ select -> ref [label="default"];
+ select -> fast [label="--fast"];
+ select -> trans [label="--native-loops"];
+ trans -> fast [label="otherwise"];
+ fast -> ref [label="unsupported"];
+ ref -> state; fast -> state; trans -> state;
+ trans -> bad [style=dotted,arrowhead=none];
+}

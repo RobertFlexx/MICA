@@ -1,0 +1,21 @@
+digraph Board {
+ graph [rankdir=TB, nodesep=0.58,ranksep=1.0,fontname="DejaVu Sans",pad=0.4,labelloc=t,labeljust=l,bgcolor="#ffffff",label="MICA | Arty A7 physical integration\nPin map from included XDC. This is a connectivity drawing, not a PCB netlist."];
+ node [shape=record,style=filled,fontname="DejaVu Sans",fontsize=10,penwidth=1.3,color="#355779",fillcolor="#f0f7fd"];
+ edge [fontname="DejaVu Sans",fontsize=9,color="#3c5f81",arrowsize=0.7];
+ osc [label="{Onboard oscillator|100 MHz|E3: CLK100MHZ|LVCMOS33}",fillcolor="#fff0d8"];
+ rst [label="{Onboard BTN0|D9: btn_reset|active high request|async assert / sync release}",fillcolor="#fff0d8"];
+ reset [label="{2FF reset release|rst_release[1:0]|rst_ni|same CLK100MHZ domain}"];
+ fpga [label="{Artix-7 FPGA|mica_arty_a7.sv|mica_soc.sv|mica_core.sv|UART TX + GPIO|Single synchronous clock}",fillcolor="#e6f8f1"];
+ leds [label="{Onboard LEDs|H5 = led[0] GPIO0|J5 = led[1] GPIO1|T9 = led[2] halted|T10 = led[3] fault}",fillcolor="#fdf1d6"];
+ uart [label="{Onboard USB-UART bridge|D10: uart_txd|115200 8N1 nominal|FPGA TX to host RX}",fillcolor="#fdf1d6"];
+ host [label="{Host PC|USB serial terminal|NO external level shifter needed\nfor onboard bridge}"];
+ wdog [label="{mica_watchdog.vhd, optional|counter and early/late fault|NOT wired into current SoC|requires reset/error policy}",fillcolor="#fff0f1",color="#b23838"];
+ osc -> fpga [label="CLK100MHZ, 1 bit"];
+ osc -> reset [label="clock"];
+ rst -> reset [label="btn_reset, 1 bit"];
+ reset -> fpga [label="rst_ni, 1 bit"];
+ fpga -> leds [label="led[3:0], 4 bits"];
+ fpga -> uart [label="uart_txd, 1 bit"];
+ uart -> host [label="USB"];
+ wdog -> fpga [style=dashed,color="#b23838",label="integration pending"];
+}

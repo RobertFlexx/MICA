@@ -50,3 +50,5 @@ sim-trap-irq:
 	$(PYTHON) ../toolchain/bin2mem8.py program_trap.bin program_trap.mem8
 	$(IVERILOG) -g2012 -s tb_trap -Ptb_trap.IRQCASE=1 -o mica_trap_sim $(SV) tb_trap.sv
 	$(VVP) mica_trap_sim
+
+include Makefile.extras

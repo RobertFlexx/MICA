@@ -143,3 +143,15 @@ F is intentionally small. There are no hidden loop registers, condition-code dep
 ## B and T syntax
 
 `--bitops` enables B instructions such as `popcnt3 x1,x2`, `rev8 x3,x4`, `bset3 x1,x2,x3` and `ror3 x1,x2,x3`. B is major 11 and all encoded instructions occupy four bytes. `--trap` selects trap behavior in the emulator, not a new encoding. The assembler accepts `--trap` for CLI symmetry. Examples: `examples/bitops32.mica`, `examples/bitops64.mica`, `examples/trap32.mica`, and `examples/trap_irq32.mica`. `csrr x1,features`, `csrr x2,arch`, and `csrr x3,instret_lo` are valid on a base build. Full semantics: [EXTENSIONS.md](EXTENSIONS.md).
+
+## Assembler diagnostics and symbol maps
+
+`.assert expression[,"message"]` rejects a zero-valued expression in the second pass. `.error "message"` deliberately aborts assembly. Expressions use MICA's integer expression syntax, not C-style comparisons such as `==`. Source line and filename appear in error reports.
+
+The `--map path` switch produces a deterministic address-ordered symbol map:
+
+```text
+0x00000008 loop
+```
+
+`.include` chains are checked for direct and indirect recursion, and expansion is limited to 200,000 processed lines. These are protections against accidental source explosions, not a complete security sandbox for untrusted assembler input.

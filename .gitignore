@@ -3,3 +3,10 @@
 /rtl/mica_sim
 __pycache__/
 *.pyc
+/rtl/*_sim
+/rtl/*.bin
+/rtl/*.mem8
+/output.*
+/benchmarks/emulator_mips_local.json
+*.o
+*.vcd

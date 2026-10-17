@@ -356,6 +356,110 @@ class CPU {
     }
     v[d] = dst;
   }
+  // Translate one very common two-instruction counted loop to a native loop.
+  // This is NOT a whole-program JIT. Memory, traps, tracing and exotic loops
+  // still use the reference engine. Volatile state forces actual iteration,
+  // instead of replacing a benchmark with a multiplication and calling it fast.
+  U native_counted_loop(U step_budget) {
+    if (traps || trace || !flow || pc > ram.size() ||
+        ram.size() - size_t(pc) < 6 || (pc & 1)) return 0;
+    const size_t ip = size_t(pc);
+    const unsigned hw = unsigned(ram[ip]) | (unsigned(ram[ip + 1]) << 8);
+    if ((hw >> 14) != 1 || ((hw >> 11) & 7) != 1) return 0; // addi
+    const unsigned d = (hw >> 8) & 7;
+    if (d == 0) return 0;
+    const unsigned bh = unsigned(ram[ip + 2]) | (unsigned(ram[ip + 3]) << 8);
+    if ((bh >> 14) != 3 || ((bh >> 10) & 15) != 9) return 0;
+    const U payload = (U(bh & 1023) << 16) | U(ram[ip + 4]) |
+                      (U(ram[ip + 5]) << 8);
+    const unsigned c = unsigned((payload >> 20) & 15);
+    if (c == 0 || c == d || (c >= 8 && !xreg) || (payload >> 24) ||
+        sx(payload & 0xfffff, 20) != -3) return 0;
+    const U count = x[c] & xmax();
+    if (count == 0 || count > step_budget / 2) return 0;
+    const U delta = U(sx(hw & 255, 8));
+    volatile U result = x[d];
+    volatile U left = count;
+    while (left != 0) {
+      result = result + delta;
+      left = left - 1;
+    }
+    x[d] = result & xmax();
+    x[c] = 0;
+    pc = (pc + 6) & xmax();
+    const U consumed = count * 2;
+    retired += consumed;
+    cycles += consumed;
+    return consumed;
+  }
+  // Tight path for the common short scalar instructions. Anything involving
+  // traps, memory, vectors, atomics or unfamiliar encodings goes through step().
+  // Keeping the reference interpreter in the same executable is intentional.
+  bool fast_step() {
+    if (traps || trace || pc > ram.size() || ram.size() - size_t(pc) < 2 || (pc & 1))
+      return false;
+    const size_t ip = size_t(pc);
+    const unsigned hw = unsigned(ram[ip]) | (unsigned(ram[ip + 1]) << 8);
+    const unsigned klass = hw >> 14;
+    U next = (pc + 2) & xmax();
+    if (klass == 1) {
+      const unsigned op = (hw >> 11) & 7, d = (hw >> 8) & 7;
+      const U imm = hw & 255u;
+      switch (op) {
+      case 0: x[d] = U(sx(imm, 8)) & xmax(); break;
+      case 1: x[d] = (x[d] + U(sx(imm, 8))) & xmax(); break;
+      case 2: x[d] &= imm; break;
+      case 3: if (imm > 31) return false; x[d] = (x[d] << imm) & xmax(); break;
+      case 4: if (imm > 31) return false; x[d] >>= imm; break;
+      case 5: if (!x[d]) next = (next + U(sx(imm, 8) * 2)) & xmax(); break;
+      case 6: if (x[d]) next = (next + U(sx(imm, 8) * 2)) & xmax(); break;
+      case 7: next = (next + U(sx(hw & 2047u, 11) * 2)) & xmax(); break;
+      }
+      // x0 is architecturally zero, even for short immediate instructions.
+      x[0] = 0;
+    } else if (klass == 0) {
+      const unsigned op = (hw >> 6) & 255u, d = (hw >> 3) & 7, a = hw & 7;
+      switch (op) {
+      case 0: if (d || a) return false; break;
+      case 1: x[d] = x[a]; break;
+      case 2: x[d] = (x[d] + x[a]) & xmax(); break;
+      case 3: x[d] = (x[d] - x[a]) & xmax(); break;
+      case 4: x[d] &= x[a]; break;
+      case 5: x[d] |= x[a]; break;
+      case 6: x[d] ^= x[a]; break;
+      case 7: x[d] = (x[d] << (x[a] & (xlen - 1))) & xmax(); break;
+      case 8: x[d] >>= (x[a] & (xlen - 1)); break;
+      case 9: x[d] = ash(x[d], int(x[a] & (xlen - 1)), xlen); break;
+      case 10: x[d] = sx(x[d], xlen) < sx(x[a], xlen); break;
+      case 11: x[d] = x[d] < x[a]; break;
+      case 12: x[d] = x[d] == x[a]; break;
+      case 13: if (a) return false; next = x[d] & xmax(); break;
+      case 14: if (a) return false; next = x[d] & xmax(); x[6] = (pc + 2) & xmax(); break;
+      case 15: if (a) return false; x[d] = ~x[d] & xmax(); break;
+      case 16: if (a) return false; x[d] = -x[d] & xmax(); break;
+      case 17: if (!multiply) return false; x[d] = x[d] * x[a] & xmax(); break;
+      case 18: if (d || a) return false; halted = true; break;
+      case 19: case 22: if (d || a) return false; break;
+      case 20: if (d || a) return false; halted = true; break;
+      default: return false;
+      }
+      x[0] = 0;
+    } else if (klass == 3 && flow && ip + 4 <= ram.size()) {
+      const unsigned major = (hw >> 10) & 15;
+      if (major != 9) return false;
+      const U payload = U(hw & 1023u) << 16 | U(ram[ip + 2]) | (U(ram[ip + 3]) << 8);
+      if ((payload >> 24) || ((payload >> 20) & 15u) == 0) return false;
+      const unsigned d = unsigned(payload >> 20) & 15u;
+      if (d >= 8 && !xreg) return false;
+      x[d] = (x[d] - 1) & xmax();
+      next = (pc + 4) & xmax();
+      if (x[d]) next = (next + U(sx(payload & 0xfffffu, 20) * 2)) & xmax();
+    } else return false;
+    pc = next;
+    ++cycles;
+    ++retired;
+    return true;
+  }
   void enter_trap(U cause, U saved_pc) {
     if ((csr[4] & 1) || csr[4] == 0 || csr[4] >= ram.size())
       throw Fault("invalid trap vector");
@@ -713,12 +817,16 @@ public:
       throw Fault("binary exceeds RAM");
     std::copy(code.begin(), code.end(), ram.begin());
   }
-  void run(U limit) {
+  void run(U limit, bool fast = false, bool native_loops = false) {
     for (U n = 0; n < limit; n++) {
       if (halted)
         return;
       try {
-        step();
+        if (native_loops) {
+          const U skipped = native_counted_loop(limit - n);
+          if (skipped) { n += skipped - 1; continue; }
+        }
+        if (!fast || !fast_step()) step();
       } catch (const Fault &e) {
         throw Fault("PC 0x" + hex(pc) + ": " + e.what());
       }
@@ -754,7 +862,7 @@ int main(int argc, char **argv) {
     size_t memory = 1024 * 1024;
     U steps = 200000;
     bool dump = true, tr = false, xr = false, v = false, a = false, m = false,
-         fl = false, bits = false, trap = false;
+         fl = false, bits = false, trap = false, fast = false, native_loops = false;
     std::string peek_range;
     for (int i = 1; i < argc; i++) {
       std::string opt = argv[i];
@@ -773,6 +881,10 @@ int main(int argc, char **argv) {
         steps = std::stoull(next());
       else if (opt == "--peek")
         peek_range = next();
+      else if (opt == "--native-loops")
+        native_loops = fast = true;
+      else if (opt == "--fast")
+        fast = true;
       else if (opt == "--trace")
         tr = true;
       else if (opt == "--quiet")
@@ -793,7 +905,7 @@ int main(int argc, char **argv) {
         m = true;
       else if (opt == "--help") {
         std::cout
-            << "mica-run [--xlen 32|64] [--steps N] [--memory N] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [--xreg] [--trace] [--quiet] code.bin\n";
+            << "mica-run [--xlen 32|64] [--steps N] [--memory N] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [--xreg] [--fast] [--native-loops] [--trace] [--quiet] code.bin\n";
         return 0;
       } else if (opt.starts_with('-'))
         throw Fault("unknown flag: " + opt);
@@ -811,7 +923,7 @@ int main(int argc, char **argv) {
                                    std::istreambuf_iterator<char>());
     CPU cpu(width, memory, tr, xr, v, a, m, fl, bits, trap);
     cpu.load(data);
-    cpu.run(steps);
+    cpu.run(steps, fast, native_loops);
     if (dump)
       cpu.dump();
     if (!peek_range.empty()) {

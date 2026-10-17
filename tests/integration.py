@@ -13,6 +13,7 @@ import random
 ROOT = Path(__file__).resolve().parents[1]
 ASM = os.getenv("MICA_AS", str(ROOT / "build/mica-as"))
 RUN = os.getenv("MICA_RUN", str(ROOT / "build/mica-run"))
+DIS = os.getenv("MICA_DIS", str(ROOT / "build/mica-dis"))
 
 
 class SDKTest(unittest.TestCase):
@@ -188,7 +189,7 @@ class SDKTest(unittest.TestCase):
         self.assertEqual(len(binary), 10)
         import shutil
 
-        tool = str(ROOT / "build/mica-dis")
+        tool = DIS
         proc = subprocess.run(
             [tool, str(Path(self.tmp.name) / "test.bin")],
             capture_output=True,
@@ -707,8 +708,8 @@ dst: .quad 0,0
     def test_rtl_halt_transition_static_regression(self):
         # Source-level regression only, NOT a replacement for HDL simulation.
         rtl = (ROOT / "rtl/mica_core.sv").read_text()
-        self.assertIn("else if(stop_requested)state<=HALTED;", rtl)
-        self.assertIn("else stop_requested=1;", rtl)
+        self.assertRegex(rtl, r"else\s+if\s*\(stop_requested\)\s*state\s*<=\s*HALTED;")
+        self.assertRegex(rtl, r"else\s+stop_requested\s*=\s*1;")
 
     def test_old_v01_encodings(self):
         old = Path("/mnt/data/mica32/assembler.py")

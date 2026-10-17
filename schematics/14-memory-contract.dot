@@ -1,0 +1,14 @@
+digraph Memory {
+  graph [rankdir=TB,nodesep=0.65,ranksep=1.18,fontname="DejaVu Sans",labelloc=t,labeljust=l,bgcolor="#ffffff",pad=0.4,label="MICA | memory timing and interface boundary\nSolid = existing connection, dashed = adapter required before synchronous SRAM deployment"];
+  node [shape=record,style=filled,fontname="DejaVu Sans",fontsize=11,fillcolor="#eff6fa",color="#355779",penwidth=1.3];
+  edge [fontname="DejaVu Sans",fontsize=10,color="#365c79",arrowsize=0.7];
+  core [label="{Current mica_core.sv|imem_addr_o[XLEN-1:0]|imem_rdata_i[15:0]|dmem_addr_o[XLEN-1:0]|dmem_re_o / dmem_we_o / wstrb_o|dmem_rdata_i[XLEN-1:0]|NO req_ready or rsp_valid}",fillcolor="#fff0d9"];
+  soc [label="{Current mica_soc.sv|asynchronous 8-bit RAM reads|synchronous writes|UART MMIO decode|NO programmable wait states}",fillcolor="#e9f8f5"];
+  ram [label="{Verilog mica_sram.v|req_valid,req_write|req_word_addr[ADDR_W-1:0]|req_wdata[DATA_W-1:0]|req_wstrb[DATA_W/8-1:0]|rsp_valid at next rising clock|rsp_rdata[DATA_W-1:0]|read-first for same-word read/write}",fillcolor="#e6eaf9"];
+  bridge [label="{REQUIRED, NOT IMPLEMENTED|fetch/LSU hold until response|transaction latched|byte alignment + lane select|fault/timeout policy|retire ONLY on success}",color="#b23838",fillcolor="#ffe8e8"];
+  core -> soc [label="existing, 0-wait-state"];
+  core -> bridge [style=dashed,color="#b23838",label="replace fixed EXECUTE"];
+  bridge -> ram [style=dashed,color="#b23838",label="request/response"];
+  note [shape=box,label="Do not wire rsp_rdata straight into current dmem_rdata_i.\nThe current CPU will retire before synchronous data arrives.\nBuild and verify a stalled LSU/fetch FSM first.",color="#b23838",fillcolor="#fff9ed"];
+  note -> bridge [style=dotted,arrowhead=none];
+}

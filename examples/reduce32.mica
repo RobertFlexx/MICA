@@ -1,0 +1,10 @@
+.arch mica32
+    li32 x1,bytes
+    li8 x2,6
+    call mica_sum8_f
+    wfi
+.include "../stdlib/reduce.mica"
+.align 2
+bytes:
+    .byte 1,2,3,4,5,6
+.assert 1

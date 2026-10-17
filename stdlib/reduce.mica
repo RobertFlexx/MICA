@@ -1,0 +1,44 @@
+; Small buffer reductions for firmware. No malloc, no mystery state.
+; x1=buffer, x2=byte count. Returns result in x1.
+; Only caller-saved x1..x4 are modified. The address range must be readable.
+; Signedness: every input byte is treated as unsigned.
+; Zero length returns zero without touching the input pointer.
+
+mica_sum8:
+    li8 x3,0
+sum8_loop:
+    bz x2,sum8_done
+    ldbu x4,[x1]
+    add x3,x4
+    addi x1,1
+    addi x2,-1
+    b sum8_loop
+sum8_done:
+    mov x1,x3
+    ret
+
+mica_xor8:
+    li8 x3,0
+xor8_loop:
+    bz x2,xor8_done
+    ldbu x4,[x1]
+    xor x3,x4
+    addi x1,1
+    addi x2,-1
+    b xor8_loop
+xor8_done:
+    mov x1,x3
+    ret
+
+; Same ABI as mica_sum8, but requires MICA-F (--flow).
+; Good for short packets and byte streams. Compare power before declaring victory.
+mica_sum8_f:
+    li8 x3,0
+    bz x2,sum8_f_done
+sum8_f_loop:
+    ldpi.b x4,[x1]
+    add x3,x4
+    dbnz x2,sum8_f_loop
+sum8_f_done:
+    mov x1,x3
+    ret

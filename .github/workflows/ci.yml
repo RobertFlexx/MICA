@@ -1,32 +1,89 @@
-name: MICA-SDK software verification
+name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: mica-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  linux:
+  tools:
+    name: ${{ matrix.os }} / ${{ matrix.cxx }} / ${{ matrix.build_type }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, cxx: g++, build_type: Release }
+          - { os: ubuntu-latest, cxx: clang++, build_type: Debug }
+          - { os: macos-latest, cxx: clang++, build_type: Release }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tool versions
+        run: |
+          ${{ matrix.cxx }} --version
+          cmake --version
+          python3 --version
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Run software and binary compatibility suites
+        run: ctest --test-dir build --output-on-failure
+      - name: Assemble and disassemble smoke test
+        run: |
+          build/mica-as --xlen 32 --flow --map output.map examples/flow_copy32.mica -o output.bin
+          build/mica-dis --xlen 32 output.bin > output.dis
+          test -s output.map
+          test -s output.dis
+  sanitizers:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build C++23 tools
-        run: |
-          cmake -S . -B build
-          cmake --build build -j 2
-      - name: Software integration
-        run: ctest --test-dir build --output-on-failure
-      - name: RTL syntax and simple testbench
+      - name: Configure sanitizers
+        run: cmake -S . -B build-san -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined'
+      - run: cmake --build build-san --parallel 2
+      - run: ctest --test-dir build-san --output-on-failure
+  rtl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install HDL tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y iverilog
-          build/mica-as examples/arithmetic32.mica -o program.bin
-          python3 toolchain/bin2mem8.py program.bin program.mem8
-          cp program.mem8 rtl/program.mem8
-          make -C rtl sim32
-          build/mica-as --xlen 64 examples/arithmetic64.mica -o program64.bin
-          python3 toolchain/bin2mem8.py program64.bin rtl/program.mem8
-          make -C rtl sim64
-          make -C rtl sim-flow32
-          make -C rtl sim-flow64
-          make -C rtl sim-bits32
-          make -C rtl sim-bits64
-          make -C rtl sim-trap
-          make -C rtl sim-trap-irq
+          sudo apt-get install -y iverilog ghdl yosys graphviz
+      - name: Build assembler
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel 2
+      - name: Existing scalar RTL testbenches
+        run: |
+          make -C rtl sim32 sim64 sim-flow32 sim-flow64
+          make -C rtl sim-bits32 sim-bits64 sim-trap sim-trap-irq
+      - name: Standalone Verilog and VHDL testbenches
+        run: make -C rtl sim-sram sim-watchdog
+      - name: SRAM synthesis check
+        run: yosys -Q -p 'read_verilog rtl/verilog/mica_sram.v; hierarchy -top mica_sram; proc; opt; memory; opt; check; stat' > sram-synthesis.log
+      - name: Validate diagrams
+        run: |
+          for diagram in schematics/*.dot; do dot -Tsvg "$diagram" -o /tmp/mica-diagram.svg; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rtl-synthesis-log
+          path: sram-synthesis.log
+          if-no-files-found: ignore
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel 2
+          python3 benchmarks/emulator_mips.py --assembler build/mica-as --emulator build/mica-run --iterations 30000000 --repeats 3 --output emulator-benchmark.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: emulator-benchmark
+          path: emulator-benchmark.json

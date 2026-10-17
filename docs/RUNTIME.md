@@ -43,3 +43,13 @@ The next sensible deliverable is an ELF object format and linker with relocation
 `stdlib/bits_hw.mica` contains `mica_popcount_b`, `mica_clz_b`, `mica_ctz_b`, and `mica_bswap_b`. Pass `--bitops`. They take a scalar in x1 and return x1 without touching the ordinary caller-saved registers.
 
 `stdlib/buffer.mica` contains `mica_memxor(dst,src,count)`, `mica_memeq_full(a,b,count)` and `mica_memzero(dst,count)`. `mica_memeq_full` consumes the requested length without a data-dependent early exit and returns 1 for equal input, 0 otherwise. This **does not certify constant-time execution** on processors with data-dependent memory latency. `mica_memxor` assumes nonoverlapping regions or identical pointers. `mica_memzero` performs explicit byte stores but no C compiler non-elision guarantee exists. x5 and x6 are preserved, x1 carries results. See source comments.
+
+## Small reductions added in the engineering update
+
+`stdlib/reduce.mica` adds `mica_sum8`, `mica_xor8`, and `mica_sum8_f`.
+Each takes x1=buffer address and x2=count, returning the reduction in x1.
+All bytes are treated as unsigned; the sum wraps at XLEN. No heap or global state.
+`mica_sum8_f` requires F and uses post-increment plus `dbnz`.
+The empty-buffer case returns zero without dereferencing the pointer.
+Only caller-saved registers x1..x4 are modified. Check the address range first.
+A runnable example lives in `examples/reduce32.mica`.

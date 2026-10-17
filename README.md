@@ -1,64 +1,81 @@
 # MICA 1.0
 > *Microcontroller Instruction Core Architecture*
 
-MICA is an experimental 32/64-bit RISC architecture for embedded systems. It has its own compact machine code, a C++23 assembler and disassembler, a functional emulator, freestanding assembly routines, and a small SystemVerilog CPU.
+MICA is a small experimental 32/64-bit RISC architecture for embedded controllers. The project has its own binary encoding, a C++23 assembler and disassembler, a reference emulator, faster execution paths, freestanding assembly routines, and a SystemVerilog CPU prototype.
 
-The 1.0 tag stays put. This SDK update fills in missing work without changing the existing 1.0 instruction encodings. New instructions are all opt-in.
+The ISA version is still **1.0**. This engineering update doesn't reassign any existing instruction encoding. The binaries in `examples/firmware` are frozen compatibility fixtures.
 
-## Build
+There are interesting ideas here, but no miracle processor. If you can show that this core finishes real MCU work for fewer joules than a comparable Ibex or CORE-V setup, *then* there is a compelling argument. That's what the project is building toward.
+
+## Build the tools
 
 ```sh
-cmake -S . -B build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j
 ctest --test-dir build --output-on-failure
-
-build/mica-as --xlen 64 --bitops examples/bitops64.mica -o /tmp/bit.bin
-build/mica-dis --xlen 64 /tmp/bit.bin
-build/mica-run --xlen 64 --bitops /tmp/bit.bin
 ```
 
-Python 3 and a C++23 compiler are needed for the tests and programs. GCC and Clang can build the tools. The SIMD emulator uses a GCC/Clang `__int128` extension.
+C++23 and Python 3 are needed. GCC and Clang are supported on the development hosts. The reference emulator uses the `__int128` extension supplied by those compilers. The archived Linux binaries are only convenience builds, not portable binaries for every OS.
 
-## Profiles
+## Hello, MICA
 
-| Feature | Purpose | Software model | Reference scalar RTL |
-| --- | --- | --- | --- |
-| 32/64-bit scalar | two architectures, same short encoding | yes | prototype |
-| X | 16 scalar registers | yes | parameter |
-| M | integer multiply | yes | parameter |
-| F | streaming pointer updates, counted loop | yes | prototype |
-| B | bits, rotates, min/max, byte swap | yes | prototype |
-| T | machine-level `ecall`/`eret`, pending interrupt | yes | prototype |
-| A | atomic read-modify-write | single-core emulator | not implemented |
-| V | 128-bit packed SIMD | emulator | not implemented |
+```asm
+.arch mica32
+li8 x1, 10
+li8 x2, 20
+add x1, x2
+wfi
+```
 
-The base is still eight named registers, with a 16-bit common instruction format and 32-bit escapes. XLEN64 includes explicit sign-extending 32-bit arithmetic. Neither a scheduler nor a general-purpose OS is included.
+```sh
+build/mica-as example.mica -o example.bin --map example.map --listing example.lst
+build/mica-dis example.bin
+build/mica-run example.bin
+```
 
-## New things in this SDK update
+The exit state includes `x1=0x1e`. A symbol map is useful when matching firmware addresses to source labels. `.assert 1` and `.error "bad build"` are now available for simple compile-time guards.
 
-- MICA-B: 20 bit-manipulation instructions with exact XLEN32/64 behavior. The assembler and disassembler know their encodings, the interpreter executes them, and the optional RTL datapath has matching operations.
-- MICA-T: explicit trap state, handler return, software-pending interrupts, and an external `irq_i` on the RTL core. It does not pretend to be an MPU or a user/kernel architecture.
-- Hardware discovery: `features` and `arch` CSRs. `instret_lo` and `instret_hi` expose retired instruction counts in the emulator, and in RTL with the optional `PERF=1` parameter. Cycle measurements still need real hardware.
-- More assembly modules: bit helpers, buffer XOR, full-scan byte comparison, and explicit byte clearing.
-- A/B software tests, HDL testbench sources for B/T, new connection drawings, and a research program with measurable go/no-go criteria.
+## Emulator engines
 
-## Important limits
+- Default: the reference interpreter. Use this for debugging and differential verification.
+- `--fast`: a fast path for short scalar instructions and counted branches. Everything else falls back to the reference engine.
+- `--native-loops`: a specialized native counted-loop translator on top of `--fast`. It recognizes an `addi` plus backward `dbnz` loop, not arbitrary MICA code.
 
-The software integration tests and byte compatibility checks have been executed. The HDL files are intended for FPGA simulation and synthesis, but no HDL simulator was available during this update. No FPGA timing, power, or ASIC silicon result is claimed. The current FPGA SoC still has asynchronous memory reads and no ready/valid wait-state interface. Atomics and SIMD are emulator-only. Trap handling is minimal and doesn't intercept illegal memory operations. There is no C compiler backend, object linker, ISO C library, virtual memory, coherent multicore, or finished physical PCB.
+The local microbenchmark reaches more than 3,000 million **emulated** instructions per second on the translated loop only. General fast interpretation measured around 260 MIPS for the same loop. Don't quote the specialized figure as overall emulator performance.
 
-A short instruction and a high clock do not automatically make a processor efficient. MICA has to beat properly configured RISC-V, CORE-V and Arm-class alternatives in measured energy per task before anyone can claim an edge.
+```sh
+build/mica-as --flow benchmarks/throughput32.mica -o bench.bin
+build/mica-run --flow --fast bench.bin --steps 22000000
+build/mica-run --flow --native-loops bench.bin --steps 22000000
+python3 benchmarks/emulator_mips.py --assembler build/mica-as --emulator build/mica-run
+```
 
-## Read this first
+The benchmark checks the machine's output and includes setup instructions in its retirement count. Host frequency, CPU load and compiler options matter.
 
-- [ISA](docs/ISA.md) and [B/T extension contract](docs/EXTENSIONS.md)
-- [Assembly dialect](docs/DIALECT.md) and [ABI](docs/ABI.md)
-- [Freestanding runtime](docs/RUNTIME.md)
-- [Microarchitecture](docs/MICROARCH.md) and [hardware integration](docs/HARDWARE.md)
-- [Schematics](docs/SCHEMATICS.md), [research program](docs/RESEARCH_PROGRAM.md) and [older research notes](docs/RESEARCH.md)
-- [Verification](docs/VERIFICATION.md), [current status](SDK_STATUS.md) and [release notes](RELEASE_NOTES.md)
+## HDL languages and why they're separate
 
-All original sources and tests are included. MIT license. External architecture documentation is used as reference material, not bundled implementation code.
+- `rtl/mica_core.sv`: existing multicycle CPU, 32/64-bit scalar subset. This is still SystemVerilog.
+- `rtl/verilog/mica_sram.v`: plain Verilog synchronous SRAM with byte writes, made for broadly supported FPGA inference.
+- `rtl/vhdl/mica_watchdog.vhd`: VHDL-2008 typed windowed watchdog, with sticky early/expired faults.
+- `rtl/mica_soc.sv`: existing demonstration SoC with **asynchronous RAM reads**, UART and GPIO.
 
-## Reproducible micro-benchmark
+The Verilog SRAM is not wired to the SoC. It cannot be until the processor supports wait states and registered memory responses. The watchdog is also standalone. Their testbenches and CI hooks are in the tree, but no HDL simulator was installed in the local environment used for this update.
 
-`python3 benchmarks/compare_bitops.py` compares a portable scalar popcount loop with B's `popcnt3`, including setup and call overhead. The fixed input produces 200 versus 6 retired instructions and 32 versus 20 binary bytes. This isolates one task where B helps instruction traffic. It is not a measured energy or clock-speed result.
+For hardware work, start with the [board guide](docs/HARDWARE.md), [language modules](docs/HDL_BUILD.md), and [signal diagrams](docs/SCHEMATICS.md). Don't connect a motor driver straight to FPGA pins. The smoke will have opinions.
+
+## What to read
+
+| Topic | Reference |
+| --- | --- |
+| Exact instructions | [ISA](docs/ISA.md), [extensions](docs/EXTENSIONS.md) |
+| Assembly and API | [Dialect](docs/DIALECT.md), [ABI](docs/ABI.md), [runtime](docs/RUNTIME.md) |
+| Engineering changes | [Revision log](docs/ENGINEERING_REVISION.md), [status](SDK_STATUS.md) |
+| Physical implementation | [RTL build](docs/HDL_BUILD.md), [schematics](docs/SCHEMATICS.md) |
+| Research priorities | [Architecture research](docs/ARCHITECTURE_RESEARCH.md) |
+| Test plan | [Verification](docs/VERIFICATION.md) |
+
+## What isn't ready
+
+No finished compiler, ELF linker, ISO C/C++ standard library, protected user mode, coherent multicore, 128-bit SIMD hardware, complete atomics in RTL, verified synchronous-memory system, timing closure or measured energy advantage. The assembler is a serious prototype, not a qualified production toolchain. Those missing pieces matter more than the release number.
+
+Licensed under MIT. Existing source and binary formats remain at MICA 1.0.

@@ -428,6 +428,8 @@ class Assembler {
   bool xreg = false, simd = false, atomic = false, multiply = false,
        flow = false, bitops = false;
   U unique = 0;
+  size_t expanded_lines = 0;
+  std::vector<fs::path> include_stack;
   std::map<std::string, Macro> macros;
   std::vector<Line> lines;
   Symbols sy;
@@ -457,6 +459,8 @@ class Assembler {
       throw Error("macro/repeat nesting too deep");
     std::vector<Src> out;
     for (size_t i = 0; i < input.size(); i++) {
+      if (++expanded_lines > 200000)
+        throw Error("expanded source exceeds 200000 lines");
       const auto &src = input[i];
       auto stripped = clean(src.text), w = word(src.text);
       if (w.empty()) {
@@ -467,9 +471,13 @@ class Assembler {
         auto arg = trim(stripped.substr(8));
         if (arg.size() < 2 || arg.front() != '"' || arg.back() != '"')
           throw Error(".include expects quoted relative path");
-        auto path = fs::path(src.filename).parent_path() /
-                    arg.substr(1, arg.size() - 2);
+        auto path = fs::weakly_canonical(fs::path(src.filename).parent_path() /
+                    arg.substr(1, arg.size() - 2));
+        if (std::find(include_stack.begin(), include_stack.end(), path) != include_stack.end())
+          throw Error("recursive include: " + path.string());
+        include_stack.push_back(path);
         auto part = expand(read(path, depth + 1), depth + 1);
+        include_stack.pop_back();
         out.insert(out.end(), part.begin(), part.end());
         continue;
       }
@@ -591,6 +599,19 @@ class Assembler {
         sy[a[0]] = num(a[1], false);
       }
       return {};
+    }
+    if (op == ".assert") {
+      if (a.size() != 1 && a.size() != 2)
+        throw Error(".assert expr[,message]");
+      if (!sizing && num(a[0], false) == 0) {
+        std::string detail = a.size() == 2 ? a[1] : a[0];
+        throw Error("assembly assertion failed: " + detail);
+      }
+      return {};
+    }
+    if (op == ".error") {
+      if (a.size() != 1) throw Error(".error expects one string");
+      throw Error("source requested error: " + a[0]);
     }
     if (op == ".align") {
       nargs(l, 1);
@@ -1011,12 +1032,18 @@ public:
   Assembler(int w, bool xr, bool v, bool a, bool m, bool f, bool bits)
       : xlen(w), xreg(xr), simd(v), atomic(a), multiply(m), flow(f),
         bitops(bits) {}
+  const Symbols& symbols() const { return sy; }
   std::pair<Bytes, std::vector<Line>> assemble(const fs::path &path) {
     lines.clear();
     sy.clear();
     macros.clear();
     unique = 0;
-    parse(expand(read(path, 0), 0));
+    expanded_lines = 0;
+    include_stack.clear();
+    const auto absolute = fs::weakly_canonical(path);
+    include_stack.push_back(absolute);
+    parse(expand(read(absolute, 0), 0));
+    include_stack.clear();
     U pc = 0;
     for (auto &l : lines) {
       l.pc = pc;
@@ -1086,7 +1113,7 @@ static void write_intel_hex(const fs::path &path, const Bytes &bytes) {
 }
 int main(int argc, char **argv) {
   try {
-    fs::path input, output, hex, listing;
+    fs::path input, output, hex, listing, mapfile;
     int xlen = 32;
     bool xr = false, v = false, a = false, m = false, fl = false, bit = false;
     for (int i = 1; i < argc; i++) {
@@ -1120,9 +1147,11 @@ int main(int argc, char **argv) {
         hex = next();
       else if (s == "--listing")
         listing = next();
+      else if (s == "--map")
+        mapfile = next();
       else if (s == "--help") {
         std::cout
-            << "mica-as [--xlen 32|64] [--xreg] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [-o path] [--hex path] [--listing path] file.mica\n";
+            << "mica-as [--xlen 32|64] [--xreg] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [-o path] [--hex path] [--listing path] [--map path] file.mica\n";
         return 0;
       } else if (s.starts_with('-'))
         throw Error("unknown flag: " + s);
@@ -1137,7 +1166,8 @@ int main(int argc, char **argv) {
       output = input;
       output.replace_extension(".bin");
     }
-    auto [bytes, lines] = Assembler(xlen, xr, v, a, m, fl, bit).assemble(input);
+    Assembler assembler(xlen, xr, v, a, m, fl, bit);
+    auto [bytes, lines] = assembler.assemble(input);
     std::ofstream f(output, std::ios::binary);
     if (!f)
       throw Error("cannot write " + output.string());
@@ -1147,6 +1177,20 @@ int main(int argc, char **argv) {
       throw Error("write failed");
     if (!hex.empty())
       write_intel_hex(hex, bytes);
+    if (!mapfile.empty()) {
+      std::ofstream map(mapfile);
+      if (!map) throw Error("cannot write symbol map");
+      std::map<U, std::vector<std::string>> by_address;
+      for (const auto& [name, address] : assembler.symbols())
+        by_address[address].push_back(name);
+      for (auto& [address, names] : by_address) {
+        std::sort(names.begin(), names.end());
+        for (const auto& name : names)
+          map << "0x" << std::hex << std::setw(8) << std::setfill('0') << address
+              << " " << name << "\n";
+      }
+      if (!map) throw Error("symbol map write failed");
+    }
     if (!listing.empty()) {
       std::ofstream l(listing);
       if (!l)

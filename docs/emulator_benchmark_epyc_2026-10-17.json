@@ -1,0 +1,61 @@
+{
+  "microbenchmark": "addi/dbnz counted loop, not general emulator throughput",
+  "platform": "x86_64",
+  "iterations": 50000000,
+  "results": {
+    "32/reference": {
+      "median_seconds": 0.612564,
+      "mips": 163.2,
+      "runs_seconds": [
+        0.599793,
+        0.612564,
+        0.619184
+      ]
+    },
+    "32/fast": {
+      "median_seconds": 0.379877,
+      "mips": 263.2,
+      "runs_seconds": [
+        0.381146,
+        0.379877,
+        0.375454
+      ]
+    },
+    "32/native-counted-loop": {
+      "median_seconds": 0.031926,
+      "mips": 3132.2,
+      "runs_seconds": [
+        0.031926,
+        0.030921,
+        0.032402
+      ]
+    },
+    "64/reference": {
+      "median_seconds": 0.623803,
+      "mips": 160.3,
+      "runs_seconds": [
+        0.647325,
+        0.623803,
+        0.586563
+      ]
+    },
+    "64/fast": {
+      "median_seconds": 0.383903,
+      "mips": 260.5,
+      "runs_seconds": [
+        0.383903,
+        0.385613,
+        0.375311
+      ]
+    },
+    "64/native-counted-loop": {
+      "median_seconds": 0.030812,
+      "mips": 3245.5,
+      "runs_seconds": [
+        0.032895,
+        0.03069,
+        0.030812
+      ]
+    }
+  }
+}

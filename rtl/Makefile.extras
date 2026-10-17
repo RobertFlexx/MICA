@@ -1,0 +1,12 @@
+# Standalone language blocks. Mixed-language top-level synthesis is tool-specific.
+IVERILOG ?= iverilog
+VVP ?= vvp
+GHDL ?= ghdl
+.PHONY: sim-sram sim-watchdog
+sim-sram:
+	$(IVERILOG) -g2012 -s tb_mica_sram -o /tmp/mica_sram_tb verilog/mica_sram.v verilog/tb_mica_sram.v
+	$(VVP) /tmp/mica_sram_tb
+sim-watchdog:
+	$(GHDL) -a --std=08 --workdir=/tmp vhdl/mica_watchdog.vhd vhdl/tb_mica_watchdog.vhd
+	$(GHDL) -e --std=08 --workdir=/tmp tb_mica_watchdog
+	$(GHDL) -r --std=08 --workdir=/tmp tb_mica_watchdog --stop-time=300ns

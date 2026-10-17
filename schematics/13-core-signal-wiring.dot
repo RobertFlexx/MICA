@@ -1,0 +1,31 @@
+digraph Core {
+  graph [rankdir=TB, splines=polyline, nodesep=0.53, ranksep=1.05, fontname="DejaVu Sans", bgcolor="#ffffff", labelloc=t, labeljust=l, pad=0.35, label="MICA | scalar core net-level integration (implemented interfaces)\nXLEN = 32 or 64   |   halfword fetch   |   one clock domain"];
+  node [shape=record, fontname="DejaVu Sans", fontsize=10, style="filled", fillcolor="#f1f6fb", color="#2f587b", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#365c79", arrowsize=0.65];
+  reset [label="{clock/reset|clk_i: 1|rst_ni: 1|irq_i: 1}",fillcolor="#fff0d8"];
+  pc [label="{PC register / next-PC mux|pc[XLEN-1:0]|nextpc[XLEN-1:0]|aligned fetch: pc[0]=0}"];
+  fetch [label="{FETCH0 / FETCH1|imem_addr_o[XLEN-1:0]|imem_rdata_i[15:0]|inst_lo[15:0]|inst_hi[15:0]}",fillcolor="#e9f8f5"];
+  decode [label="{decoder|class=inst_lo[15:14]|major=inst_lo[13:10]|payload=concat(lo[9:0],hi[15:0])|op / rd / rs / imm}"];
+  rf [label="{16xXLEN register array|x0 constant zero|rr(s),rr(t) combinational|regs[d] write on EXECUTE}",fillcolor="#fff2d7"];
+  alu [label="{scalar datapath|ALU XLEN / W32 XLEN64|B optional bit-ops|M optional multiply|comparison and branch target}"];
+  bus [label="{load/store lane mux|effective byte addr ea[XLEN-1:0]|dmem_addr_o[XLEN-1:0] beat-aligned|dmem_wdata_o[XLEN-1:0]|dmem_wstrb_o[XLEN/8-1:0]|dmem_re_o / dmem_we_o|dmem_rdata_i[XLEN-1:0]}",fillcolor="#e9f8f5"];
+  csr [label="{trap/CSR (optional)|status,epc,cause,tvec|ie,ip,instret|trap PC override}",fillcolor="#fcebf5"];
+  fsm [label="{FSM|FETCH0 - FETCH1 - EXECUTE - HALTED|fault_o: 1|halt_o: 1|pc_o, debug_a0_o [XLEN-1:0]}"];
+  reset -> fsm [label="clk/reset"];
+  reset -> csr [label="irq_i"];
+  fsm -> pc [label="fetch/execute enables"];
+  pc -> fetch [label="PC, +2 for extension"];
+  fetch -> decode [label="16/32 bit instruction"];
+  decode -> rf [label="index[3:0]"];
+  rf -> alu [label="operand buses [XLEN-1:0]"];
+  decode -> alu [label="operation + immediate"];
+  alu -> rf [label="result writeback XLEN"];
+  rf -> bus [label="base + store value XLEN"];
+  decode -> bus [label="size, sign, stride"];
+  bus -> rf [label="load value / flow base"];
+  alu -> pc [label="branch/jump target XLEN"];
+  csr -> pc [label="tvec/epc XLEN"];
+  decode -> csr [label="CSR index[7:0]"];
+  fsm -> decode [label="instruction valid"];
+  fsm -> rf [label="register write enable"];
+}

@@ -1,0 +1,6 @@
+.arch mica32
+li32 x2,10000000
+loop:
+    addi x1,1
+    dbnz x2,loop
+wfi

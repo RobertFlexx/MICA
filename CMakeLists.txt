@@ -10,6 +10,8 @@ target_compile_options(mica-run PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
 add_executable(mica-dis toolchain/disasm.cpp)
 target_compile_options(mica-dis PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
 enable_testing()
-add_test(NAME integration COMMAND ${CMAKE_COMMAND} -E env MICA_AS=$<TARGET_FILE:mica-as> MICA_RUN=$<TARGET_FILE:mica-run> python3 ${CMAKE_SOURCE_DIR}/tests/integration.py)
+add_test(NAME integration COMMAND ${CMAKE_COMMAND} -E env MICA_AS=$<TARGET_FILE:mica-as> MICA_RUN=$<TARGET_FILE:mica-run> MICA_DIS=$<TARGET_FILE:mica-dis> python3 ${CMAKE_SOURCE_DIR}/tests/integration.py)
 
 add_test(NAME binary_compatibility COMMAND ${CMAKE_COMMAND} -E env MICA_AS=$<TARGET_FILE:mica-as> python3 ${CMAKE_SOURCE_DIR}/tests/binary_compatibility.py --as $<TARGET_FILE:mica-as>)
+
+add_test(NAME fast_differential COMMAND ${CMAKE_COMMAND} -E env MICA_AS=$<TARGET_FILE:mica-as> MICA_RUN=$<TARGET_FILE:mica-run> python3 ${CMAKE_SOURCE_DIR}/tests/fast_paths.py)
