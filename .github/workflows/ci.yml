@@ -1,0 +1,28 @@
+name: MICA-SDK software verification
+on:
+  push:
+  pull_request:
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build C++23 tools
+        run: |
+          cmake -S . -B build
+          cmake --build build -j 2
+      - name: Software integration
+        run: ctest --test-dir build --output-on-failure
+      - name: RTL syntax and simple testbench
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+          build/mica-as examples/arithmetic32.mica -o program.bin
+          python3 toolchain/bin2mem8.py program.bin program.mem8
+          cp program.mem8 rtl/program.mem8
+          make -C rtl sim32
+          build/mica-as --xlen 64 examples/arithmetic64.mica -o program64.bin
+          python3 toolchain/bin2mem8.py program64.bin rtl/program.mem8
+          make -C rtl sim64
+          make -C rtl sim-flow32
+          make -C rtl sim-flow64

@@ -1,0 +1,16 @@
+digraph mica_states {
+ graph [rankdir=LR, bgcolor="white", fontname="DejaVu Sans", label="Implemented control FSM (not a three-stage pipeline)", labelloc=t, fontsize=16, pad=0.35];
+ node [shape=box, style="rounded,filled", fillcolor="#e6edf8", color="#4f6884", fontname="DejaVu Sans", fontsize=11, margin="0.25,0.16"];
+ edge [fontname="DejaVu Sans", fontsize=10, color="#435e77", arrowsize=0.8];
+ reset [label="Reset",fillcolor="#faf0d9"];
+ f0 [label="FETCH0\nread first halfword"];
+ f1 [label="FETCH1\nread second halfword"];
+ exe [label="EXECUTE\nALU, branch, memory"];
+ halt [label="HALTED\nwfi / ecall / fault",fillcolor="#f9dddd"];
+ reset -> f0;
+ f0 -> f1 [label="prefix 11"];
+ f0 -> exe [label="prefix 00/01/10"];
+ f1 -> exe;
+ exe -> f0 [label="valid + continue"];
+ exe -> halt [label="stop/fault"];
+}

@@ -1,0 +1,15 @@
+.arch mica32
+.macro twice r
+    add $r, $r
+.endm
+.macro decrement_to_zero r
+%%again:
+    addi $r, -1
+    bnz $r, %%again
+.endm
+li8 x1, 3
+twice x1
+decrement_to_zero x1
+li8 x2, 5
+decrement_to_zero x2
+wfi

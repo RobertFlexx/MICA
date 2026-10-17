@@ -1,0 +1,37 @@
+; Byte-oriented checksums for MICA32. No M extension required for CRC.
+; mica_crc32: x1=buffer, x2=length; returns CRC-32/ISO-HDLC in x1.
+; Polynomial 0xedb88320, initial and final XOR 0xffffffff.
+; All x1..x4 may be clobbered. x5 is preserved.
+mica_crc32:
+    push x5
+    li32 x3, 0xffffffff
+    li32 x5, 0xedb88320
+crc_outer:
+    bz x2, crc_done
+    ldbu x4, [x1]
+    xor x3, x4
+    addi x1, 1
+    push x2
+    li8 x2, 8
+crc_inner:
+    mov x4, x3
+    andi x4, 1
+    shri x3, 1
+    bz x4, crc_no_xor
+    xor x3, x5
+crc_no_xor:
+    addi x2, -1
+    bnz x2, crc_inner
+    pop x2
+    addi x2, -1
+    b crc_outer
+crc_done:
+    not x3
+    mov x1, x3
+    pop x5
+    ret
+
+; x1=buffer, x2=length. Return unsigned Adler-32 in x1.
+; The intermediate sums are bounded with signed-safe remainders.
+; Uses the classic Adler modulus 65521. This is an unoptimized baseline.
+; Requires the optional M extension only when library math uses it. Here it does not.

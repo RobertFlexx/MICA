@@ -1,0 +1,61 @@
+; ASCII-only ctype subset. Each takes byte in x1, returns x1.
+; No locale, Unicode or undefined behavior from negative char values.
+mica_isdigit:
+    andi x1, 255
+    li8 x2, 48
+    sltu3 x3, x1, x2
+    bnz x3, digit_no
+    li8 x2, 58
+    sltu x1, x2
+    ret
+digit_no:
+    li8 x1, 0
+    ret
+
+mica_islower:
+    andi x1, 255
+    li8 x2, 97
+    sltu3 x3, x1, x2
+    bnz x3, lower_no
+    li8 x2, 123
+    sltu x1, x2
+    ret
+lower_no:
+    li8 x1, 0
+    ret
+
+mica_isupper:
+    andi x1, 255
+    li8 x2, 65
+    sltu3 x3, x1, x2
+    bnz x3, upper_no
+    li8 x2, 91
+    sltu x1, x2
+    ret
+upper_no:
+    li8 x1, 0
+    ret
+
+mica_tolower:
+    andi x1, 255
+    li8 x2, 65
+    sltu3 x3, x1, x2
+    bnz x3, tolower_done
+    li8 x2, 91
+    sltu3 x3, x1, x2
+    bz x3, tolower_done
+    addi x1, 32
+tolower_done:
+    ret
+
+mica_toupper:
+    andi x1, 255
+    li8 x2, 97
+    sltu3 x3, x1, x2
+    bnz x3, toupper_done
+    li8 x2, 123
+    sltu3 x3, x1, x2
+    bz x3, toupper_done
+    addi x1, -32
+toupper_done:
+    ret

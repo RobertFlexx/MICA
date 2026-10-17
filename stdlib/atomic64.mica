@@ -1,0 +1,15 @@
+; MICA-A 64-bit synchronization, --xlen 64 --atomic.
+mica_spin_lock:
+    li8 x3, 1
+spin64_retry:
+    amoswap.q x4, x3, [x1]
+    bnz x4, spin64_retry
+    fence
+    ret
+mica_spin_unlock:
+    fence
+    stq x0, [x1]
+    ret
+mica_fetch_add:
+    amoadd.q x1, x2, [x1]
+    ret

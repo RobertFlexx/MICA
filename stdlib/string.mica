@@ -1,0 +1,201 @@
+; MICA freestanding string/memory library (XLEN32 and XLEN64)
+; ABI: x1=a0=result, x2=a1, x3=a2, x4=a3 scratch, x5 preserved.
+; Calls are NOT C library functions until a compatible compiler/linker ABI exists.
+; MIT. Include at the END of your main program after a jump/stop.
+.text
+mica_memcpy:
+    push x5
+    mov x5, x1
+memcpy_loop:
+    bz x3, memcpy_done
+    ldbu x4, [x2]
+    stb x4, [x1]
+    addi x1, 1
+    addi x2, 1
+    addi x3, -1
+    b memcpy_loop
+memcpy_done:
+    mov x1, x5
+    pop x5
+    ret
+
+mica_memset:
+    push x5
+    mov x5, x1
+    mov x4, x2
+    andi x4, 255
+memset_loop:
+    bz x3, memset_done
+    stb x4, [x1]
+    addi x1, 1
+    addi x3, -1
+    b memset_loop
+memset_done:
+    mov x1, x5
+    pop x5
+    ret
+
+; Overlap-safe forward/backward copy (unlike memcpy).
+mica_memmove:
+    push x5
+    mov x5, x1
+    bz x3, memmove_done
+    ; backward copy only if src < dst < src+count
+    sltu3 x4, x2, x1
+    bz x4, memmove_forward
+    add3 x4, x2, x3
+    sltu3 x4, x1, x4
+    bz x4, memmove_forward
+    add x1, x3
+    add x2, x3
+memmove_backward:
+    addi x1, -1
+    addi x2, -1
+    ldbu x4, [x2]
+    stb x4, [x1]
+    addi x3, -1
+    bnz x3, memmove_backward
+    b memmove_done
+memmove_forward:
+    ldbu x4, [x2]
+    stb x4, [x1]
+    addi x1, 1
+    addi x2, 1
+    addi x3, -1
+    bnz x3, memmove_forward
+memmove_done:
+    mov x1, x5
+    pop x5
+    ret
+
+mica_strlen:
+    push x5
+    mov x5, x1
+strlen_loop:
+    ldbu x4, [x1]
+    bz x4, strlen_done
+    addi x1, 1
+    b strlen_loop
+strlen_done:
+    sub x1, x5
+    pop x5
+    ret
+
+mica_strnlen:
+    push x5
+    mov x5, x1
+strnlen_loop:
+    bz x2, strnlen_done
+    ldbu x4, [x1]
+    bz x4, strnlen_done
+    addi x1, 1
+    addi x2, -1
+    b strnlen_loop
+strnlen_done:
+    sub x1, x5
+    pop x5
+    ret
+
+mica_strcpy:
+    push x5
+    mov x5, x1
+strcpy_loop:
+    ldbu x4, [x2]
+    stb x4, [x1]
+    bz x4, strcpy_done
+    addi x1, 1
+    addi x2, 1
+    b strcpy_loop
+strcpy_done:
+    mov x1, x5
+    pop x5
+    ret
+
+; Return -1 / 0 / 1 according to the unsigned-byte ordering.
+mica_memcmp:
+    push x5
+memcmp_loop:
+    bz x3, memcmp_equal
+    ldbu x4, [x1]
+    ldbu x5, [x2]
+    bne x4, x5, memcmp_diff
+    addi x1, 1
+    addi x2, 1
+    addi x3, -1
+    b memcmp_loop
+memcmp_diff:
+    sltu x4, x5
+    bz x4, memcmp_greater
+    li8 x1, -1
+    pop x5
+    ret
+memcmp_greater:
+    li8 x1, 1
+    pop x5
+    ret
+memcmp_equal:
+    li8 x1, 0
+    pop x5
+    ret
+
+mica_strcmp:
+    push x5
+strcmp_loop:
+    ldbu x4, [x1]
+    ldbu x5, [x2]
+    bne x4, x5, strcmp_diff
+    bz x4, strcmp_equal
+    addi x1, 1
+    addi x2, 1
+    b strcmp_loop
+strcmp_diff:
+    sltu x4, x5
+    bz x4, strcmp_greater
+    li8 x1, -1
+    pop x5
+    ret
+strcmp_greater:
+    li8 x1, 1
+    pop x5
+    ret
+strcmp_equal:
+    li8 x1, 0
+    pop x5
+    ret
+
+mica_strncpy:
+    push x5
+    mov x5, x1
+strncpy_loop:
+    bz x3, strncpy_done
+    ldbu x4, [x2]
+    stb x4, [x1]
+    addi x1, 1
+    addi x3, -1
+    bz x4, strncpy_pad
+    addi x2, 1
+    b strncpy_loop
+strncpy_pad:
+    bz x3, strncpy_done
+    stb x0, [x1]
+    addi x1, 1
+    addi x3, -1
+    b strncpy_pad
+strncpy_done:
+    mov x1, x5
+    pop x5
+    ret
+
+mica_strchr:
+    andi x2, 255
+strchr_loop:
+    ldbu x4, [x1]
+    beq x4, x2, strchr_found
+    bz x4, strchr_notfound
+    addi x1, 1
+    b strchr_loop
+strchr_found:
+    ret
+strchr_notfound:
+    mov x1, x0
+    ret

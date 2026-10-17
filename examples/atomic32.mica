@@ -1,0 +1,8 @@
+.arch mica32
+li32 x1, shared
+li8 x2, 5
+call mica_fetch_add
+wfi
+.include "../stdlib/atomic32.mica"
+.align 4
+shared: .word 8

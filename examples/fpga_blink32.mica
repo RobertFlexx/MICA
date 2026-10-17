@@ -1,0 +1,13 @@
+.arch mica32
+; GPIO LEDs @ 0xffff0010, board FPGA fabric clock param CLOCK_HZ.
+li32 x1, 0xffff0010
+li8 x2, 1
+li8 x4, 1
+again:
+    stb x2, [x1]
+    li32 x3, 800000
+pause:
+    addi x3, -1
+    bnz x3, pause
+    xor x2, x4
+    j again

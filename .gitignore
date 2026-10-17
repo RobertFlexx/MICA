@@ -1,0 +1,5 @@
+/build/
+/rtl/program.mem8
+/rtl/mica_sim
+__pycache__/
+*.pyc

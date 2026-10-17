@@ -1,0 +1,39 @@
+# Freestanding runtime library
+
+MICA has a small set of callable assembly routines, not a complete C standard library. You can include a module at the end of an assembly program after a halt or jump, call its exported labels, and run it in the MICA emulator. It supports XLEN32 and XLEN64 unless marked otherwise. Most routines expect x1..x3 arguments, return x1, may change x2..x4, and restore x5. Check the header on each module.
+
+## File map
+
+| Module | Symbols / purpose | Required options |
+| --- | --- | --- |
+| `string.mica` | `mica_memcpy`, `mica_memmove`, `mica_memset`, `mica_strlen`, `mica_strnlen`, `mica_strcpy`, `mica_memcmp`, `mica_strcmp`, and other string helpers | baseline 32/64 |
+| `strings_extra.mica` | `mica_memchr`, `mica_memrchr`, `mica_strncmp`, `mica_memswap` | baseline 32/64 |
+| `flow.mica` | `mica_memcpy_flow`, `mica_memset_flow`, `mica_memcpy_words_flow` | `--flow` |
+| `math32.mica` | unsigned divide/modulo, popcount and leading zero count | XLEN32 |
+| `math64.mica` | unsigned divide/modulo, popcount and leading zero count | XLEN64 |
+| `arena32.mica`, `arena64.mica` | `mica_arena_init`, `mica_arena_alloc`, 16-byte aligned fixed arena | matching XLEN |
+| `checksum32.mica` | `mica_crc32`, reflected CRC-32/ISO-HDLC | XLEN32 |
+| `ctype.mica` | ASCII digit/case classification and case conversion | baseline |
+| `console32.mica`, `console64.mica` | MMIO output and hex-format helpers | corresponding XLEN |
+| `atomic32.mica`, `atomic64.mica` | LR/SC and atomic arithmetic helper routines | `--atomic` |
+| `macro.mica` | compile-time macros, not callable procedures | baseline |
+
+Library sources are meant to be included once. They use global labels internally. There is no object linker and no namespace-local symbol support yet. Including the same source twice will create duplicate labels.
+
+## CRC-32
+
+`mica_crc32` takes x1=byte buffer and x2=byte count and returns CRC32 in x1. It starts at 0xffffffff, processes each byte least-significant-bit first using reflected polynomial 0xedb88320, then complements the result. The known standard test vector `123456789` returns `0xcbf43926`. The current routine is bitwise rather than table-driven; it is meant for correctness and portability, not peak throughput. x5 is preserved.
+
+## Flow copy and memset
+
+`mica_memcpy_flow` takes x1=destination, x2=source, x3=count in bytes. `mica_memset_flow` takes x1=destination, x2=fill byte, x3=count. They return the original destination in x1, and x5 is preserved. `mica_memcpy_words_flow` treats x3 as a number of 32-bit words and needs four-byte-aligned pointers. These routines do not handle overlapping copy regions; use `mica_memmove` for overlap. Each tests zero count before entering `dbnz`, so a zero count will not wrap into an extremely long loop.
+
+## What "standard library" will require next
+
+A conforming freestanding C implementation needs a working C compiler and ABI, real linkable symbols, startup and a specified subset of ISO C headers/functions. `malloc`, `printf`, floating point, locale, file descriptors and TLS also need an allocation/OS model. The SDK's current `include/mica.h` is a **future-facing declaration file** for parts of the assembly runtime. It is not a certification or a GCC target.
+
+The next sensible deliverable is an ELF object format and linker with relocation tests, followed by LLVM machine-code lowering. Writing more assembly functions without a linker is not enough to call this libc complete.
+
+## Fixed arena allocator
+
+`mica_arena_init` takes a 16-byte aligned base pointer in x1 and the capacity in bytes in x2. It stores a cursor and a limit in internal global words. `mica_arena_alloc` rounds its requested size up to 16, returns the current cursor, and advances on success. If a request would exceed the capacity or wrap arithmetic, it returns zero without advancing the cursor. There is no free operation, there is one arena globally, and no lock or stack guard. It is useful for early bring-up and deterministic buffers, not a drop-in replacement for hosted malloc.

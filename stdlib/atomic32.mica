@@ -1,0 +1,18 @@
+; MICA-A 32-bit synchronization, requires --atomic.
+; x1 address; lock uses 0 unlocked / 1 locked. acquire/release through fences.
+; Not a replacement for cache coherence: SoC must implement linearizable shared atomic target.
+mica_spin_lock:
+    li8 x3, 1
+spin32_retry:
+    amoswap.w x4, x3, [x1]
+    bnz x4, spin32_retry
+    fence
+    ret
+mica_spin_unlock:
+    fence
+    stw x0, [x1]
+    ret
+; x1 pointer, x2 delta; return old value in x1.
+mica_fetch_add:
+    amoadd.w x1, x2, [x1]
+    ret

@@ -1,0 +1,18 @@
+digraph G { rankdir=LR; label="MICA 1.0 | future scalable core, NOT present in current RTL";
+graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
+
+node [style="rounded,dashed,filled",fillcolor="#fff3e8",color="#a8794b"];
+c0 [label="Core 0\nPipeline + MPU"];
+c1 [label="Core 1\nPipeline + MPU"];
+bus [label="Round-robin shared SRAM arbiter\nReady/valid, one writer per beat\nSingle-copy atomic accesses"];
+mem [label="Shared SRAM + local banks\nDMA-coherence contract needed"];
+irq [label="Per-hart timer / interrupt controller\nSynchronized and prioritized"];
+atom [label="Atomic reservation scoreboard\nLR/SC forward progress contract"];
+c0 -> bus [label="requests"];
+c1 -> bus [label="requests"];
+bus -> mem [label="read/write"];
+bus -> atom [label="invalidate reservations"];
+irq -> c0;
+irq -> c1;
+
+}

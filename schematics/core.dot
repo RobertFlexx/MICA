@@ -1,0 +1,28 @@
+digraph mica_core {
+ graph [rankdir=LR, bgcolor="white", fontname="DejaVu Sans", label="MICA-32/64 v0.2 | implemented scalar hardware datapath (not a transistor schematic)", labelloc=t, fontsize=17, pad=0.35, nodesep=0.38, ranksep=0.65];
+ node [shape=box, style="rounded,filled", fillcolor="#eef3f8", color="#58718b", fontname="DejaVu Sans", fontsize=11, margin="0.16,0.09"];
+ edge [color="#536c82", arrowsize=0.7, fontname="DejaVu Sans", fontsize=9];
+ pc [label="PC register\nXLEN bits"];
+ fetch [label="16-bit halfword fetch\nFETCH0 / FETCH1", fillcolor="#e3edf8"];
+ decode [label="Decode + control\nEXECUTE (multicycle)", fillcolor="#d6e6f8"];
+ rf [label="Register file\n8 (or 16) x XLEN\nx0 hardwired zero"];
+ alu [label="Integer ALU\nXLEN-wide arithmetic\noptional multiply"];
+ mem [label="Load / store align +\nbyte-lane shifter"];
+ branch [label="Branch + next-PC\nadder + compare"];
+ bram [label="FPGA SRAM / peripherals\nread combinational", fillcolor="#faf0db"];
+ fault [label="Illegal operation + halt\nno privilege/interrupts yet", fillcolor="#fbe4e4"];
+ pc -> fetch [label="address"];
+ fetch -> decode [label="16/32-bit instruction"];
+ decode -> rf [label="register selects"];
+ rf -> alu [label="operands"];
+ rf -> mem [label="base + data"];
+ alu -> rf [label="result"];
+ mem -> rf [label="load result"];
+ decode -> branch [label="immediates"];
+ rf -> branch [label="compare"];
+ branch -> pc [label="PC update"];
+ mem -> bram [label="byte strobes, data"];
+ bram -> fetch [label="halfword"];
+ bram -> mem [label="load bus"];
+ decode -> fault [label="reserved / unsupported"];
+}

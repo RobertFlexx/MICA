@@ -1,0 +1,43 @@
+; Tiny deterministic 32-bit arena allocator. No free(), no fragmentation.
+; Caller supplies a valid, 16-byte-aligned region. Not thread-safe.
+; mica_arena_init: x1=base, x2=size. Return region base in x1.
+; mica_arena_alloc: x1=requested size, returns address or zero.
+; All allocations rounded to 16 bytes. No heap expansion.
+
+mica_arena_init:
+    li32 x3, mica_arena_cursor
+    stw x1, [x3]
+    add x2, x1
+    li32 x3, mica_arena_limit
+    stw x2, [x3]
+    ret
+
+mica_arena_alloc:
+    push x5
+    li32 x2, mica_arena_cursor
+    ldw x4, [x2]
+    li32 x3, mica_arena_limit
+    ldw x5, [x3]
+    mov x3, x1
+    addi x1, 15
+    sltu3 x3, x1, x3
+    bnz x3, arena32_failed
+    li32 x3, 0xfffffff0
+    and x1, x3
+    add3 x3, x4, x1
+    sltu3 x1, x3, x4
+    bnz x1, arena32_failed
+    sltu3 x1, x5, x3
+    bnz x1, arena32_failed
+    stw x3, [x2]
+    mov x1, x4
+    pop x5
+    ret
+arena32_failed:
+    li8 x1, 0
+    pop x5
+    ret
+
+.align 4
+mica_arena_cursor: .word 0
+mica_arena_limit: .word 0

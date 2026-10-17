@@ -1,0 +1,53 @@
+; Tiny bare-metal console, 64-bit mode.
+mica_putchar:
+    li32 x2, 0xffff000c
+putchar_ready:
+    ldw x3, [x2]
+    bnz x3, putchar_ready
+    li32 x2, 0xffff0000
+    stb x1, [x2]
+    ret
+
+mica_puts:
+    push x5
+    push x6
+    push x1
+    addi x7, -8 ; restore 16-byte alignment before nested calls
+    mov x5, x1
+puts_next:
+    ldbu x4, [x5]
+    bz x4, puts_done
+    mov x1, x4
+    call mica_putchar
+    addi x5, 1
+    b puts_next
+puts_done:
+    addi x7, 8
+    pop x2
+    mov x1, x5
+    sub x1, x2
+    pop x6
+    pop x5
+    ret
+
+mica_print_hex:
+    push x5
+    push x6
+    mov x5, x1
+    li8 x4, 16
+hex_next:
+    shr3i x1, x5, 60
+    andi x1, 15
+    li8 x2, 10
+    sltu3 x3, x1, x2
+    bnz x3, hex_digit
+    addi x1, 7
+hex_digit:
+    addi x1, 48
+    call mica_putchar
+    shli x5, 4
+    addi x4, -1
+    bnz x4, hex_next
+    pop x6
+    pop x5
+    ret

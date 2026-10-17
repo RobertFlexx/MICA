@@ -1,0 +1,20 @@
+digraph G { rankdir=LR; label="MICA 1.0 | current SoC decode and memory-mapped outputs";
+graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
+
+core [label="mica_core (XLEN=32 or 64)\nIMEM: 16-bit fetch\nDMEM: XLEN aligned bus",fillcolor="#ffeecf"];
+rom [label="Unified byte RAM array\n0 .. RAM_BYTES-1\nasync read, sync write\nDemo = 4096 bytes"];
+select [label="Address decode\nRAM vs 0xffffxxxx MMIO"];
+led [label="0xffff0010\n8-bit LED output"];
+uart [label="0xffff0000\nUART TX byte register\ntransmit-only 8N1"];
+status [label="0xffff000c\nUART busy status"];
+read [label="RAM / MMIO read mux\nword alignment + byte lanes"];
+core -> rom [label="imem_addr, imem_rdata",dir=both];
+core -> select [label="dmem_addr, wdata, wstrb, re, we"];
+select -> rom [label="writes"];
+select -> uart;
+select -> led;
+status -> read;
+rom -> read;
+read -> core [label="dmem_rdata"];
+
+}

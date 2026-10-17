@@ -1,0 +1,14 @@
+; MICA assembly-level conveniences: hygienic local labels and compile-time macros.
+.macro memcpy_small out, in, count
+    mov x1, $out
+    mov x2, $in
+    li x3, $count
+    call mica_memcpy
+.endm
+.macro wait_while_zero reg
+%%loop:
+    bz $reg, %%loop
+.endm
+.macro increment reg
+    addi $reg, 1
+.endm

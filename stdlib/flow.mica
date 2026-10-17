@@ -1,0 +1,45 @@
+; MICA Flow library. 32-bit or 64-bit. Requires --flow.
+; x1 = destination, x2 = source/fill, x3 = byte count.
+; x1 returns the original destination. x4 is scratch, x5 is preserved.
+; Zero bytes means no memory access. Functions have no bounds checking.
+
+mica_memcpy_flow:
+    push x5
+    mov x5, x1
+    bz x3, mc_flow_done
+mc_flow_loop:
+    ldpi.b x4, [x2]
+    stpi.b x4, [x1]
+    dbnz x3, mc_flow_loop
+mc_flow_done:
+    mov x1, x5
+    pop x5
+    ret
+
+mica_memset_flow:
+    push x5
+    mov x5, x1
+    andi x2, 255
+    bz x3, ms_flow_done
+ms_flow_loop:
+    stpi.b x2, [x1]
+    dbnz x3, ms_flow_loop
+ms_flow_done:
+    mov x1, x5
+    pop x5
+    ret
+
+; Copy N aligned 32-bit words. x3 counts words, not bytes.
+; Destination and source must be word-aligned. Overlaps are not supported.
+mica_memcpy_words_flow:
+    push x5
+    mov x5, x1
+    bz x3, mw_flow_done
+mw_flow_loop:
+    ldpi.w x4, [x2]
+    stpi.w x4, [x1]
+    dbnz x3, mw_flow_loop
+mw_flow_done:
+    mov x1, x5
+    pop x5
+    ret

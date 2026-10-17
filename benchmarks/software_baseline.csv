@@ -1,0 +1,8 @@
+program,xlen,rom_bytes,emulator_retired_instructions,notes
+arithmetic32.mica,32,28,8,1 instruction/step functional model; NOT MHz or energy
+arithmetic64.mica,64,80,17,1 instruction/step functional model; NOT MHz or energy
+div32.mica,32,104,334,1 instruction/step functional model; NOT MHz or energy
+div64.mica,64,124,572,1 instruction/step functional model; NOT MHz or energy
+string32.mica,32,400,82,1 instruction/step functional model; NOT MHz or energy
+vector32.mica,32,112,14,1 instruction/step functional model; NOT MHz or energy
+atomic32.mica,32,44,7,1 instruction/step functional model; NOT MHz or energy

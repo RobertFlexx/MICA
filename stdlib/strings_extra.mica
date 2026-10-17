@@ -1,0 +1,84 @@
+; Supplementary freestanding byte and ASCII string routines.
+; Functions use MICA v1.0 assembly ABI, not a hosted C library ABI.
+; x1 is the return value; x1..x4 are caller-saved; x5 is preserved.
+; Addresses must be valid for the requested length. No bounds probing.
+
+; x1=bytes, x2=needle, x3=count, return first matching address or 0.
+mica_memchr:
+    andi x2, 255
+memchr_loop:
+    bz x3, memchr_absent
+    ldbu x4, [x1]
+    seq x4, x2
+    bnz x4, memchr_found
+    addi x1, 1
+    addi x3, -1
+    b memchr_loop
+memchr_absent:
+    li8 x1, 0
+memchr_found:
+    ret
+
+; x1=bytes, x2=needle, x3=count, return last matching address or 0.
+mica_memrchr:
+    andi x2, 255
+    add x1, x3
+memrchr_loop:
+    bz x3, memrchr_absent
+    addi x1, -1
+    ldbu x4, [x1]
+    seq x4, x2
+    bnz x4, memrchr_found
+    addi x3, -1
+    b memrchr_loop
+memrchr_absent:
+    li8 x1, 0
+memrchr_found:
+    ret
+
+; x1=left, x2=right, x3=max bytes. Returns -1, 0, or 1.
+; Stops after first NUL or N bytes. Always compares as unsigned bytes.
+mica_strncmp:
+    push x5
+strncmp_loop:
+    bz x3, strncmp_equal
+    ldbu x4, [x1]
+    ldbu x5, [x2]
+    bne x4, x5, strncmp_diff
+    bz x4, strncmp_equal
+    addi x1, 1
+    addi x2, 1
+    addi x3, -1
+    b strncmp_loop
+strncmp_diff:
+    sltu x4, x5
+    bz x4, strncmp_greater
+    li8 x1, -1
+    pop x5
+    ret
+strncmp_greater:
+    li8 x1, 1
+    pop x5
+    ret
+strncmp_equal:
+    li8 x1, 0
+    pop x5
+    ret
+
+; x1=buffer A, x2=buffer B, x3=count. Swaps memory bytewise.
+; Ranges must not overlap. Preserves x5.
+mica_memswap:
+    push x5
+memswap_loop:
+    bz x3, memswap_done
+    ldbu x4, [x1]
+    ldbu x5, [x2]
+    stb x5, [x1]
+    stb x4, [x2]
+    addi x1, 1
+    addi x2, 1
+    addi x3, -1
+    b memswap_loop
+memswap_done:
+    pop x5
+    ret

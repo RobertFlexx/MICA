@@ -1,0 +1,57 @@
+; MICA mathematical helpers, XLEN32, no M extension required.
+; mica_udivmod: input x1=dividend, x2=divisor; output x1=quotient,x2=remainder.
+; Division by zero returns quotient 0, remainder dividend. Unsigned division.
+; x3/x4 clobbered; x5 preserved. MIT.
+mica_udivmod:
+    bz x2, udiv_zero
+    push x5
+    li8 x5, 0
+    li8 x3, 32
+udiv_loop:
+    shli x5, 1
+    mov x4, x1
+    shri x4, 31
+    or x5, x4
+    shli x1, 1
+    sltu3 x4, x5, x2
+    bnz x4, udiv_skip
+    sub x5, x2
+    addi x1, 1
+udiv_skip:
+    addi x3, -1
+    bnz x3, udiv_loop
+    mov x2, x5
+    pop x5
+    ret
+udiv_zero:
+    mov x2, x1
+    li8 x1, 0
+    ret
+
+; count set bits; x1 -> x1
+mica_popcount:
+    li8 x2, 0
+pop_loop:
+    bz x1, pop_done
+    mov x3, x1
+    andi x3, 1
+    add x2, x3
+    shri x1, 1
+    b pop_loop
+pop_done:
+    mov x1, x2
+    ret
+
+; x1 -> number of leading zero bits (32 for 0)
+mica_clz:
+    li8 x2, 0
+clz_loop:
+    slt3 x3, x1, x0
+    bnz x3, clz_done
+    addi x2, 1
+    shli x1, 1
+    li8 x3, 32
+    bne x2, x3, clz_loop
+clz_done:
+    mov x1, x2
+    ret
