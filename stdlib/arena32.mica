@@ -39,5 +39,7 @@ arena32_failed:
     ret
 
 .align 4
-mica_arena_cursor: .word 0
-mica_arena_limit: .word 0
+mica_arena_cursor:
+    .word 0
+mica_arena_limit:
+    .word 0

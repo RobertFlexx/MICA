@@ -57,6 +57,18 @@ The extra F instructions reduce common inner-loop instruction traffic. For examp
 
 Documentation: [ISA](docs/ISA.md), [ABI](docs/ABI.md), [microarchitecture](docs/MICROARCH.md), [runtime](docs/RUNTIME.md), [schematics](docs/SCHEMATICS.md), [hardware](docs/HARDWARE.md), [research](docs/RESEARCH.md), [verification](docs/VERIFICATION.md), [benchmarks](docs/BENCHMARKS.md).
 
+## Code formatting
+
+C/C++ and SystemVerilog use the LLVM-based `.clang-format` configuration. Python uses Black (88 columns), and CMake uses cmake-format (80 columns). Install these development tools separately, then run from the repository root:
+
+```sh
+clang-format -i include/mica.h sim/*.cpp toolchain/*.cpp rtl/*.sv boards/arty_a7/*.sv
+python3 -m black tests benchmarks toolchain
+cmake-format -i CMakeLists.txt
+```
+
+Use a clang-format version with Verilog support (21 or newer). `.editorconfig` defines whitespace for the other source files. MICA assembly uses four spaces for instructions and data directives, labels on their own lines, and a space after operand commas. Graphviz sources use two spaces, one statement per line, and wrapped attribute lists. Makefile recipes use tabs. Generated firmware, executables, and rendered schematics retain their existing formats.
+
 ## Why bother?
 
 A tiny base CPU can avoid a lot of architectural baggage, and a carefully chosen short instruction can reduce fetch traffic. On the other hand, eight registers often means extra spills, MICA's 32-bit escapes are comparatively expensive in the current multicycle implementation, and RISC-V's compressed and embedded profiles have a significant head start. The interesting experiment is whether the combination gives a better *energy per completed embedded workload* once both systems are equally optimized.

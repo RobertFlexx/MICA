@@ -1,13 +1,14 @@
 .arch mica64
-li64 x1, 0x0123456789abcdef
-li32 x2, 0xffffffff
-add3 x3, x1, x2
-addw3 x4, x1, x2
-li32 x5, data
-stq x3, [x5]
-ldq x1, [x5]
-ldws x2, [x5]
-ldwu x3, [x5]
-wfi
+    li64 x1, 0x0123456789abcdef
+    li32 x2, 0xffffffff
+    add3 x3, x1, x2
+    addw3 x4, x1, x2
+    li32 x5, data
+    stq x3, [x5]
+    ldq x1, [x5]
+    ldws x2, [x5]
+    ldwu x3, [x5]
+    wfi
 .align 8
-data: .quad 0
+data:
+    .quad 0

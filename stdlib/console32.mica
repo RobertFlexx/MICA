@@ -15,7 +15,7 @@ mica_puts:
     push x5
     push x6
     push x1
-    addi x7, -4 ; restore 16-byte alignment before nested calls
+    addi x7, -4  ; restore 16-byte alignment before nested calls
     mov x5, x1
 puts_next:
     ldbu x4, [x5]
@@ -37,7 +37,7 @@ puts_done:
 mica_print_hex:
     push x5
     push x6
-    addi x7, -8 ; keep stack 16-aligned across call
+    addi x7, -8  ; keep stack 16-aligned across call
     mov x5, x1
     li8 x4, 8
 hex_next:

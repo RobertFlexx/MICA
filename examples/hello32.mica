@@ -1,10 +1,10 @@
 .arch mica32
-li32 x1, 0xffff0000
-li8 x2, 72
-stb x2, [x1]
-li8 x2, 105
-stb x2, [x1]
-li8 x2, 10
-stb x2, [x1]
-li8 x1, 42
-wfi
+    li32 x1, 0xffff0000
+    li8 x2, 72
+    stb x2, [x1]
+    li8 x2, 105
+    stb x2, [x1]
+    li8 x2, 10
+    stb x2, [x1]
+    li8 x1, 42
+    wfi

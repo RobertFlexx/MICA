@@ -11,30 +11,30 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void *mica_memcpy(void *,const void *,size_t);
-void *mica_memmove(void *,const void *,size_t);
-void *mica_memset(void *,int,size_t);
+void *mica_memcpy(void *, const void *, size_t);
+void *mica_memmove(void *, const void *, size_t);
+void *mica_memset(void *, int, size_t);
 size_t mica_strlen(const char *);
-size_t mica_strnlen(const char *,size_t);
-char *mica_strcpy(char *,const char *);
-char *mica_strncpy(char *,const char *,size_t);
-int mica_memcmp(const void *,const void *,size_t);
-int mica_strcmp(const char *,const char *);
-char *mica_strchr(const char *,int);
+size_t mica_strnlen(const char *, size_t);
+char *mica_strcpy(char *, const char *);
+char *mica_strncpy(char *, const char *, size_t);
+int mica_memcmp(const void *, const void *, size_t);
+int mica_strcmp(const char *, const char *);
+char *mica_strchr(const char *, int);
 /* mica_udivmod has a dual-register return, so it needs compiler lowering,
  * rather than claiming compatibility with a conventional C ABI. */
 unsigned mica_popcount(unsigned long);
 unsigned mica_clz(unsigned long);
 void mica_spin_lock(volatile unsigned long *);
 void mica_spin_unlock(volatile unsigned long *);
-unsigned long mica_fetch_add(volatile unsigned long *,unsigned long);
+unsigned long mica_fetch_add(volatile unsigned long *, unsigned long);
 /* Future C signatures, pending a real MICA C compiler and linker. */
-uint32_t mica_crc32(const void *,size_t);
-void mica_arena_init(void *,size_t);
+uint32_t mica_crc32(const void *, size_t);
+void mica_arena_init(void *, size_t);
 void *mica_arena_alloc(size_t);
-void *mica_memchr(const void *,int,size_t);
-void *mica_memrchr(const void *,int,size_t);
-int mica_strncmp(const char *,const char *,size_t);
+void *mica_memchr(const void *, int, size_t);
+void *mica_memrchr(const void *, int, size_t);
+int mica_strncmp(const char *, const char *, size_t);
 #ifdef __cplusplus
 }
 #endif

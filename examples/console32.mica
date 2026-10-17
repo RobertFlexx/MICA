@@ -1,11 +1,12 @@
 .arch mica32
-li32 x1, hello
-call mica_puts
-li32 x1, 0x1234cafe
-call mica_print_hex
-li8 x1, 10
-call mica_putchar
-wfi
+    li32 x1, hello
+    call mica_puts
+    li32 x1, 0x1234cafe
+    call mica_print_hex
+    li8 x1, 10
+    call mica_putchar
+    wfi
 .include "../stdlib/console32.mica"
 .align 2
-hello: .asciz "MICA32: "
+hello:
+    .asciz "MICA32: "

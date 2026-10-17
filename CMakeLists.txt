@@ -1,13 +1,26 @@
 cmake_minimum_required(VERSION 3.20)
-project(MICA_SDK VERSION 1.0 LANGUAGES CXX)
+project(
+  MICA_SDK
+  VERSION 1.0
+  LANGUAGES CXX)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
 add_executable(mica-as toolchain/assembler.cpp)
 target_compile_options(mica-as PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
+
 add_executable(mica-run sim/emulator.cpp)
 target_compile_options(mica-run PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
+
 add_executable(mica-dis toolchain/disasm.cpp)
 target_compile_options(mica-dis PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
+
 enable_testing()
-add_test(NAME integration COMMAND ${CMAKE_COMMAND} -E env MICA_AS=$<TARGET_FILE:mica-as> MICA_RUN=$<TARGET_FILE:mica-run> python3 ${CMAKE_SOURCE_DIR}/tests/integration.py)
+add_test(
+  NAME integration
+  COMMAND
+    ${CMAKE_COMMAND} -E env MICA_AS=$<TARGET_FILE:mica-as>
+    MICA_RUN=$<TARGET_FILE:mica-run> python3
+    ${CMAKE_SOURCE_DIR}/tests/integration.py)

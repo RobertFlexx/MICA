@@ -1,6 +1,6 @@
 .arch mica32
-li32 x1, 4294967295
-li8 x2, 5
-call mica_udivmod
-wfi
+    li32 x1, 4294967295
+    li8 x2, 5
+    call mica_udivmod
+    wfi
 .include "../stdlib/math32.mica"

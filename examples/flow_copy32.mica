@@ -1,13 +1,15 @@
 .arch mica32
-li32 x1, destination
-li32 x2, source
-li8 x3, 8
-call mica_memcpy_flow
-li32 x4, destination
-ldbu x1, [x4]
-ldbu x2, [x4+7]
-wfi
+    li32 x1, destination
+    li32 x2, source
+    li8 x3, 8
+    call mica_memcpy_flow
+    li32 x4, destination
+    ldbu x1, [x4]
+    ldbu x2, [x4+7]
+    wfi
 .include "../stdlib/flow.mica"
 .align 4
-source: .byte 3,6,9,12,15,18,21,24
-destination: .space 8
+source:
+    .byte 3, 6, 9, 12, 15, 18, 21, 24
+destination:
+    .space 8

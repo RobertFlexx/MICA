@@ -1,17 +1,53 @@
-digraph G { rankdir=LR; label="MICA 1.0 | F extension compact and extended flow sequencing";
-graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
-
-read [label="Read base register\nEffective address = old base",fillcolor="#ffeecf"];
-check [label="Check base != x0 and data\nCheck alignment and width\nCheck register availability"];
-mem [label="Execute bus load/store\nldpi.b/h/w/q\nstpi.b/h/w/q",fillcolor="#dff6f2"];
-wb [label="Commit destination/load\nCommit base += stride\n2/4-byte instruction"];
-fail [label="Fault: no architectural commit\nPhysical RTL needs bus error input",fillcolor="#fbe8e6"];
-loop [label="dbnz counter,target\ncounter := counter - 1\nif counter != 0: branch",fillcolor="#e0eef7"];
-read -> check;
-check -> mem [label="legal"];
-check -> fail [label="invalid"];
-mem -> wb [label="completed"];
-wb -> loop [label="next instruction"];
-loop -> read [label="taken"];
-
+digraph G {
+  rankdir=LR;
+  label="MICA 1.0 | F extension compact and extended flow sequencing";
+  graph [
+    fontname="DejaVu Sans",
+    fontsize=17,
+    labelloc=t,
+    labeljust=l,
+    pad="0.32",
+    nodesep="0.48",
+    ranksep="0.8",
+    bgcolor="white"
+  ];
+  node [
+    fontname="DejaVu Sans",
+    fontsize=11,
+    style="rounded,filled",
+    shape=box,
+    color="#335277",
+    fillcolor="#f3f7fb",
+    penwidth=1.5,
+    margin="0.16,0.12"
+  ];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#56718f", arrowsize=.7];
+  read [
+    label="Read base register\nEffective address = old base",
+    fillcolor="#ffeecf"
+  ];
+  check [
+    label="Check base != x0 and data\nCheck alignment and width\nCheck register availability"
+  ];
+  mem [
+    label="Execute bus load/store\nldpi.b/h/w/q\nstpi.b/h/w/q",
+    fillcolor="#dff6f2"
+  ];
+  wb [
+    label="Commit destination/load\nCommit base += stride\n2/4-byte instruction"
+  ];
+  fail [
+    label="Fault: no architectural commit\nPhysical RTL needs bus error input",
+    fillcolor="#fbe8e6"
+  ];
+  loop [
+    label="dbnz counter,target\ncounter := counter - 1\nif counter != 0: branch",
+    fillcolor="#e0eef7"
+  ];
+  read -> check;
+  check -> mem [label="legal"];
+  check -> fail [label="invalid"];
+  mem -> wb [label="completed"];
+  wb -> loop [label="next instruction"];
+  loop -> read [label="taken"];
 }
