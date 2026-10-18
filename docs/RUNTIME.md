@@ -15,10 +15,10 @@ MICA has a small set of callable assembly routines, not a complete C standard li
 | `checksum32.mica` | `mica_crc32`, reflected CRC-32/ISO-HDLC | XLEN32 |
 | `ctype.mica` | ASCII digit/case classification and case conversion | baseline |
 | `console32.mica`, `console64.mica` | MMIO output and hex-format helpers | corresponding XLEN |
-| `atomic32.mica`, `atomic64.mica` | LR/SC and atomic arithmetic helper routines | `--atomic` |
+| `atomic32.mica`, `atomic64.mica` | AMO exchange/addition and fenced synchronization helpers | `--atomic` |
 | `macro.mica` | compile-time macros, not callable procedures | baseline |
 
-Library sources are meant to be included once. They use global labels internally. There is no object linker and no namespace-local symbol support yet. Including the same source twice will create duplicate labels.
+Library sources are meant to be included once. They use global labels internally. ELF objects and local symbol scoping are supported by mica-as -c and mica-ld. Export public labels with .global, as runtime/startup/library32.mica demonstrates. Including the same source twice will create duplicate labels.
 
 ## CRC-32
 
@@ -32,7 +32,7 @@ Library sources are meant to be included once. They use global labels internally
 
 A conforming freestanding C implementation needs a working C compiler and ABI, real linkable symbols, startup and a specified subset of ISO C headers/functions. `malloc`, `printf`, floating point, locale, file descriptors and TLS also need an allocation/OS model. The SDK's current `include/mica.h` is a **future-facing declaration file** for parts of the assembly runtime. It is not a certification or a GCC target.
 
-The next sensible deliverable is an ELF object format and linker with relocation tests, followed by LLVM machine-code lowering. Writing more assembly functions without a linker is not enough to call this libc complete.
+ELF image objects, basic relocation tests, linking and initialized-SRAM startup are implemented in engineering r2. Compiler machine-code lowering, full language ABI and a tested freestanding C environment remain unfinished.
 
 ## Fixed arena allocator
 
@@ -53,3 +53,16 @@ All bytes are treated as unsigned; the sum wraps at XLEN. No heap or global stat
 The empty-buffer case returns zero without dereferencing the pointer.
 Only caller-saved registers x1..x4 are modified. Check the address range first.
 A runnable example lives in `examples/reduce32.mica`.
+
+## r2 startup and numerical helpers
+
+`runtime/startup/ram_start32.mica` establishes the stack, clears an explicit BSS
+range and calls main. The initialized image already contains data at its run
+address. The multi-file CRC/UART example builds and runs through the ELF linker.
+
+`stdlib/dsp32.mica` implements signed16-bit dot products using optional M;
+results wrap at 32 bits. `examples/fir32.mica` produces16,8,-32,40 and is checked
+against independent Python convolution. `stdlib/bounded32.mica` validates two
+end-exclusive ranges before calling the F copy routine. Its fifth assembly
+argument is x5, preserved by the helper. It is a software prototype, not a new
+bounded-stream opcode or an atomic whole-buffer transaction.

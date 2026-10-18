@@ -1,0 +1,24 @@
+$ git rev-parse HEAD
+7accf98a162fabb03ae1afcf8cf0f2e95ea9fb5a
+$ g++ --version
+g++ (Solus) 15.2.1 20260604
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ cmake --version
+cmake version 4.4.4
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+$ ctest --test-dir build/baseline --output-on-failure
+Test project /home/robert/Downloads/mica-sdk-v1 (2).0/mica-sdk-v1.0/build/baseline
+    Start 1: integration
+1/3 Test #1: integration ......................   Passed    0.62 sec
+    Start 2: binary_compatibility
+2/3 Test #2: binary_compatibility .............   Passed    0.05 sec
+    Start 3: fast_differential
+3/3 Test #3: fast_differential ................   Passed    0.40 sec
+
+100% tests passed out of 3
+
+Total Test time (real) =   1.07 sec

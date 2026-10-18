@@ -1,0 +1,63 @@
+{
+  "microbenchmark": "addi/dbnz counted loop, not general emulator throughput",
+  "platform": "x86_64",
+  "host": "Linux 7.2.9-364.current",
+  "cpu_model": "Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz",
+  "iterations": 5000000,
+  "results": {
+    "32/reference": {
+      "median_seconds": 0.334186,
+      "mips": 29.9,
+      "runs_seconds": [
+        0.33378,
+        0.334677,
+        0.334186
+      ]
+    },
+    "32/fast": {
+      "median_seconds": 0.183385,
+      "mips": 54.5,
+      "runs_seconds": [
+        0.184516,
+        0.183385,
+        0.182345
+      ]
+    },
+    "32/native-counted-loop": {
+      "median_seconds": 0.009877,
+      "mips": 1012.4,
+      "runs_seconds": [
+        0.009877,
+        0.009701,
+        0.010277
+      ]
+    },
+    "64/reference": {
+      "median_seconds": 0.331118,
+      "mips": 30.2,
+      "runs_seconds": [
+        0.334661,
+        0.331118,
+        0.328846
+      ]
+    },
+    "64/fast": {
+      "median_seconds": 0.178016,
+      "mips": 56.2,
+      "runs_seconds": [
+        0.178016,
+        0.180114,
+        0.177144
+      ]
+    },
+    "64/native-counted-loop": {
+      "median_seconds": 0.010261,
+      "mips": 974.6,
+      "runs_seconds": [
+        0.010486,
+        0.010261,
+        0.009972
+      ]
+    }
+  }
+}

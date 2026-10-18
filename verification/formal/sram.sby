@@ -1,0 +1,11 @@
+[options]
+mode prove
+depth 5
+[engines]
+smtbmc z3
+[script]
+read -formal -sv mica_sram_txn.v sram_formal.sv
+prep -top sram_formal
+[files]
+../../rtl/verilog/mica_sram_txn.v
+sram_formal.sv

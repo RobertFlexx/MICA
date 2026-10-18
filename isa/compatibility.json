@@ -1,0 +1,428 @@
+{
+  "isa": "MICA 1.0",
+  "vectors": [
+    {
+      "name": "arena32",
+      "sha256": "0c7d3fac36640154270538bdd9ffae6bd0e648a0c9fc68e9b1148a118203eae4",
+      "flags": [
+        "--xlen",
+        "32",
+        "--memory",
+        "65536"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 0,
+        "2": 168,
+        "3": 256,
+        "4": 208,
+        "5": 192,
+        "6": 44,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "arena64",
+      "sha256": "ef8899bba557baa7b524d1ba128464ab8791e9fa18cbabf42fdc091e073e22e1",
+      "flags": [
+        "--xlen",
+        "64",
+        "--memory",
+        "65536"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 0,
+        "2": 208,
+        "3": 304,
+        "4": 256,
+        "5": 240,
+        "6": 46,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "arithmetic32",
+      "sha256": "0a508f4d99ca66c460917cf0fed759eeb314eaea34e6eaf5a625bbbf7eec8326",
+      "flags": [
+        "--xlen",
+        "32",
+        "--memory",
+        "65536"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 42,
+        "2": 17,
+        "3": 24,
+        "4": 42,
+        "5": 0,
+        "6": 0,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "arithmetic64",
+      "sha256": "0b99cfcc80bb7b128e053df48792a5d9636797c6a746550f16238ebdf6923126",
+      "flags": [
+        "--xlen",
+        "64",
+        "--memory",
+        "65536"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 81985533511454190,
+        "2": 18446744071724322286,
+        "3": 2309737966,
+        "4": 18446744071724322286,
+        "5": 72,
+        "6": 0,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "bitops32",
+      "sha256": "49c450541a0b44fb809e5cc5a9185cccfdba5564aa7c1c777bbfd177fac148d5",
+      "flags": [
+        "--xlen",
+        "32",
+        "--memory",
+        "65536",
+        "--bitops"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 160,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 8,
+        "6": 4278190080,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "bitops64",
+      "sha256": "09052c8020ed1113684a43136232ef95ee19aff0c1422315c942c3ff4e18d422",
+      "flags": [
+        "--xlen",
+        "64",
+        "--memory",
+        "65536",
+        "--bitops"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 160,
+        "2": 8,
+        "3": 17279655951921914625,
+        "4": 17222085231038278605,
+        "5": 32,
+        "6": 7,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "console64",
+      "sha256": "a8dc2883a125e7eebd7230de7d31a536e0631ca65aec413b2a9ae44bbec29361",
+      "flags": [
+        "--xlen",
+        "64",
+        "--memory",
+        "65536"
+      ],
+      "kind": "halt",
+      "stdout": "MICA64: 0123456789ABCDEF\n",
+      "registers": {
+        "0": 0,
+        "1": 10,
+        "2": 4294901760,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 46,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "flow_copy32",
+      "sha256": "2ece303605f684e5c2c4f2bf798cec84dd8c35140da7fd3047d6b13b8f72cdff",
+      "flags": [
+        "--xlen",
+        "32",
+        "--memory",
+        "65536",
+        "--flow"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 3,
+        "2": 24,
+        "3": 0,
+        "4": 116,
+        "5": 0,
+        "6": 22,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "flow_copy64",
+      "sha256": "2b71807e1cc301df12bf888d221fb002ca9a041607c1d127c3d8af2b282222c6",
+      "flags": [
+        "--xlen",
+        "64",
+        "--memory",
+        "65536",
+        "--flow"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 8589934593,
+        "2": 136,
+        "3": 0,
+        "4": 136,
+        "5": 0,
+        "6": 22,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "fpga_blink32",
+      "sha256": "69d9262527bbf926a1346ae67a91e0babea7bd5ffd64c0517dcd97b7d8f1f243",
+      "flags": [
+        "--xlen",
+        "32",
+        "--memory",
+        "65536"
+      ],
+      "kind": "bounded-loop",
+      "stdout": "",
+      "registers": {},
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "fpga_uart32",
+      "sha256": "ffeaf43b45595e918dce8ddafcb6f2425f624406a75d17759d493d1976ede6ee",
+      "flags": [
+        "--xlen",
+        "32",
+        "--memory",
+        "65536"
+      ],
+      "kind": "halt",
+      "stdout": "MICA FPGA UART online!\n",
+      "registers": {
+        "0": 0,
+        "1": 23,
+        "2": 142,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 12,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "hello32",
+      "sha256": "9e46444860e95858f814bd1613026504d9d250e22b1e04f03463a502f29f3f42",
+      "flags": [
+        "--xlen",
+        "32",
+        "--memory",
+        "65536"
+      ],
+      "kind": "halt",
+      "stdout": "Hi\n",
+      "registers": {
+        "0": 0,
+        "1": 42,
+        "2": 10,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "trap32",
+      "sha256": "d526fa2bd28d5b9d2e501e13cd462eea79d7238da7f7c2d2a0d1142fc69205d4",
+      "flags": [
+        "--xlen",
+        "32",
+        "--memory",
+        "65536",
+        "--trap"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 20,
+        "2": 0,
+        "3": 18,
+        "4": 11,
+        "5": 0,
+        "6": 0,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    },
+    {
+      "name": "trap_irq32",
+      "sha256": "6739989b65bd18d971a5fa234b22f58a0a2d5a806e12496d08210784387ee763",
+      "flags": [
+        "--xlen",
+        "32",
+        "--memory",
+        "65536",
+        "--trap"
+      ],
+      "kind": "halt",
+      "stdout": "",
+      "registers": {
+        "0": 0,
+        "1": 32,
+        "2": 1,
+        "3": 12,
+        "4": 42,
+        "5": 2147483649,
+        "6": 0,
+        "7": 65520,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0
+      },
+      "reference": "shipped r1 linux-x86_64 binary vs r2 source build"
+    }
+  ]
+}

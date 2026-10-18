@@ -1,0 +1,507 @@
+{
+  "checksum.bridge": {
+    "module": "mica_crc_mmio",
+    "ports": {
+      "busy_i": {
+        "direction": "input",
+        "net": "crc_busy",
+        "width": 1
+      },
+      "byte_o": {
+        "direction": "output",
+        "net": "crc_byte",
+        "width": 8
+      },
+      "byte_ready_i": {
+        "direction": "input",
+        "net": "crc_byte_ready",
+        "width": 1
+      },
+      "byte_valid_o": {
+        "direction": "output",
+        "net": "crc_push",
+        "width": 1
+      },
+      "clear_o": {
+        "direction": "output",
+        "net": "crc_clear",
+        "width": 1
+      },
+      "clk_i": {
+        "direction": "input",
+        "net": "clk_i",
+        "width": 1
+      },
+      "count_i": {
+        "direction": "input",
+        "net": "crc_count",
+        "width": 32
+      },
+      "crc_i": {
+        "direction": "input",
+        "net": "crc_result",
+        "width": 32
+      },
+      "req_addr": {
+        "direction": "input",
+        "net": "constant 33323130",
+        "width": 4
+      },
+      "req_ready": {
+        "direction": "output",
+        "net": "crc_ready",
+        "width": 1
+      },
+      "req_size": {
+        "direction": "input",
+        "net": "size",
+        "width": 3
+      },
+      "req_valid": {
+        "direction": "input",
+        "net": "$mica_soc.sv:112$logic_and$2175_Y",
+        "width": 1
+      },
+      "req_wdata": {
+        "direction": "input",
+        "net": "unshifted",
+        "width": 32
+      },
+      "req_write": {
+        "direction": "input",
+        "net": "dw",
+        "width": 1
+      },
+      "rsp_error": {
+        "direction": "output",
+        "net": "crc_error",
+        "width": 1
+      },
+      "rsp_rdata": {
+        "direction": "output",
+        "net": "crc_data",
+        "width": 32
+      },
+      "rsp_ready": {
+        "direction": "input",
+        "net": "dsr",
+        "width": 1
+      },
+      "rsp_valid": {
+        "direction": "output",
+        "net": "crc_valid",
+        "width": 1
+      },
+      "rst_ni": {
+        "direction": "input",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "checksum.engine": {
+    "module": "mica_crc32",
+    "ports": {
+      "busy_o": {
+        "direction": "output",
+        "net": "crc_busy",
+        "width": 1
+      },
+      "byte_i": {
+        "direction": "input",
+        "net": "crc_byte",
+        "width": 8
+      },
+      "byte_ready_o": {
+        "direction": "output",
+        "net": "crc_byte_ready",
+        "width": 1
+      },
+      "byte_valid_i": {
+        "direction": "input",
+        "net": "crc_push",
+        "width": 1
+      },
+      "clear_i": {
+        "direction": "input",
+        "net": "crc_clear",
+        "width": 1
+      },
+      "clk_i": {
+        "direction": "input",
+        "net": "clk_i",
+        "width": 1
+      },
+      "count_o": {
+        "direction": "output",
+        "net": "crc_count",
+        "width": 32
+      },
+      "crc_o": {
+        "direction": "output",
+        "net": "crc_result",
+        "width": 32
+      },
+      "rst_ni": {
+        "direction": "input",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "core": {
+    "module": "mica_core_txn",
+    "ports": {
+      "clk_i": {
+        "direction": "input",
+        "net": "clk_i",
+        "width": 1
+      },
+      "d_req_addr": {
+        "direction": "output",
+        "net": "da",
+        "width": 32
+      },
+      "d_req_ready": {
+        "direction": "input",
+        "net": "dr",
+        "width": 1
+      },
+      "d_req_size": {
+        "direction": "output",
+        "net": "size",
+        "width": 3
+      },
+      "d_req_valid": {
+        "direction": "output",
+        "net": "dv",
+        "width": 1
+      },
+      "d_req_wdata": {
+        "direction": "output",
+        "net": "wd",
+        "width": 32
+      },
+      "d_req_write": {
+        "direction": "output",
+        "net": "dw",
+        "width": 1
+      },
+      "d_req_wstrb": {
+        "direction": "output",
+        "net": "strb",
+        "width": 4
+      },
+      "d_rsp_error": {
+        "direction": "input",
+        "net": "dse",
+        "width": 1
+      },
+      "d_rsp_rdata": {
+        "direction": "input",
+        "net": "rd",
+        "width": 32
+      },
+      "d_rsp_ready": {
+        "direction": "output",
+        "net": "dsr",
+        "width": 1
+      },
+      "d_rsp_valid": {
+        "direction": "input",
+        "net": "ds",
+        "width": 1
+      },
+      "debug_a0_o": {
+        "direction": "output",
+        "net": "a0",
+        "width": 32
+      },
+      "fault_o": {
+        "direction": "output",
+        "net": "fault_o",
+        "width": 1
+      },
+      "halt_o": {
+        "direction": "output",
+        "net": "halted_o",
+        "width": 1
+      },
+      "i_req_addr": {
+        "direction": "output",
+        "net": "ia",
+        "width": 32
+      },
+      "i_req_ready": {
+        "direction": "input",
+        "net": "ir",
+        "width": 1
+      },
+      "i_req_valid": {
+        "direction": "output",
+        "net": "iv",
+        "width": 1
+      },
+      "i_rsp_error": {
+        "direction": "input",
+        "net": "se",
+        "width": 1
+      },
+      "i_rsp_rdata": {
+        "direction": "input",
+        "net": "insn",
+        "width": 32
+      },
+      "i_rsp_ready": {
+        "direction": "output",
+        "net": "sr",
+        "width": 1
+      },
+      "i_rsp_valid": {
+        "direction": "input",
+        "net": "sv",
+        "width": 1
+      },
+      "irq_i": {
+        "direction": "input",
+        "net": "$mica_soc.sv:83$logic_or$2173_Y",
+        "width": 1
+      },
+      "pc_o": {
+        "direction": "output",
+        "net": "pc",
+        "width": 32
+      },
+      "rst_ni": {
+        "direction": "input",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "ram": {
+    "module": "mica_sram_txn",
+    "ports": {
+      "clk_i": {
+        "direction": "input",
+        "net": "clk_i",
+        "width": 1
+      },
+      "d_req_addr": {
+        "direction": "input",
+        "net": "da",
+        "width": 32
+      },
+      "d_req_ready": {
+        "direction": "output",
+        "net": "ram_ready",
+        "width": 1
+      },
+      "d_req_size": {
+        "direction": "input",
+        "net": "size",
+        "width": 3
+      },
+      "d_req_valid": {
+        "direction": "input",
+        "net": "$mica_soc.sv:95$logic_and$2174_Y",
+        "width": 1
+      },
+      "d_req_wdata": {
+        "direction": "input",
+        "net": "wd",
+        "width": 32
+      },
+      "d_req_write": {
+        "direction": "input",
+        "net": "dw",
+        "width": 1
+      },
+      "d_req_wstrb": {
+        "direction": "input",
+        "net": "strb",
+        "width": 4
+      },
+      "d_rsp_error": {
+        "direction": "output",
+        "net": "ram_error",
+        "width": 1
+      },
+      "d_rsp_rdata": {
+        "direction": "output",
+        "net": "ram_data",
+        "width": 32
+      },
+      "d_rsp_ready": {
+        "direction": "input",
+        "net": "dsr",
+        "width": 1
+      },
+      "d_rsp_valid": {
+        "direction": "output",
+        "net": "ram_valid",
+        "width": 1
+      },
+      "i_req_addr": {
+        "direction": "input",
+        "net": "ia",
+        "width": 32
+      },
+      "i_req_ready": {
+        "direction": "output",
+        "net": "ir",
+        "width": 1
+      },
+      "i_req_valid": {
+        "direction": "input",
+        "net": "iv",
+        "width": 1
+      },
+      "i_rsp_error": {
+        "direction": "output",
+        "net": "se",
+        "width": 1
+      },
+      "i_rsp_rdata": {
+        "direction": "output",
+        "net": "insn",
+        "width": 32
+      },
+      "i_rsp_ready": {
+        "direction": "input",
+        "net": "sr",
+        "width": 1
+      },
+      "i_rsp_valid": {
+        "direction": "output",
+        "net": "sv",
+        "width": 1
+      },
+      "rst_ni": {
+        "direction": "input",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "receive.fifo": {
+    "module": "mica_sync_fifo",
+    "ports": {
+      "clk_i": {
+        "direction": "input",
+        "net": "clk_i",
+        "width": 1
+      },
+      "level_o": {
+        "direction": "output",
+        "net": "rx_level",
+        "width": 5
+      },
+      "pop_data_o": {
+        "direction": "output",
+        "net": "rx_front",
+        "width": 8
+      },
+      "pop_ready_i": {
+        "direction": "input",
+        "net": "rx_pop",
+        "width": 1
+      },
+      "pop_valid_o": {
+        "direction": "output",
+        "net": "rx_available",
+        "width": 1
+      },
+      "push_data_i": {
+        "direction": "input",
+        "net": "rx_byte",
+        "width": 8
+      },
+      "push_ready_o": {
+        "direction": "output",
+        "net": "rx_ready",
+        "width": 1
+      },
+      "push_valid_i": {
+        "direction": "input",
+        "net": "rx_valid",
+        "width": 1
+      },
+      "rst_ni": {
+        "direction": "input",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "receive.rx": {
+    "module": "mica_uart_rx",
+    "ports": {
+      "byte_o": {
+        "direction": "output",
+        "net": "rx_byte",
+        "width": 8
+      },
+      "byte_valid_o": {
+        "direction": "output",
+        "net": "rx_valid",
+        "width": 1
+      },
+      "clk_i": {
+        "direction": "input",
+        "net": "clk_i",
+        "width": 1
+      },
+      "framing_error_o": {
+        "direction": "output",
+        "net": "rx_error",
+        "width": 1
+      },
+      "rst_ni": {
+        "direction": "input",
+        "net": "rst_ni",
+        "width": 1
+      },
+      "uart_rx_i": {
+        "direction": "input",
+        "net": "uart_rx_i",
+        "width": 1
+      }
+    }
+  },
+  "uart": {
+    "module": "mica_uart_tx",
+    "ports": {
+      "busy_o": {
+        "direction": "output",
+        "net": "uart_busy",
+        "width": 1
+      },
+      "clk_i": {
+        "direction": "input",
+        "net": "clk_i",
+        "width": 1
+      },
+      "data_i": {
+        "direction": "input",
+        "net": "uart_byte",
+        "width": 8
+      },
+      "rst_ni": {
+        "direction": "input",
+        "net": "rst_ni",
+        "width": 1
+      },
+      "send_i": {
+        "direction": "input",
+        "net": "uart_send",
+        "width": 1
+      },
+      "uart_tx_o": {
+        "direction": "output",
+        "net": "uart_tx_o",
+        "width": 1
+      }
+    }
+  }
+}

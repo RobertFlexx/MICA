@@ -1,32 +1,21 @@
-# MICA 1.0 status
+# MICA 1.0 engineering r2 status
 
-## Run successfully
+| Area | Implemented and exercised | Remaining acceptance work |
+| --- | --- | --- |
+| Scalar ISA | Normative32/64-bit encodings, M/F/B/T, profile/CSR discovery; frozen binaries | Exhaustive long-encoding execution coverage |
+| Toolchain | Seven C++23 tools, real ELF image objects, nine relocations, linking, inspection, conversion | Independent sections/NOBITS, richer parser/diagnostics, relaxation, general ELF compatibility |
+| Emulator | Reference, existing short fast interpreter/count-loop translator, precise traps, timer, traces, CLI debugger | General JIT, cycle-accurate platform engine, GDB RSP, multicore simulation |
+| RTL | Transactional scalar reference,8/16 registers,32/64-bit data, precise commit/traps, fetch reuse | Pipelined implementation, user/MPU, vector/atomic/multicore hardware |
+| Memory | Variable-latency core protocol, faults, stalls/reset tests, synchronous byte-write Verilog SRAM | External fabric bridges, coherent DMA, caches |
+| Firmware | Linked startup/CRC/UART, scalar FIR, GPIO/timer self-test, two-task timer scheduler, CRC/RX interrupt echo | General RTOS qualification, protected tasks, ROM-copy startup, C compiler/libc |
+| Languages | SystemVerilog CPU/SoC, portable Verilog SRAM/UART RX/FIFO, GHDL VHDL watchdog/CRC with converted-netlist SoC tests | Vendor mixed-language physical integration |
+| Verification | GCC/Clang sanitizers, randomized retirement comparison,14 frozen images, two small proofs, bounded FIFO check, fuzz target | Whole-CPU formal proof, exhaustive interrupt placements, extended fuzz campaigns |
+| FPGA | Arty A7-100 pins checked against vendor XDC, SoC/UART simulation, Yosys mapped profiles | Vivado synthesis/P&R/timing execution, physical board boot and power |
+| Research | Measured fetch transactions/cycles and standalone ALU activity/area | Physical energy/timing, independent ISA baselines, banking/events/loop hardware |
+| Release | Generated ISA/drawings, editable DOT/SVG/PDF, CI commands and packaging | Target GitHub/macOS runs, external engineering review |
 
-- GCC C++23 Release build and Clang C++23 sanitizer build.
-- Three CTest targets: integration, frozen firmware compatibility, accelerated-engine differential tests.
-- Ten unchanged firmware images against shipped binary fixtures.
-- Randomized 32/64-bit scalar behavior, counted-loop translation, extension fallback, assembler negative cases, and the new freestanding reduction example.
-- Four new Graphviz engineering drawings rendered to SVG and PNG.
-- Local benchmark script with checked machine state, median-of-three results on AMD EPYC 9V74.
-
-## Supplied but not verified locally
-
-- The existing scalar SystemVerilog CPU and its testbench suite.
-- A standalone Verilog synchronous SRAM and testbench.
-- A standalone VHDL-2008 watchdog and testbench.
-- Continuous integration jobs for HDL simulation and SRAM synthesis. GitHub Actions will need to run them before a green CI badge is warranted.
-
-## Explicitly missing
-
-- A memory response handshake, precise bus faults and an FPGA BRAM-integrated CPU.
-- Actual physical Fmax, dynamic/leakage power, energy/task and a board boot test.
-- Production quality privilege/MPU, coherent atomic multicore, SIMD hardware, an ELF toolchain or ISO C/C++ runtime.
-- A general JIT compiler. The native translator covers only one safe counted loop shape.
-
-## Engineering priorities
-
-1. Run HDL CI and fix anything it flags.
-2. Introduce a wait-state capable, precisely retiring fetch/LSU interface.
-3. Use reference-model co-simulation to test every RTL instruction after that interface change.
-4. Build a fair on-board energy and timing comparison to Ibex/CV32E40P/PicoRV32.
-5. Add relocatable ELF objects, a linker, debugger protocol, compiler ABI and proper libc before using the word production.
+The implementation report contains exact commands, measurements, logs and known
+limitations. No architecture/version number was changed. Machine code remains
+MICA 1.0. MICA-MP is a non-runnable proposal; MICA-DSP is emulator-only. Hardware
+completion, one-IPC performance, physical timing closure and energy superiority
+are not claimed. The assembly runtime is not an ISO C/C++ standard library.

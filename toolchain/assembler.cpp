@@ -20,6 +20,9 @@
 #include <string_view>
 #include <unordered_map>
 #include <vector>
+#include <set>
+#include "common/elf.hpp"
+#include "../isa/generated/profiles.hpp"
 namespace fs = std::filesystem;
 using U = std::uint64_t;
 using S = std::int64_t;
@@ -126,6 +129,7 @@ class Expression {
   size_t p = 0;
   const Symbols &sym;
   bool unknown_ok;
+  unsigned depth = 0;
   void ws() {
     while (p < s.size() && std::isspace(static_cast<unsigned char>(s[p])))
       p++;
@@ -139,6 +143,14 @@ class Expression {
     return false;
   }
   U atom() {
+    if (++depth > 128)
+      throw Error("expression nesting exceeds 128");
+    struct Guard {
+      unsigned &n;
+      ~Guard() {
+        --n;
+      }
+    } guard{depth};
     ws();
     if (eat("(")) {
       U v = expr(0);
@@ -259,6 +271,8 @@ public:
   Expression(std::string str, const Symbols &symbols, bool unknown)
       : s(std::move(str)), sym(symbols), unknown_ok(unknown) {}
   U get() {
+    if (s.size() > 16384)
+      throw Error("expression exceeds 16384 bytes");
     auto n = expr(0);
     ws();
     if (p != s.size())
@@ -354,60 +368,7 @@ static Bytes wide(int op, int rd, U imm) {
 static void join(Bytes &to, const Bytes &src) {
   to.insert(to.end(), src.begin(), src.end());
 }
-static const std::map<std::string, int> R = {
-    {"nop", 0},    {"mov", 1},   {"add", 2},     {"sub", 3},  {"and", 4},
-    {"or", 5},     {"xor", 6},   {"shl", 7},     {"shr", 8},  {"sar", 9},
-    {"slt", 10},   {"sltu", 11}, {"seq", 12},    {"jr", 13},  {"jalr", 14},
-    {"not", 15},   {"neg", 16},  {"mul", 17},    {"wfi", 18}, {"fence", 19},
-    {"ecall", 20}, {"eret", 21}, {"fence.i", 22}};
-static const std::map<std::string, int> I = {
-    {"li8", 0},  {"addi", 1}, {"andi", 2}, {"shli", 3},
-    {"shri", 4}, {"bz", 5},   {"bnz", 6},  {"b", 7}};
-static const std::map<std::string, std::pair<int, int>> MEM = {
-    {"ldw", {0, 4}}, {"stw", {1, 4}}, {"ldh", {2, 2}},  {"sth", {3, 2}},
-    {"ldb", {4, 1}}, {"stb", {5, 1}}, {"ldhu", {6, 2}}, {"ldbu", {7, 1}}};
-static const std::map<std::string, int> ALU = {
-    {"add3", 0}, {"sub3", 1},  {"and3", 2},  {"or3", 3},
-    {"xor3", 4}, {"shl3", 5},  {"shr3", 6},  {"sar3", 7},
-    {"slt3", 8}, {"sltu3", 9}, {"seq3", 10}, {"mul3", 11}};
-static const std::map<std::string, int> IMM = {
-    {"add3i", 0}, {"and3i", 1}, {"or3i", 2}, {"xor3i", 3},
-    {"shl3i", 4}, {"shr3i", 5}, {"sar3i", 6}};
-static const std::map<std::string, int> WIDE = {
-    {"movhi", 0}, {"movlo", 1}, {"li16", 2}};
-static const std::map<std::string, int> BR = {
-    {"beq", 0}, {"bne", 1}, {"blt", 2}, {"bge", 3}, {"bltu", 4}, {"bgeu", 5}};
-static const std::map<std::string, int> SYS = {
-    {"csrr", 0},     {"csrw", 1},      {"lr.w", 2}, {"sc.w", 3},
-    {"amoadd.w", 4}, {"amoswap.w", 5}, {"lr.q", 6}, {"sc.q", 7},
-    {"amoadd.q", 8}, {"amoswap.q", 9}};
-static const std::map<std::string, int> BITOPS = {
-    {"clz3", 0},   {"ctz3", 1},    {"popcnt3", 2}, {"rev8", 3},
-    {"ror3", 4},   {"rol3", 5},    {"min3", 6},    {"max3", 7},
-    {"minu3", 8},  {"maxu3", 9},   {"bset3", 10},  {"bclr3", 11},
-    {"binv3", 12}, {"bext3", 13},  {"andn3", 14},  {"orn3", 15},
-    {"xnor3", 16}, {"sextb3", 17}, {"sexth3", 18}, {"zexth3", 19}};
-static const std::map<std::string, int> W32 = {
-    {"addw3", 0}, {"subw3", 1}, {"shlw3", 2}, {"shrw3", 3}, {"sarw3", 4},
-    {"andw3", 5}, {"orw3", 6},  {"xorw3", 7}, {"mulw3", 8}};
-static const std::map<std::string, int> FLOW = {
-    {"ldpi.b", 0}, {"ldpi.h", 1}, {"ldpi.w", 2}, {"ldpi.q", 3},
-    {"stpi.b", 4}, {"stpi.h", 5}, {"stpi.w", 6}, {"stpi.q", 7}};
-static const std::map<std::string, int> MX = {
-    {"ldq", 0}, {"stq", 1}, {"ldws", 2}, {"ldwu", 3}, {"ldbs", 4}, {"ldhs", 5}};
-static const std::map<std::string, int> V = {
-    {"vadd", 0},      {"vsub", 1},     {"vmul", 2},    {"vand", 3},
-    {"vor", 4},       {"vxor", 5},     {"vshl", 6},    {"vshr", 7},
-    {"vsar", 8},      {"vmin", 9},     {"vmax", 10},   {"vcmpeq", 11},
-    {"vcmplt", 12},   {"vabs", 13},    {"vneg", 14},   {"vdot8", 15},
-    {"vld", 16},      {"vst", 17},     {"vziplo", 18}, {"vziphi", 19},
-    {"vunziplo", 20}, {"vunziphi", 21}};
-static const std::map<std::string, int> CSRS = {
-    {"coreid", 0},   {"status", 1},      {"epc", 2},          {"cause", 3},
-    {"tvec", 4},     {"ie", 5},          {"ip", 6},           {"cycle_lo", 7},
-    {"cycle_hi", 8}, {"timer_lo", 9},    {"timer_hi", 10},    {"cmp_lo", 11},
-    {"cmp_hi", 12},  {"vec_dirty", 13},  {"vec_enabled", 14}, {"features", 15},
-    {"arch", 16},    {"instret_lo", 17}, {"instret_hi", 18}};
+#include "../isa/generated/assembler.inc"
 struct Src {
   std::string filename, text;
   int line = 0;
@@ -426,9 +387,13 @@ struct Macro {
 class Assembler {
   int xlen = 32;
   bool xreg = false, simd = false, atomic = false, multiply = false,
-       flow = false, bitops = false;
+       flow = false, bitops = false, traps = false;
   U unique = 0;
-  size_t expanded_lines = 0;
+  bool object_mode = false;
+  std::set<std::string> label_names, global_names, weak_names, external_names;
+  std::vector<mica::elf::Reloc> relocations;
+  size_t expanded_lines = 0, expanded_bytes = 0;
+  Symbols pre_sy;
   std::vector<fs::path> include_stack;
   std::map<std::string, Macro> macros;
   std::vector<Line> lines;
@@ -441,6 +406,8 @@ class Assembler {
   std::vector<Src> read(const fs::path &path, int depth) {
     if (depth > 12)
       throw Error(".include depth exceeds 12");
+    if (fs::file_size(path) > 8 * 1024 * 1024)
+      throw Error("source exceeds 8MiB: " + path.string());
     std::ifstream f(path);
     if (!f)
       throw Error("cannot open " + path.string());
@@ -448,6 +415,8 @@ class Assembler {
     std::string s;
     int n = 0;
     while (std::getline(f, s)) {
+      if (s.size() > 65536)
+        throw Error("source line exceeds 65536 bytes");
       v.push_back({path.string(), s, ++n});
       if (v.size() > 100000)
         throw Error("source too large");
@@ -458,11 +427,49 @@ class Assembler {
     if (depth > 24)
       throw Error("macro/repeat nesting too deep");
     std::vector<Src> out;
+    std::vector<bool> conditions;
+    std::vector<bool> seen_else;
     for (size_t i = 0; i < input.size(); i++) {
       if (++expanded_lines > 200000)
         throw Error("expanded source exceeds 200000 lines");
       const auto &src = input[i];
+      expanded_bytes += src.text.size();
+      if (expanded_bytes > 32 * 1024 * 1024)
+        throw Error("expanded source exceeds 32MiB");
       auto stripped = clean(src.text), w = word(src.text);
+      if (w == ".if") {
+        if (conditions.size() >= 64)
+          throw Error("conditional nesting exceeds 64");
+        bool active = std::all_of(conditions.begin(), conditions.end(),
+                                  [](bool x) { return x; });
+        conditions.push_back(active &&
+                             val(trim(stripped.substr(3)), pre_sy, false) != 0);
+        seen_else.push_back(false);
+        continue;
+      }
+      if (w == ".else" || w == ".endif") {
+        if (conditions.empty())
+          throw Error("unmatched " + w);
+        if (w == ".endif") {
+          conditions.pop_back();
+          seen_else.pop_back();
+        } else {
+          if (seen_else.back())
+            throw Error("duplicate .else");
+          seen_else.back() = true;
+          conditions.back() = !conditions.back();
+        }
+        continue;
+      }
+      if (!std::all_of(conditions.begin(), conditions.end(),
+                       [](bool x) { return x; }))
+        continue;
+      if (w == ".const" || w == ".equ" || w == ".set") {
+        auto args = split(trim(stripped.substr(w.size())));
+        if (args.size() != 2)
+          throw Error(w + " name, expression expected");
+        pre_sy[args[0]] = val(args[1], pre_sy, false);
+      }
       if (w.empty()) {
         out.push_back(src);
         continue;
@@ -472,8 +479,9 @@ class Assembler {
         if (arg.size() < 2 || arg.front() != '"' || arg.back() != '"')
           throw Error(".include expects quoted relative path");
         auto path = fs::weakly_canonical(fs::path(src.filename).parent_path() /
-                    arg.substr(1, arg.size() - 2));
-        if (std::find(include_stack.begin(), include_stack.end(), path) != include_stack.end())
+                                         arg.substr(1, arg.size() - 2));
+        if (std::find(include_stack.begin(), include_stack.end(), path) !=
+            include_stack.end())
           throw Error("recursive include: " + path.string());
         include_stack.push_back(path);
         auto part = expand(read(path, depth + 1), depth + 1);
@@ -509,7 +517,7 @@ class Assembler {
                                           : split(trim(tokens.substr(sp + 1)));
           macros[name] = {params, body};
         } else {
-          U count = val(trim(stripped.substr(7)), sy, false);
+          U count = val(trim(stripped.substr(7)), pre_sy, false);
           if (count > 1024)
             throw Error(".repeat exceeds 1024");
           for (U n = 0; n < count; n++) {
@@ -544,6 +552,8 @@ class Assembler {
       if (out.size() > 150000)
         throw Error("expansion exceeds 150000 lines");
     }
+    if (!conditions.empty())
+      throw Error("unterminated .if");
     return out;
   }
   void parse(const std::vector<Src> &src) {
@@ -557,7 +567,7 @@ class Assembler {
       std::smatch match;
       if (std::regex_search(t, match, label)) {
         l.label = match[1];
-        t = trim(t.substr(match.length()));
+        t = trim(t.substr(size_t(match.length())));
       }
       if (!t.empty()) {
         auto sp = t.find_first_of(" \t");
@@ -573,6 +583,14 @@ class Assembler {
       throw Error(l.op + " expects " + std::to_string(n) + " operands");
   }
   U num(const std::string &s, bool sizing) {
+    if (object_mode && !sizing) {
+      const std::regex identifier("[A-Za-z_.$][A-Za-z0-9_.$]*");
+      for (auto i = std::sregex_iterator(s.begin(), s.end(), identifier);
+           i != std::sregex_iterator(); ++i)
+        if (label_names.contains(i->str()) || external_names.contains(i->str()))
+          throw Error(
+              "unsupported relocation expression; use symbol +/- constant with li32/li64, a branch, .word or .quad");
+    }
     return val(s, sy, sizing);
   }
   Bytes enc(Line &l, bool sizing) {
@@ -581,6 +599,97 @@ class Assembler {
     U pc = l.pc;
     if (op.empty())
       return {};
+    if (op == ".global" || op == ".globl" || op == ".weak" || op == ".extern") {
+      if (!object_mode)
+        throw Error(op + " requires -c (ELF object output)");
+      if (a.empty())
+        throw Error(op + " requires symbol names");
+      for (const auto &name : a) {
+        if (!std::regex_match(name, std::regex("[A-Za-z_.$][A-Za-z0-9_.$]*")))
+          throw Error("invalid symbol name: " + name);
+        if (op == ".weak")
+          weak_names.insert(name);
+        else if (op == ".extern")
+          external_names.insert(name);
+        else
+          global_names.insert(name);
+      }
+      return {};
+    }
+    if (object_mode && !sizing) {
+      auto expression = [&](const std::string &text)
+          -> std::optional<std::pair<std::string, S>> {
+        std::smatch m;
+        if (!std::regex_match(
+                text, m,
+                std::regex(
+                    R"(^\s*([A-Za-z_.$][A-Za-z0-9_.$]*)(?:\s*([+-])\s*(.+))?\s*$)")))
+          return std::nullopt;
+        std::string name = m[1];
+        if (sy.contains(name) && !label_names.contains(name))
+          return std::nullopt;
+        U addend = m[3].matched ? val(m[3], sy, false) : 0;
+        if (m[2] == "-")
+          addend = U(0) - addend;
+        return std::pair{name, std::bit_cast<S>(addend)};
+      };
+      auto add_reloc = [&](const std::string &text, unsigned kind, U offset) {
+        auto e = expression(text);
+        if (!e)
+          return false;
+        if (!sy.contains(e->first))
+          external_names.insert(e->first);
+        relocations.push_back({offset, kind, e->first, e->second});
+        return true;
+      };
+      if ((op == ".word" || op == ".quad") && !a.empty()) {
+        Bytes result;
+        const int bytes = op == ".word" ? 4 : 8;
+        for (size_t i = 0; i < a.size(); i++) {
+          if (add_reloc(a[i], bytes == 4 ? mica::elf::ABS32 : mica::elf::ABS64,
+                        pc + U(i * size_t(bytes))))
+            append(result, 0, bytes);
+          else {
+            U value = num(a[i], false);
+            if (bytes == 4 && value > 0xffffffffULL &&
+                std::bit_cast<S>(value) < -2147483648LL)
+              throw Error("data value does not fit .word");
+            if (bytes == 4 && value > 0xffffffffULL &&
+                std::bit_cast<S>(value) >= 0)
+              throw Error("data value does not fit .word");
+            append(result, value, bytes);
+          }
+        }
+        return result;
+      }
+      unsigned kind = 0;
+      size_t operand = 0;
+      if (op == "li32" || op == "li64") {
+        kind = op == "li32" ? mica::elf::LI32 : mica::elf::LI64;
+        operand = 1;
+      } else if (op == "j" || op == "call")
+        kind = mica::elf::PCREL24;
+      else if (op == "b")
+        kind = mica::elf::PCREL11;
+      else if (op == "bz" || op == "bnz") {
+        kind = mica::elf::PCREL8;
+        operand = 1;
+      } else if (op == "dbnz") {
+        kind = mica::elf::PCREL20;
+        operand = 1;
+      } else if (BR.contains(op)) {
+        kind = mica::elf::PCREL14;
+        operand = 2;
+      }
+      if (kind && operand < a.size() && add_reloc(a[operand], kind, pc)) {
+        Line placeholder = l;
+        placeholder.a[operand] =
+            std::to_string(kind <= mica::elf::LI64
+                               ? 0
+                               : pc + (kind <= mica::elf::PCREL11 ? 2 : 4));
+        return enc(placeholder, false);
+      }
+    }
     if (op == ".arch") {
       nargs(l, 1);
       if (a[0] != (xlen == 64 ? "mica64" : "mica32"))
@@ -591,10 +700,10 @@ class Assembler {
       nargs(l, 0);
       return {};
     }
-    if (op == ".equ" || op == ".set") {
+    if (op == ".equ" || op == ".const" || op == ".set") {
       nargs(l, 2);
       if (sizing) {
-        if (op == ".equ" && sy.contains(a[0]))
+        if (op != ".set" && sy.contains(a[0]))
           throw Error("duplicate constant " + a[0]);
         sy[a[0]] = num(a[1], false);
       }
@@ -610,8 +719,22 @@ class Assembler {
       return {};
     }
     if (op == ".error") {
-      if (a.size() != 1) throw Error(".error expects one string");
+      if (a.size() != 1)
+        throw Error(".error expects one string");
       throw Error("source requested error: " + a[0]);
+    }
+    if (op == ".incbin") {
+      nargs(l, 1);
+      if (a[0].size() < 2 || a[0].front() != '"' || a[0].back() != '"')
+        throw Error(".incbin expects a quoted path");
+      auto path = fs::path(l.src.filename).parent_path() /
+                  a[0].substr(1, a[0].size() - 2);
+      if (fs::file_size(path) > 16 * 1024 * 1024)
+        throw Error(".incbin exceeds 16MiB");
+      std::ifstream input(path, std::ios::binary);
+      if (!input)
+        throw Error("cannot open binary include");
+      return Bytes(std::istreambuf_iterator<char>(input), {});
     }
     if (op == ".align") {
       nargs(l, 1);
@@ -781,6 +904,18 @@ class Assembler {
       }
       return i16(it->second, d, n);
     }
+    if (object_mode && !sizing)
+      for (const auto &arg : a)
+        if (!arg.empty() && arg.front() == '[') {
+          const std::regex identifier("[A-Za-z_.$][A-Za-z0-9_.$]*");
+          for (auto i =
+                   std::sregex_iterator(arg.begin(), arg.end(), identifier);
+               i != std::sregex_iterator(); ++i)
+            if (label_names.contains(i->str()) ||
+                external_names.contains(i->str()))
+              throw Error(
+                  "symbolic memory displacement relocation is unsupported; load its address with li32/li64");
+        }
     if (auto it = MEM.find(op); it != MEM.end()) {
       nargs(l, 2);
       int d = reg(a[0], false);
@@ -925,12 +1060,6 @@ class Assembler {
       auto [base, off] = mem(a[1], sy, sizing, xreg);
       if (!sizing) {
         range(off, 14, true, "64-bit memory byte offset");
-        int align = op == "ldq" || op == "stq"     ? 8
-                    : op == "ldws" || op == "ldwu" ? 4
-                    : op == "ldhs"                 ? 2
-                                                   : 1;
-        if (std::bit_cast<S>(off) % align)
-          throw Error("unaligned " + op + " offset");
       }
       return e32(8, U(it->second << 22) | U(d << 18) | U(base << 14) |
                         (off & 0x3fff));
@@ -1029,16 +1158,52 @@ class Assembler {
   }
 
 public:
-  Assembler(int w, bool xr, bool v, bool a, bool m, bool f, bool bits)
+  Assembler(int w, bool xr, bool v, bool a, bool m, bool f, bool bits,
+            bool trap = false)
       : xlen(w), xreg(xr), simd(v), atomic(a), multiply(m), flow(f),
-        bitops(bits) {}
-  const Symbols& symbols() const { return sy; }
+        bitops(bits), traps(trap) {}
+  const Symbols &symbols() const {
+    return sy;
+  }
+  void set_object_mode(bool enabled) {
+    object_mode = enabled;
+  }
+  mica::elf::Object object(const Bytes &bytes) const {
+    mica::elf::Object o;
+    o.width = unsigned(xlen);
+    o.image = bytes;
+    o.relocs = relocations;
+    o.features = unsigned(xreg) | unsigned(multiply) << 1 |
+                 unsigned(flow) << 2 | unsigned(atomic) << 3 |
+                 unsigned(simd) << 4 | unsigned(bitops) << 5 |
+                 unsigned(traps) << 6;
+    for (const auto &[name, value] : sy) {
+      unsigned bind = weak_names.contains(name)     ? 2u
+                      : global_names.contains(name) ? 1u
+                                                    : 0u;
+      o.symbols.push_back(
+          {name, value, bind, label_names.contains(name) ? 1u : 0xfff1u});
+    }
+    std::set<std::string> undefined = external_names;
+    undefined.insert(global_names.begin(), global_names.end());
+    undefined.insert(weak_names.begin(), weak_names.end());
+    for (const auto &name : undefined)
+      if (!sy.contains(name))
+        o.symbols.push_back({name, 0, weak_names.contains(name) ? 2u : 1u, 0});
+    return o;
+  }
   std::pair<Bytes, std::vector<Line>> assemble(const fs::path &path) {
     lines.clear();
     sy.clear();
+    label_names.clear();
+    global_names.clear();
+    weak_names.clear();
+    external_names.clear();
+    relocations.clear();
     macros.clear();
     unique = 0;
-    expanded_lines = 0;
+    expanded_lines = expanded_bytes = 0;
+    pre_sy.clear();
     include_stack.clear();
     const auto absolute = fs::weakly_canonical(path);
     include_stack.push_back(absolute);
@@ -1052,6 +1217,7 @@ public:
           throw Error(l.src.filename + ":" + std::to_string(l.src.line) +
                       ": duplicate label " + l.label);
         sy[l.label] = pc;
+        label_names.insert(l.label);
       }
       try {
         auto b = enc(l, true);
@@ -1115,7 +1281,8 @@ int main(int argc, char **argv) {
   try {
     fs::path input, output, hex, listing, mapfile;
     int xlen = 32;
-    bool xr = false, v = false, a = false, m = false, fl = false, bit = false;
+    bool xr = false, v = false, a = false, m = false, fl = false, bit = false,
+         relocatable = false, trap = false;
     for (int i = 1; i < argc; i++) {
       std::string s = argv[i];
       auto next = [&]() {
@@ -1128,7 +1295,30 @@ int main(int argc, char **argv) {
         if (w != "32" && w != "64")
           throw Error("--xlen must be 32 or 64");
         xlen = std::stoi(w);
-      } else if (s == "--trap") {
+      } else if (s == "-c")
+        relocatable = true;
+      else if (s == "--trap") {
+        trap = true;
+      } else if (s == "--profile") {
+        auto name = next();
+        bool found = false;
+        for (const auto &profile : mica::profiles)
+          if (profile.name == name) {
+            if (!profile.runnable)
+              throw Error("profile is a proposal without an implementation");
+            xlen = profile.width;
+            unsigned f = profile.features;
+            xr = f & 1;
+            m = f & 2;
+            fl = f & 4;
+            a = f & 8;
+            v = f & 16;
+            bit = f & 32;
+            trap = f & 64;
+            found = true;
+          }
+        if (!found)
+          throw Error("unknown processor profile: " + name);
       } else if (s == "--bitops")
         bit = true;
       else if (s == "--flow")
@@ -1149,9 +1339,12 @@ int main(int argc, char **argv) {
         listing = next();
       else if (s == "--map")
         mapfile = next();
-      else if (s == "--help") {
+      else if (s == "--version") {
+        std::cout << "mica-as 1.0 engineering-r2\n";
+        return 0;
+      } else if (s == "--help") {
         std::cout
-            << "mica-as [--xlen 32|64] [--xreg] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [-o path] [--hex path] [--listing path] [--map path] file.mica\n";
+            << "mica-as [-c] [--profile MICA-C|MICA-E|MICA-64|MICA-DSP] [--xlen 32|64] [--xreg] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [-o path] [--hex path] [--listing path] [--map path] file.mica\n";
         return 0;
       } else if (s.starts_with('-'))
         throw Error("unknown flag: " + s);
@@ -1164,32 +1357,40 @@ int main(int argc, char **argv) {
       throw Error("missing source (use --help)");
     if (output.empty()) {
       output = input;
-      output.replace_extension(".bin");
+      output.replace_extension(relocatable ? ".o" : ".bin");
     }
-    Assembler assembler(xlen, xr, v, a, m, fl, bit);
+    if (relocatable && !hex.empty())
+      throw Error(
+          "--hex needs a flat image; link objects then use mica-objcopy");
+    Assembler assembler(xlen, xr, v, a, m, fl, bit, trap);
+    assembler.set_object_mode(relocatable);
     auto [bytes, lines] = assembler.assemble(input);
+    auto file_bytes =
+        relocatable ? mica::elf::encode(assembler.object(bytes)) : bytes;
     std::ofstream f(output, std::ios::binary);
     if (!f)
       throw Error("cannot write " + output.string());
-    f.write(reinterpret_cast<const char *>(bytes.data()),
-            std::streamsize(bytes.size()));
+    f.write(reinterpret_cast<const char *>(file_bytes.data()),
+            std::streamsize(file_bytes.size()));
     if (!f)
       throw Error("write failed");
     if (!hex.empty())
       write_intel_hex(hex, bytes);
     if (!mapfile.empty()) {
       std::ofstream map(mapfile);
-      if (!map) throw Error("cannot write symbol map");
+      if (!map)
+        throw Error("cannot write symbol map");
       std::map<U, std::vector<std::string>> by_address;
-      for (const auto& [name, address] : assembler.symbols())
+      for (const auto &[name, address] : assembler.symbols())
         by_address[address].push_back(name);
-      for (auto& [address, names] : by_address) {
+      for (auto &[address, names] : by_address) {
         std::sort(names.begin(), names.end());
-        for (const auto& name : names)
-          map << "0x" << std::hex << std::setw(8) << std::setfill('0') << address
-              << " " << name << "\n";
+        for (const auto &name : names)
+          map << "0x" << std::hex << std::setw(8) << std::setfill('0')
+              << address << " " << name << "\n";
       }
-      if (!map) throw Error("symbol map write failed");
+      if (!map)
+        throw Error("symbol map write failed");
     }
     if (!listing.empty()) {
       std::ofstream l(listing);

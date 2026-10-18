@@ -1,0 +1,3 @@
+OSS CAD Suite 2026-10-17, Icarus Verilog.
+Original make -C rtl ASM=../build/baseline/mica-as sim32: TIMEOUT after 90 seconds.
+Build completed; vvp failed to advance to testbench completion. Original RTL was not modified at this point.

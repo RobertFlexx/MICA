@@ -1,0 +1,1058 @@
+{
+  "isa": "MICA 1.0",
+  "engineering_revision": 2,
+  "formats": {
+    "R": {
+      "class": 0,
+      "fields": "op8[13:6] rd3[5:3] rs3[2:0]"
+    },
+    "I": {
+      "class": 1,
+      "fields": "op3[13:11] rd3[10:8] imm8[7:0]"
+    },
+    "MEM": {
+      "class": 2,
+      "fields": "op3[13:11] data3[10:8] base3[7:5] off5[4:0]"
+    },
+    "ALU": {
+      "major": 0,
+      "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]"
+    },
+    "IMM": {
+      "major": 1,
+      "fields": "op4[25:22] rd4[21:18] ra4[17:14] imm14[13:0]"
+    },
+    "WIDE": {
+      "major": 2,
+      "fields": "op6[25:20] rd4[19:16] imm16[15:0]"
+    },
+    "BR": {
+      "major": 3,
+      "fields": "op4[25:22] ra4[21:18] rb4[17:14] rel14[13:0]"
+    },
+    "J": {
+      "major": 4,
+      "fields": "op2[25:24] rel24[23:0]"
+    },
+    "SYS": {
+      "major": 5,
+      "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]"
+    },
+    "V": {
+      "major": 6,
+      "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]"
+    },
+    "W32": {
+      "major": 7,
+      "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]"
+    },
+    "MX": {
+      "major": 8,
+      "fields": "op4[25:22] data4[21:18] base4[17:14] off14[13:0]"
+    },
+    "LOOP": {
+      "major": 9,
+      "fields": "op2[25:24] counter4[23:20] rel20[19:0]"
+    },
+    "FLOW": {
+      "major": 10,
+      "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]"
+    },
+    "BITOPS": {
+      "major": 11,
+      "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]"
+    }
+  },
+  "groups": {
+    "R": [
+      {
+        "name": "nop",
+        "op": 0,
+        "semantics": "No state changes.",
+        "extension": "base"
+      },
+      {
+        "name": "mov",
+        "op": 1,
+        "semantics": "D = S.",
+        "extension": "base"
+      },
+      {
+        "name": "add",
+        "op": 2,
+        "semantics": "D = D + S.",
+        "extension": "base"
+      },
+      {
+        "name": "sub",
+        "op": 3,
+        "semantics": "D = D - S.",
+        "extension": "base"
+      },
+      {
+        "name": "and",
+        "op": 4,
+        "semantics": "D = D & S.",
+        "extension": "base"
+      },
+      {
+        "name": "or",
+        "op": 5,
+        "semantics": "D = D | S.",
+        "extension": "base"
+      },
+      {
+        "name": "xor",
+        "op": 6,
+        "semantics": "D = D ^ S.",
+        "extension": "base"
+      },
+      {
+        "name": "shl",
+        "op": 7,
+        "semantics": "D = D << (S & (XLEN-1)).",
+        "extension": "base"
+      },
+      {
+        "name": "shr",
+        "op": 8,
+        "semantics": "D = unsigned(D) >> (S & (XLEN-1)).",
+        "extension": "base"
+      },
+      {
+        "name": "sar",
+        "op": 9,
+        "semantics": "D = signed(D) >> (S & (XLEN-1)).",
+        "extension": "base"
+      },
+      {
+        "name": "slt",
+        "op": 10,
+        "semantics": "D = signed(D) < signed(S).",
+        "extension": "base"
+      },
+      {
+        "name": "sltu",
+        "op": 11,
+        "semantics": "D = unsigned(D) < unsigned(S).",
+        "extension": "base"
+      },
+      {
+        "name": "seq",
+        "op": 12,
+        "semantics": "D = D == S.",
+        "extension": "base"
+      },
+      {
+        "name": "jr",
+        "op": 13,
+        "semantics": "nextPC = D; reject odd target before side effects.",
+        "extension": "base"
+      },
+      {
+        "name": "jalr",
+        "op": 14,
+        "semantics": "target = D; x6 = sequentialPC; nextPC = target; reject odd target before writing x6.",
+        "extension": "base"
+      },
+      {
+        "name": "not",
+        "op": 15,
+        "semantics": "D = ~D.",
+        "extension": "base"
+      },
+      {
+        "name": "neg",
+        "op": 16,
+        "semantics": "D = 0-D.",
+        "extension": "base"
+      },
+      {
+        "name": "mul",
+        "op": 17,
+        "semantics": "D = low_XLEN(D*S).",
+        "extension": "M"
+      },
+      {
+        "name": "wfi",
+        "op": 18,
+        "semantics": "Retire and halt the current execution run.",
+        "extension": "base"
+      },
+      {
+        "name": "fence",
+        "op": 19,
+        "semantics": "Complete preceding memory operations before following operations.",
+        "extension": "base"
+      },
+      {
+        "name": "ecall",
+        "op": 20,
+        "semantics": "With T: enter cause 11 with EPC=sequentialPC. Without T: retire and halt.",
+        "extension": "base"
+      },
+      {
+        "name": "eret",
+        "op": 21,
+        "semantics": "Require T and active handler; nextPC=EPC, restore saved IE and clear handler state.",
+        "extension": "T"
+      },
+      {
+        "name": "fence.i",
+        "op": 22,
+        "semantics": "Synchronize instruction fetch with preceding stores; invalidate fetch reuse.",
+        "extension": "base"
+      }
+    ],
+    "I": [
+      {
+        "name": "li8",
+        "op": 0,
+        "semantics": "D = sext(imm8).",
+        "extension": "base"
+      },
+      {
+        "name": "addi",
+        "op": 1,
+        "semantics": "D = D + sext(imm8).",
+        "extension": "base"
+      },
+      {
+        "name": "andi",
+        "op": 2,
+        "semantics": "D = D & zext(imm8).",
+        "extension": "base"
+      },
+      {
+        "name": "shli",
+        "op": 3,
+        "semantics": "D = D << imm8; require imm8 < 32.",
+        "extension": "base"
+      },
+      {
+        "name": "shri",
+        "op": 4,
+        "semantics": "D = unsigned(D) >> imm8; require imm8 < 32.",
+        "extension": "base"
+      },
+      {
+        "name": "bz",
+        "op": 5,
+        "semantics": "If D==0: nextPC=sequentialPC+2*sext(imm8).",
+        "extension": "base"
+      },
+      {
+        "name": "bnz",
+        "op": 6,
+        "semantics": "If D!=0: nextPC=sequentialPC+2*sext(imm8).",
+        "extension": "base"
+      },
+      {
+        "name": "b",
+        "op": 7,
+        "semantics": "nextPC=sequentialPC+2*sext(imm11).",
+        "extension": "base"
+      }
+    ],
+    "MEM": [
+      {
+        "name": "ldw",
+        "op": 0,
+        "bytes": 4,
+        "semantics": "D=zext(load32(A)).",
+        "extension": "base"
+      },
+      {
+        "name": "stw",
+        "op": 1,
+        "bytes": 4,
+        "semantics": "store32(A,low32(D)).",
+        "extension": "base"
+      },
+      {
+        "name": "ldh",
+        "op": 2,
+        "bytes": 2,
+        "semantics": "D=sext(load16(A)).",
+        "extension": "base"
+      },
+      {
+        "name": "sth",
+        "op": 3,
+        "bytes": 2,
+        "semantics": "store16(A,low16(D)).",
+        "extension": "base"
+      },
+      {
+        "name": "ldb",
+        "op": 4,
+        "bytes": 1,
+        "semantics": "D=sext(load8(A)).",
+        "extension": "base"
+      },
+      {
+        "name": "stb",
+        "op": 5,
+        "bytes": 1,
+        "semantics": "store8(A,low8(D)).",
+        "extension": "base"
+      },
+      {
+        "name": "ldhu",
+        "op": 6,
+        "bytes": 2,
+        "semantics": "D=zext(load16(A)).",
+        "extension": "base"
+      },
+      {
+        "name": "ldbu",
+        "op": 7,
+        "bytes": 1,
+        "semantics": "D=zext(load8(A)).",
+        "extension": "base"
+      }
+    ],
+    "ALU": [
+      {
+        "name": "add3",
+        "op": 0,
+        "semantics": "D = A+B.",
+        "extension": "base"
+      },
+      {
+        "name": "sub3",
+        "op": 1,
+        "semantics": "D = A-B.",
+        "extension": "base"
+      },
+      {
+        "name": "and3",
+        "op": 2,
+        "semantics": "D = A&B.",
+        "extension": "base"
+      },
+      {
+        "name": "or3",
+        "op": 3,
+        "semantics": "D = A|B.",
+        "extension": "base"
+      },
+      {
+        "name": "xor3",
+        "op": 4,
+        "semantics": "D = A^B.",
+        "extension": "base"
+      },
+      {
+        "name": "shl3",
+        "op": 5,
+        "semantics": "D = A << (B & (XLEN-1)).",
+        "extension": "base"
+      },
+      {
+        "name": "shr3",
+        "op": 6,
+        "semantics": "D = unsigned(A) >> (B & (XLEN-1)).",
+        "extension": "base"
+      },
+      {
+        "name": "sar3",
+        "op": 7,
+        "semantics": "D = signed(A) >> (B & (XLEN-1)).",
+        "extension": "base"
+      },
+      {
+        "name": "slt3",
+        "op": 8,
+        "semantics": "D = signed(A)<signed(B).",
+        "extension": "base"
+      },
+      {
+        "name": "sltu3",
+        "op": 9,
+        "semantics": "D = unsigned(A)<unsigned(B).",
+        "extension": "base"
+      },
+      {
+        "name": "seq3",
+        "op": 10,
+        "semantics": "D = A==B.",
+        "extension": "base"
+      },
+      {
+        "name": "mul3",
+        "op": 11,
+        "semantics": "D = low_XLEN(A*B).",
+        "extension": "M"
+      }
+    ],
+    "IMM": [
+      {
+        "name": "add3i",
+        "op": 0,
+        "semantics": "D = A+sext(imm14).",
+        "extension": "base"
+      },
+      {
+        "name": "and3i",
+        "op": 1,
+        "semantics": "D = A & zext(imm14).",
+        "extension": "base"
+      },
+      {
+        "name": "or3i",
+        "op": 2,
+        "semantics": "D = A | zext(imm14).",
+        "extension": "base"
+      },
+      {
+        "name": "xor3i",
+        "op": 3,
+        "semantics": "D = A ^ zext(imm14).",
+        "extension": "base"
+      },
+      {
+        "name": "shl3i",
+        "op": 4,
+        "semantics": "D = A << imm14 ; require imm14 < XLEN.",
+        "extension": "base"
+      },
+      {
+        "name": "shr3i",
+        "op": 5,
+        "semantics": "D = unsigned(A) >> imm14 ; require imm14 < XLEN.",
+        "extension": "base"
+      },
+      {
+        "name": "sar3i",
+        "op": 6,
+        "semantics": "D = signed(A) >> imm14 ; require imm14 < XLEN.",
+        "extension": "base"
+      }
+    ],
+    "WIDE": [
+      {
+        "name": "movhi",
+        "op": 0,
+        "semantics": "D=zext(imm16 << 16), including on XLEN64.",
+        "extension": "base"
+      },
+      {
+        "name": "movlo",
+        "op": 1,
+        "semantics": "D=(oldD & ~65535) | imm16.",
+        "extension": "base"
+      },
+      {
+        "name": "li16",
+        "op": 2,
+        "semantics": "D=sext(imm16).",
+        "extension": "base"
+      }
+    ],
+    "BR": [
+      {
+        "name": "beq",
+        "op": 0,
+        "semantics": "If A==B: nextPC=sequentialPC+2*sext(rel14).",
+        "extension": "base"
+      },
+      {
+        "name": "bne",
+        "op": 1,
+        "semantics": "If A!=B: nextPC=sequentialPC+2*sext(rel14).",
+        "extension": "base"
+      },
+      {
+        "name": "blt",
+        "op": 2,
+        "semantics": "If signed(A)<signed(B): nextPC=sequentialPC+2*sext(rel14).",
+        "extension": "base"
+      },
+      {
+        "name": "bge",
+        "op": 3,
+        "semantics": "If signed(A)>=signed(B): nextPC=sequentialPC+2*sext(rel14).",
+        "extension": "base"
+      },
+      {
+        "name": "bltu",
+        "op": 4,
+        "semantics": "If unsigned(A)<unsigned(B): nextPC=sequentialPC+2*sext(rel14).",
+        "extension": "base"
+      },
+      {
+        "name": "bgeu",
+        "op": 5,
+        "semantics": "If unsigned(A)>=unsigned(B): nextPC=sequentialPC+2*sext(rel14).",
+        "extension": "base"
+      }
+    ],
+    "SYS": [
+      {
+        "name": "csrr",
+        "op": 0,
+        "semantics": "D=readCSR(aux8); reject absent or reserved CSR.",
+        "extension": "base"
+      },
+      {
+        "name": "csrw",
+        "op": 1,
+        "semantics": "writeCSR(aux8,A); reject absent, reserved or read-only CSR before effects.",
+        "extension": "base"
+      },
+      {
+        "name": "lr.w",
+        "op": 2,
+        "semantics": "Set reservation=(A,width); D=old memory value. RAM only; aligned, single-hart sequential reference behavior.",
+        "extension": "A"
+      },
+      {
+        "name": "sc.w",
+        "op": 3,
+        "semantics": "Test and clear reservation matching address AND width; on success store B; D=0 on success, 1 on failure. RAM only; aligned, single-hart sequential reference behavior.",
+        "extension": "A"
+      },
+      {
+        "name": "amoadd.w",
+        "op": 4,
+        "semantics": "D=old memory value; memory=old+B. RAM only; aligned, single-hart sequential reference behavior.",
+        "extension": "A"
+      },
+      {
+        "name": "amoswap.w",
+        "op": 5,
+        "semantics": "D=old memory value; memory=B. RAM only; aligned, single-hart sequential reference behavior.",
+        "extension": "A"
+      },
+      {
+        "name": "lr.q",
+        "op": 6,
+        "semantics": "Set reservation=(A,width); D=old memory value. RAM only; aligned, single-hart sequential reference behavior.",
+        "extension": "A"
+      },
+      {
+        "name": "sc.q",
+        "op": 7,
+        "semantics": "Test and clear reservation matching address AND width; on success store B; D=0 on success, 1 on failure. RAM only; aligned, single-hart sequential reference behavior.",
+        "extension": "A"
+      },
+      {
+        "name": "amoadd.q",
+        "op": 8,
+        "semantics": "D=old memory value; memory=old+B. RAM only; aligned, single-hart sequential reference behavior.",
+        "extension": "A"
+      },
+      {
+        "name": "amoswap.q",
+        "op": 9,
+        "semantics": "D=old memory value; memory=B. RAM only; aligned, single-hart sequential reference behavior.",
+        "extension": "A"
+      }
+    ],
+    "BITOPS": [
+      {
+        "name": "clz3",
+        "op": 0,
+        "semantics": "D=clz(A), XLEN for zero.",
+        "extension": "B"
+      },
+      {
+        "name": "ctz3",
+        "op": 1,
+        "semantics": "D=ctz(A), XLEN for zero.",
+        "extension": "B"
+      },
+      {
+        "name": "popcnt3",
+        "op": 2,
+        "semantics": "D=popcount(A).",
+        "extension": "B"
+      },
+      {
+        "name": "rev8",
+        "op": 3,
+        "semantics": "D=reverse byte order of A.",
+        "extension": "B"
+      },
+      {
+        "name": "ror3",
+        "op": 4,
+        "semantics": "D=rotate right A by B&(XLEN-1).",
+        "extension": "B"
+      },
+      {
+        "name": "rol3",
+        "op": 5,
+        "semantics": "D=rotate left A by B&(XLEN-1).",
+        "extension": "B"
+      },
+      {
+        "name": "min3",
+        "op": 6,
+        "semantics": "D=signed minimum(A,B).",
+        "extension": "B"
+      },
+      {
+        "name": "max3",
+        "op": 7,
+        "semantics": "D=signed maximum(A,B).",
+        "extension": "B"
+      },
+      {
+        "name": "minu3",
+        "op": 8,
+        "semantics": "D=unsigned minimum(A,B).",
+        "extension": "B"
+      },
+      {
+        "name": "maxu3",
+        "op": 9,
+        "semantics": "D=unsigned maximum(A,B).",
+        "extension": "B"
+      },
+      {
+        "name": "bset3",
+        "op": 10,
+        "semantics": "D=A | (1 << (B&(XLEN-1))).",
+        "extension": "B"
+      },
+      {
+        "name": "bclr3",
+        "op": 11,
+        "semantics": "D=A & ~(1 << (B&(XLEN-1))).",
+        "extension": "B"
+      },
+      {
+        "name": "binv3",
+        "op": 12,
+        "semantics": "D=A ^ (1 << (B&(XLEN-1))).",
+        "extension": "B"
+      },
+      {
+        "name": "bext3",
+        "op": 13,
+        "semantics": "D=(A >> (B&(XLEN-1))) & 1.",
+        "extension": "B"
+      },
+      {
+        "name": "andn3",
+        "op": 14,
+        "semantics": "D=A & ~B.",
+        "extension": "B"
+      },
+      {
+        "name": "orn3",
+        "op": 15,
+        "semantics": "D=A | ~B.",
+        "extension": "B"
+      },
+      {
+        "name": "xnor3",
+        "op": 16,
+        "semantics": "D=~(A^B).",
+        "extension": "B"
+      },
+      {
+        "name": "sextb3",
+        "op": 17,
+        "semantics": "D=sext8(low8(A)).",
+        "extension": "B"
+      },
+      {
+        "name": "sexth3",
+        "op": 18,
+        "semantics": "D=sext16(low16(A)).",
+        "extension": "B"
+      },
+      {
+        "name": "zexth3",
+        "op": 19,
+        "semantics": "D=zext16(low16(A)).",
+        "extension": "B"
+      }
+    ],
+    "W32": [
+      {
+        "name": "addw3",
+        "op": 0,
+        "semantics": "Compute A+B using low32 operands and a 32-bit result; D=sext32(result).",
+        "extension": "base"
+      },
+      {
+        "name": "subw3",
+        "op": 1,
+        "semantics": "Compute A-B using low32 operands and a 32-bit result; D=sext32(result).",
+        "extension": "base"
+      },
+      {
+        "name": "shlw3",
+        "op": 2,
+        "semantics": "Compute A << (B&31) using low32 operands and a 32-bit result; D=sext32(result).",
+        "extension": "base"
+      },
+      {
+        "name": "shrw3",
+        "op": 3,
+        "semantics": "Compute unsigned(A) >> (B&31) using low32 operands and a 32-bit result; D=sext32(result).",
+        "extension": "base"
+      },
+      {
+        "name": "sarw3",
+        "op": 4,
+        "semantics": "Compute signed(A) >> (B&31) using low32 operands and a 32-bit result; D=sext32(result).",
+        "extension": "base"
+      },
+      {
+        "name": "andw3",
+        "op": 5,
+        "semantics": "Compute A&B using low32 operands and a 32-bit result; D=sext32(result).",
+        "extension": "base"
+      },
+      {
+        "name": "orw3",
+        "op": 6,
+        "semantics": "Compute A|B using low32 operands and a 32-bit result; D=sext32(result).",
+        "extension": "base"
+      },
+      {
+        "name": "xorw3",
+        "op": 7,
+        "semantics": "Compute A^B using low32 operands and a 32-bit result; D=sext32(result).",
+        "extension": "base"
+      },
+      {
+        "name": "mulw3",
+        "op": 8,
+        "semantics": "Compute A*B using low32 operands and a 32-bit result; D=sext32(result).",
+        "extension": "M"
+      }
+    ],
+    "FLOW": [
+      {
+        "name": "ldpi.b",
+        "op": 0,
+        "semantics": "Use old base as aligned address; D=zext(load8(address)). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+        "extension": "F"
+      },
+      {
+        "name": "ldpi.h",
+        "op": 1,
+        "semantics": "Use old base as aligned address; D=zext(load16(address)). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+        "extension": "F"
+      },
+      {
+        "name": "ldpi.w",
+        "op": 2,
+        "semantics": "Use old base as aligned address; D=zext(load32(address)). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+        "extension": "F"
+      },
+      {
+        "name": "ldpi.q",
+        "op": 3,
+        "semantics": "Use old base as aligned address; D=zext(load64(address)). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+        "extension": "F"
+      },
+      {
+        "name": "stpi.b",
+        "op": 4,
+        "semantics": "Use old base as aligned address; store8(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+        "extension": "F"
+      },
+      {
+        "name": "stpi.h",
+        "op": 5,
+        "semantics": "Use old base as aligned address; store16(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+        "extension": "F"
+      },
+      {
+        "name": "stpi.w",
+        "op": 6,
+        "semantics": "Use old base as aligned address; store32(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+        "extension": "F"
+      },
+      {
+        "name": "stpi.q",
+        "op": 7,
+        "semantics": "Use old base as aligned address; store64(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+        "extension": "F"
+      }
+    ],
+    "MX": [
+      {
+        "name": "ldq",
+        "op": 0,
+        "semantics": "D=load64(A).",
+        "extension": "base"
+      },
+      {
+        "name": "stq",
+        "op": 1,
+        "semantics": "store64(A,D).",
+        "extension": "base"
+      },
+      {
+        "name": "ldws",
+        "op": 2,
+        "semantics": "D=sext(load32(A)).",
+        "extension": "base"
+      },
+      {
+        "name": "ldwu",
+        "op": 3,
+        "semantics": "D=zext(load32(A)).",
+        "extension": "base"
+      },
+      {
+        "name": "ldbs",
+        "op": 4,
+        "semantics": "D=sext(load8(A)).",
+        "extension": "base"
+      },
+      {
+        "name": "ldhs",
+        "op": 5,
+        "semantics": "D=sext(load16(A)).",
+        "extension": "base"
+      }
+    ],
+    "V": [
+      {
+        "name": "vadd",
+        "op": 0,
+        "semantics": "lane A+B. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vsub",
+        "op": 1,
+        "semantics": "lane A-B. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vmul",
+        "op": 2,
+        "semantics": "lane A*B. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vand",
+        "op": 3,
+        "semantics": "lane A&B. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vor",
+        "op": 4,
+        "semantics": "lane A|B. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vxor",
+        "op": 5,
+        "semantics": "lane A^B. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vshl",
+        "op": 6,
+        "semantics": "lane A << (B&(bits-1)). See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vshr",
+        "op": 7,
+        "semantics": "unsigned lane A >> (B&(bits-1)). See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vsar",
+        "op": 8,
+        "semantics": "signed lane A >> (B&(bits-1)). See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vmin",
+        "op": 9,
+        "semantics": "lane min(A,B). See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vmax",
+        "op": 10,
+        "semantics": "lane max(A,B). See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vcmpeq",
+        "op": 11,
+        "semantics": "lane all-ones if A==B, else zero. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vcmplt",
+        "op": 12,
+        "semantics": "lane all-ones if A<B, else zero. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vabs",
+        "op": 13,
+        "semantics": "lane abs(A), wrapping. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vneg",
+        "op": 14,
+        "semantics": "lane -A, wrapping. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vdot8",
+        "op": 15,
+        "semantics": "four groups of four byte products summed into 32-bit lanes. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vld",
+        "op": 16,
+        "semantics": "load aligned 16 RAM bytes. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vst",
+        "op": 17,
+        "semantics": "store aligned 16 RAM bytes. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vziplo",
+        "op": 18,
+        "semantics": "interleave lower halves. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vziphi",
+        "op": 19,
+        "semantics": "interleave upper halves. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vunziplo",
+        "op": 20,
+        "semantics": "collect even lanes from A then B. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      },
+      {
+        "name": "vunziphi",
+        "op": 21,
+        "semantics": "collect odd lanes from A then B. See SIMD modifier rules; emulator only.",
+        "extension": "V"
+      }
+    ],
+    "CSRS": [
+      {
+        "name": "coreid",
+        "op": 0
+      },
+      {
+        "name": "status",
+        "op": 1
+      },
+      {
+        "name": "epc",
+        "op": 2
+      },
+      {
+        "name": "cause",
+        "op": 3
+      },
+      {
+        "name": "tvec",
+        "op": 4
+      },
+      {
+        "name": "ie",
+        "op": 5
+      },
+      {
+        "name": "ip",
+        "op": 6
+      },
+      {
+        "name": "cycle_lo",
+        "op": 7
+      },
+      {
+        "name": "cycle_hi",
+        "op": 8
+      },
+      {
+        "name": "timer_lo",
+        "op": 9
+      },
+      {
+        "name": "timer_hi",
+        "op": 10
+      },
+      {
+        "name": "cmp_lo",
+        "op": 11
+      },
+      {
+        "name": "cmp_hi",
+        "op": 12
+      },
+      {
+        "name": "vec_dirty",
+        "op": 13
+      },
+      {
+        "name": "vec_enabled",
+        "op": 14
+      },
+      {
+        "name": "features",
+        "op": 15
+      },
+      {
+        "name": "arch",
+        "op": 16
+      },
+      {
+        "name": "instret_lo",
+        "op": 17
+      },
+      {
+        "name": "instret_hi",
+        "op": 18
+      },
+      {
+        "name": "tval",
+        "op": 19
+      }
+    ],
+    "J": [
+      {
+        "name": "j",
+        "op": 0,
+        "semantics": "nextPC=sequentialPC+2*sext(rel24).",
+        "extension": "base"
+      },
+      {
+        "name": "call",
+        "op": 1,
+        "semantics": "x6=sequentialPC; nextPC=sequentialPC+2*sext(rel24).",
+        "extension": "base"
+      }
+    ],
+    "LOOP": [
+      {
+        "name": "dbnz",
+        "op": 0,
+        "semantics": "D=D-1 modulo 2^XLEN; if D!=0 nextPC=sequentialPC+2*sext(rel20); D must not be x0.",
+        "extension": "F"
+      }
+    ]
+  }
+}

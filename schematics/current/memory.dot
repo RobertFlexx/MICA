@@ -1,0 +1,17 @@
+digraph memory {rankdir=LR;label="mica_core_txn memory: actual local nets, XLEN32\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
+decode->request_registers[label="addr[32]"];
+decode->request_registers[label="store_data[32]"];
+decode->request_registers[label="size_log[3]"];
+request_registers->lane_mux[label="q_store[32]"];
+request_registers->lane_mux[label="q_addr[32]"];
+lane_mux->bus[label="d_req_wdata[32]"];
+lane_mux->bus[label="d_req_wstrb[4]"];
+request_registers->bus[label="d_req_addr[32]"];
+fsm->bus[label="d_req_valid[1]"];
+bus->fsm[label="d_req_ready[1]"];
+bus->load_mux[label="d_rsp_rdata[32]"];
+bus->fsm[label="d_rsp_error[1]"];
+bus->fsm[label="d_rsp_valid[1]"];
+fsm->bus[label="d_rsp_ready[1]"];
+load_mux->commit[label="response_data[32]"];
+}

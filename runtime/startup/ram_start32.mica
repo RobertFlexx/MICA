@@ -1,0 +1,17 @@
+; Initialized SRAM startup. Data already occupies its run address.
+; MICA32 assembly ABI. BSS range is supplied by the application.
+.arch mica32
+.global _start
+.extern main, bss_begin, bss_end
+_start:
+    li32 sp,65520
+    li32 x1,bss_begin
+    li32 x2,bss_end
+startup_clear:
+    bgeu x1,x2,startup_main
+    stb x0,[x1]
+    addi x1,1
+    b startup_clear
+startup_main:
+    call main
+    wfi

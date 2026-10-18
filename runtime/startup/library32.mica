@@ -1,0 +1,4 @@
+.arch mica32
+.global mica_crc32, mica_puts, mica_putchar, mica_print_hex
+.include "../../stdlib/checksum32.mica"
+.include "../../stdlib/console32.mica"

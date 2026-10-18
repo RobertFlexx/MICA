@@ -1,0 +1,162 @@
+{
+  "clk_i": {
+    "direction": "input",
+    "width": 1
+  },
+  "d_req_addr": {
+    "direction": "output",
+    "width": 32
+  },
+  "d_req_ready": {
+    "direction": "input",
+    "width": 1
+  },
+  "d_req_size": {
+    "direction": "output",
+    "width": 3
+  },
+  "d_req_valid": {
+    "direction": "output",
+    "width": 1
+  },
+  "d_req_wdata": {
+    "direction": "output",
+    "width": 32
+  },
+  "d_req_write": {
+    "direction": "output",
+    "width": 1
+  },
+  "d_req_wstrb": {
+    "direction": "output",
+    "width": 4
+  },
+  "d_rsp_error": {
+    "direction": "input",
+    "width": 1
+  },
+  "d_rsp_rdata": {
+    "direction": "input",
+    "width": 32
+  },
+  "d_rsp_ready": {
+    "direction": "output",
+    "width": 1
+  },
+  "d_rsp_valid": {
+    "direction": "input",
+    "width": 1
+  },
+  "debug_a0_o": {
+    "direction": "output",
+    "width": 32
+  },
+  "fault_o": {
+    "direction": "output",
+    "width": 1
+  },
+  "halt_o": {
+    "direction": "output",
+    "width": 1
+  },
+  "i_req_addr": {
+    "direction": "output",
+    "width": 32
+  },
+  "i_req_ready": {
+    "direction": "input",
+    "width": 1
+  },
+  "i_req_valid": {
+    "direction": "output",
+    "width": 1
+  },
+  "i_rsp_error": {
+    "direction": "input",
+    "width": 1
+  },
+  "i_rsp_rdata": {
+    "direction": "input",
+    "width": 32
+  },
+  "i_rsp_ready": {
+    "direction": "output",
+    "width": 1
+  },
+  "i_rsp_valid": {
+    "direction": "input",
+    "width": 1
+  },
+  "irq_i": {
+    "direction": "input",
+    "width": 1
+  },
+  "pc_o": {
+    "direction": "output",
+    "width": 32
+  },
+  "rst_ni": {
+    "direction": "input",
+    "width": 1
+  },
+  "trace_cause": {
+    "direction": "output",
+    "width": 32
+  },
+  "trace_insn": {
+    "direction": "output",
+    "width": 32
+  },
+  "trace_length": {
+    "direction": "output",
+    "width": 3
+  },
+  "trace_mem_addr": {
+    "direction": "output",
+    "width": 32
+  },
+  "trace_mem_bytes": {
+    "direction": "output",
+    "width": 4
+  },
+  "trace_mem_data": {
+    "direction": "output",
+    "width": 32
+  },
+  "trace_mem_valid": {
+    "direction": "output",
+    "width": 1
+  },
+  "trace_mem_write": {
+    "direction": "output",
+    "width": 1
+  },
+  "trace_next_pc": {
+    "direction": "output",
+    "width": 32
+  },
+  "trace_order": {
+    "direction": "output",
+    "width": 64
+  },
+  "trace_pc": {
+    "direction": "output",
+    "width": 32
+  },
+  "trace_regs": {
+    "direction": "output",
+    "width": 512
+  },
+  "trace_retired": {
+    "direction": "output",
+    "width": 1
+  },
+  "trace_trap": {
+    "direction": "output",
+    "width": 1
+  },
+  "trace_valid": {
+    "direction": "output",
+    "width": 1
+  }
+}

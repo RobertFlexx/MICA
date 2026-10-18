@@ -35,7 +35,7 @@ with tempfile.TemporaryDirectory() as tmp:
         p = subprocess.run(
             [SIM, *flags, str(out)], check=True, text=True, capture_output=True
         )
-        match = re.search(r"cycles=(\d+)", p.stderr)
+        match = re.search(r"retired=(\d+)", p.stderr)
         # The emulator increments once per modeled instruction; it is not a CPU cycle simulator.
         writer.writerow(
             [

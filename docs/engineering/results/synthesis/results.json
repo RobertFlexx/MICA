@@ -1,0 +1,121 @@
+{
+  "MICA-C": {
+    "xlen": 32,
+    "ram_bytes": 4096,
+    "extensions": [],
+    "uart_rx": false,
+    "crc_vhdl": false,
+    "cells": {
+      "BUFG": 1,
+      "CARRY4": 187,
+      "FDCE": 960,
+      "FDPE": 19,
+      "FDRE": 4,
+      "IBUF": 4,
+      "INV": 21,
+      "LUT2": 602,
+      "LUT3": 717,
+      "LUT4": 948,
+      "LUT5": 1456,
+      "LUT6": 776,
+      "MUXF7": 14,
+      "MUXF8": 7,
+      "OBUF": 11,
+      "RAMB36E1": 1,
+      "$paramod$6eda5e336e1573fc822646229f81bda512f56e39\\mica_soc": 1
+    }
+  },
+  "MICA-E": {
+    "xlen": 32,
+    "ram_bytes": 4096,
+    "extensions": [
+      "M",
+      "F",
+      "B",
+      "T"
+    ],
+    "uart_rx": false,
+    "crc_vhdl": false,
+    "cells": {
+      "BUFG": 1,
+      "CARRY4": 259,
+      "DSP48E1": 6,
+      "FDCE": 1421,
+      "FDPE": 83,
+      "FDRE": 4,
+      "IBUF": 4,
+      "INV": 23,
+      "LUT2": 943,
+      "LUT3": 947,
+      "LUT4": 931,
+      "LUT5": 2416,
+      "LUT6": 961,
+      "OBUF": 11,
+      "RAMB36E1": 1,
+      "$paramod$ac150b69c320bcdf1057114cc0bffea2799aa53f\\mica_soc": 1
+    }
+  },
+  "MICA-64": {
+    "xlen": 64,
+    "ram_bytes": 4096,
+    "extensions": [
+      "X",
+      "M",
+      "F",
+      "B",
+      "T"
+    ],
+    "uart_rx": false,
+    "crc_vhdl": false,
+    "cells": {
+      "BUFG": 1,
+      "CARRY4": 461,
+      "DSP48E1": 23,
+      "FDCE": 2797,
+      "FDPE": 83,
+      "FDRE": 5,
+      "IBUF": 4,
+      "INV": 21,
+      "LUT2": 2088,
+      "LUT3": 2832,
+      "LUT4": 1802,
+      "LUT5": 5507,
+      "LUT6": 2553,
+      "OBUF": 11,
+      "RAMB36E1": 2,
+      "$paramod$5a1eb989f27500fb0141a9ffc06c07b650e16d13\\mica_soc": 1
+    }
+  },
+  "MICA-E-peripherals": {
+    "xlen": 32,
+    "ram_bytes": 4096,
+    "extensions": [
+      "M",
+      "F",
+      "B",
+      "T"
+    ],
+    "uart_rx": true,
+    "crc_vhdl": true,
+    "cells": {
+      "BUFG": 1,
+      "CARRY4": 280,
+      "DSP48E1": 6,
+      "FDCE": 1541,
+      "FDPE": 150,
+      "FDRE": 132,
+      "IBUF": 4,
+      "INV": 72,
+      "LUT2": 1015,
+      "LUT3": 910,
+      "LUT4": 1082,
+      "LUT5": 2542,
+      "LUT6": 1031,
+      "MUXF7": 2,
+      "MUXF8": 1,
+      "OBUF": 11,
+      "RAMB36E1": 1,
+      "$paramod$55016bcc6aa9ef10a85b824c02b32ccf432bb91b\\mica_soc": 1
+    }
+  }
+}

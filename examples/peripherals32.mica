@@ -1,0 +1,73 @@
+; MICA32 + T, transactional SoC with UART_RX=1 and CRC_ENABLE=1.
+; Send ABC at 8N1 after reset. Emulator: --trap --uart-input 414243.
+.arch mica32
+    li32 x5,0xffff0020
+    ldw x1,[x5]
+    li8 x2,3
+    and x1,x2
+    bne x1,x2,failed
+    li32 x5,0xffff0040
+    li8 x1,1
+    stw x1,[x5]
+    li32 x2,message
+    li8 x4,9
+crc_loop:
+    ldbu x3,[x2]
+    stb x3,[x5+4]
+    addi x2,1
+    addi x4,-1
+    bnz x4,crc_loop
+    ldw x1,[x5+8]
+    li32 x2,0xcbf43926
+    bne x1,x2,failed
+    li32 x2,0x800
+    stw x1,[x2]
+    ldw x1,[x5+12]
+    li8 x2,9
+    bne x1,x2,failed
+    li32 x5,0xffff0010
+    li8 x6,0
+    li32 x1,handler
+    csrw tvec,x1
+    li8 x1,1
+    stw x1,[x5+12]
+    csrw ie,x1
+    csrw status,x1
+wait_rx:
+    li8 x1,3
+    bne x6,x1,wait_rx
+    ldw x1,[x5+8]
+    li8 x2,1
+    and x1,x2
+    bnz x1,failed
+    li8 x1,42
+    wfi
+handler:
+    addi sp,-16
+    stw x1,[sp]
+    stw x2,[sp+4]
+    stw x3,[sp+8]
+    csrr x1,cause
+    li32 x2,0x80000001
+    bne x1,x2,failed
+    ldbu x2,[x5+4]
+    li8 x3,65
+    add3 x3,x3,x6
+    bne x2,x3,failed
+    stb x2,[x5-16]
+    addi x6,1
+    li8 x1,0
+    csrw ip,x1
+    li8 x2,3
+    bne x6,x2,restore
+    stw x1,[x5+12]
+restore:
+    ldw x1,[sp]
+    ldw x2,[sp+4]
+    ldw x3,[sp+8]
+    addi sp,16
+    eret
+failed:
+    li8 x1,-1
+    wfi
+message: .ascii "123456789"

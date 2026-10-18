@@ -705,11 +705,9 @@ dst: .quad 0,0
         self.assertIn("stpi.b x4,[x1]", p.stdout)
         self.assertIn("dbnz x3,0x0", p.stdout)
 
-    def test_rtl_halt_transition_static_regression(self):
-        # Source-level regression only, NOT a replacement for HDL simulation.
-        rtl = (ROOT / "rtl/mica_core.sv").read_text()
-        self.assertRegex(rtl, r"else\s+if\s*\(stop_requested\)\s*state\s*<=\s*HALTED;")
-        self.assertRegex(rtl, r"else\s+stop_requested\s*=\s*1;")
+    def test_wfi_stops_before_following_instruction(self):
+        regs, _ = self.runsource(".arch mica32\nli8 x1,42\nwfi\nli8 x1,0\n")
+        self.assertEqual(regs[1],42)
 
     def test_old_v01_encodings(self):
         old = Path("/mnt/data/mica32/assembler.py")

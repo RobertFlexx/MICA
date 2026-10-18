@@ -1,0 +1,25 @@
+.arch mica32
+.global main, bss_begin, bss_end
+.extern mica_crc32, mica_puts
+main:
+    addi sp,-16
+    stw lr,[sp]
+    li32 x1,payload
+    li8 x2,9
+    call mica_crc32
+    li32 x4,0xcbf43926
+    bne x1,x4,main_failed
+    li32 x1,message
+    call mica_puts
+    li8 x1,42
+    ldw lr,[sp]
+    addi sp,16
+    ret
+main_failed:
+    li8 x1,-1
+    wfi
+payload: .ascii "123456789"
+message: .asciz "MICA linked CRC OK\n"
+.align 16
+bss_begin: .space 32,0xa5
+bss_end:

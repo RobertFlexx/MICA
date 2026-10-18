@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "binary_sdk": "mica-sdk-1.0-r2-Linux-x86_64.tar.gz",
+  "source_archive": "mica-sdk-1.0-r2-source.tar.gz",
+  "checks": {
+    "installed_tools_help_version": 7,
+    "separate_compilation_xlen": [
+      32,
+      64
+    ],
+    "installed_startup_application_library": "linked CRC/UART result 42",
+    "installed_peripheral_firmware": "CRC, UART receive IRQs and ABC echo",
+    "source_file_checksums": "passed",
+    "clean_extracted_source_build": "GCC Release, all seven tools",
+    "clean_extracted_source_ctest": "7 of 7 groups passed; one external v0.1 SDK comparison skipped",
+    "source_archive_repeatability": "two byte-identical archives for identical source contents",
+    "board_top_simulation": "100 MHz, 4 KiB, synchronized reset, timer IRQ, GPIO and 115200 UART passed"
+  },
+  "commands": [
+    "cmake --install build/baseline --prefix build/install",
+    "cpack --config build/baseline/CPackConfig.cmake -B build/releases -G TGZ",
+    "python3 scripts/package_source.py --update-checksums",
+    "python3 scripts/check_release.py --binary build/releases/mica-sdk-1.0-r2-Linux-x86_64.tar.gz --source build/releases/mica-sdk-1.0-r2-source.tar.gz"
+  ],
+  "limits": "Linux x86-64 binary SDK locally tested; macOS and actual CI matrix execution pending. Artifacts stay in build/releases, source is committed."
+}

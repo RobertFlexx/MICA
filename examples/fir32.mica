@@ -1,0 +1,20 @@
+; Four outputs of a four-tap signed FIR. Expected: 16,8,-32,40.
+.arch mica32
+.macro render offset
+    li32 x1,samples+$offset
+    li32 x2,coefficients
+    li8 x3,4
+    call mica_dot_s16
+    li32 x4,results
+    stw x1,[x4+$offset*2]
+.endm
+.repeat 4
+    render $index*2
+.endrepeat
+    wfi
+.include "../stdlib/dsp32.mica"
+.align 4
+samples: .half 1,-2,3,4,-5,6,7
+coefficients: .half 2,-3,4,-1
+.align 4
+results: .space 16

@@ -1,4 +1,4 @@
-// MICA on Digilent Arty A7. Demo top for a small distributed-memory image.
+// MICA on Digilent Arty A7. Demo top for a block-RAM firmware image.
 // Confirm timing, resource utilization and pin constraints before using hardware.
 // No external wiring is required beyond the board's onboard USB/JTAG/UART.
 // SPDX-License-Identifier: MIT
@@ -6,17 +6,24 @@ module mica_arty_a7
     #(parameter integer XLEN = 32,
       parameter integer FLOW = 1,
       parameter integer BITOPS = 0,
-      parameter integer TRAP = 0,
-      parameter integer PERF = 0,
+      parameter integer TRAP = 1,
+      parameter integer PERF = 1,
       parameter integer RAM_BYTES = 4096,
-      parameter INIT_FILE = "program.mem8")
+      parameter integer UART_RX = 1,
+      parameter integer CRC_ENABLE = 0,
+      parameter INIT_FILE = "program.mem32")
     (input logic CLK100MHZ,
      input logic btn_reset,
      output logic [3 : 0] led,
+     input logic uart_rxd,
      output logic uart_txd);
-  logic [1 : 0] rst_release;
+  // The core asserts reset asynchronously; SRAM response flags clear on clk.
+  // Both remain reset until this two-flop release synchronizer finishes.
+  /* verilator lint_off SYNCASYNCNET */
+  (* ASYNC_REG = "TRUE" *) logic [1 : 0] rst_release;
+  /* verilator lint_on SYNCASYNCNET */
   logic rst_ni;
-  logic [7 : 0] gpio;
+  logic [7 : 0] unused_gpio;
   logic halted, fault;
   always_ff @(posedge CLK100MHZ or posedge btn_reset) begin
     if (btn_reset)
@@ -31,15 +38,18 @@ module mica_arty_a7
              .TRAP(TRAP),
              .PERF(PERF),
              .RAM_BYTES(RAM_BYTES),
+             .UART_RX(UART_RX),
+             .CRC_ENABLE(CRC_ENABLE),
              .CLOCK_HZ(100000000),
              .BAUD(115200),
              .INIT_FILE(INIT_FILE))
       soc(.clk_i(CLK100MHZ),
           .rst_ni(rst_ni),
           .irq_i(1'b0),
+          .uart_rx_i(uart_rxd),
           .uart_tx_o(uart_txd),
-          .leds_o(gpio),
+          .leds_o(unused_gpio),
           .halted_o(halted),
           .fault_o(fault));
-  assign led = {fault, halted, gpio[1 : 0]};
+  assign led = {fault, halted, unused_gpio[1 : 0]};
 endmodule

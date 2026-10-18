@@ -1,0 +1,21 @@
+; Software bounds prototype, not a new instruction or hidden CPU state.
+; x1=dst, x2=src, x3=count, x4=dst_end_exclusive, x5=src_end_exclusive.
+; Return original dst, or zero on range/overflow failure. Preserve x5/x6/sp.
+; Nonoverlapping RAM buffers required. Full ranges are validated before copying.
+; Interrupts can observe a partially copied valid range. Access faults preserve
+; completed earlier stores. MMIO and concurrent changes to the buffers are excluded.
+; Requires F and stdlib/flow.mica to be included separately.
+mica_memcpy_bounded:
+    push x6
+    add3 x6,x1,x3
+    bltu x6,x1,bounded_failed
+    bltu x4,x6,bounded_failed
+    add3 x6,x2,x3
+    bltu x6,x2,bounded_failed
+    bltu x5,x6,bounded_failed
+    pop x6
+    b mica_memcpy_flow
+bounded_failed:
+    pop x6
+    li8 x1,0
+    ret

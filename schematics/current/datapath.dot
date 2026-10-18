@@ -1,0 +1,18 @@
+digraph datapath {rankdir=LR;label="mica_core_txn datapath: actual local nets, XLEN32\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
+PC->fetch[label="pc[32]"];
+fetch->decode[label="lo[16]"];
+fetch->decode[label="hi[16]"];
+registers->ALU[label="decode.av[32]"];
+registers->ALU[label="decode.bv[32]"];
+ALU->pending[label="value1[32]"];
+decode->pending[label="dst1[4]"];
+decode->pending[label="nextpc[32]"];
+pending->commit[label="q_value1[32]"];
+pending->commit[label="q_value2[32]"];
+pending->commit[label="q_w1[1]"];
+pending->commit[label="q_w2[1]"];
+commit->PC[label="q_nextpc[32]"];
+bus->commit[label="response_data[32]"];
+commit->registers[label="q_dst1[4]"];
+commit->registers[label="q_dst2[4]"];
+}

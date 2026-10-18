@@ -9,4 +9,17 @@ sim-sram:
 sim-watchdog:
 	$(GHDL) -a --std=08 --workdir=/tmp vhdl/mica_watchdog.vhd vhdl/tb_mica_watchdog.vhd
 	$(GHDL) -e --std=08 --workdir=/tmp tb_mica_watchdog
-	$(GHDL) -r --std=08 --workdir=/tmp tb_mica_watchdog --stop-time=300ns
+	$(GHDL) -r --std=08 --workdir=/tmp tb_mica_watchdog --stop-time=300ns --vcd=watchdog.vcd
+
+.PHONY: sim-watchdog-soc
+sim-watchdog-soc:
+	$(GHDL) --synth --std=08 --out=verilog vhdl/mica_watchdog.vhd -e mica_watchdog > /tmp/mica-watchdog-netlist.v
+	"$(ASM)" --trap ../examples/watchdog32.mica -o program_watchdog.bin
+	$(PYTHON) ../toolchain/bin2mem8.py program_watchdog.bin program_watchdog.mem32 --width 32 --pad-bytes 65536
+	$(IVERILOG) -g2012 -I../isa/generated -s tb_watchdog_soc -o mica_watchdog_sim $(SV) /tmp/mica-watchdog-netlist.v tb_watchdog_soc.sv
+	$(VVP) mica_watchdog_sim
+
+# Includes GHDL simulation/conversion, Verilog-2005 tests, MMIO and CPU firmware.
+.PHONY: sim-peripherals
+sim-peripherals:
+	$(PYTHON) ../scripts/test_peripherals.py --assembler "$(ASM)"

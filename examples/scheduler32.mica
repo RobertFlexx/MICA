@@ -1,0 +1,98 @@
+; Two timer-preempted machine-mode tasks. Full x1..x7 + EPC frames.
+; No user isolation, nesting, or general RTOS API. T, 64KiB SRAM required.
+.arch mica32
+    li32 sp,60000
+    li32 x1,handler
+    csrw tvec,x1
+    li8 x1,0
+    csrw cmp_hi,x1
+    li16 x1,1000
+    csrw cmp_lo,x1
+    li8 x1,2
+    csrw ie,x1
+    li8 x1,1
+    csrw status,x1
+    li8 x1,0
+    li32 x2,0x12345678
+    li32 x3,0xa5a55a5a
+    li32 x5,count0
+task0:
+    addi x1,1
+    stw x1,[x5]
+    li32 x4,0x12345678
+    bne x2,x4,failed
+    li32 x4,0xa5a55a5a
+    bne x3,x4,failed
+    b task0
+task1:
+    addi x1,2
+    stw x1,[x5]
+    li32 x4,0xabcdef01
+    bne x2,x4,failed
+    li32 x4,0x5a5aa5a5
+    bne x3,x4,failed
+    b task1
+handler:
+    addi sp,-32
+    stw x1,[sp]
+    stw x2,[sp+4]
+    stw x3,[sp+8]
+    stw x4,[sp+12]
+    stw x5,[sp+16]
+    stw x6,[sp+20]
+    add3i x1,sp,32
+    stw x1,[sp+24]
+    csrr x1,epc
+    stw x1,[sp+28]
+    li32 x1,current
+    ldw x2,[x1]
+    li8 x3,1
+    xor x3,x2
+    stw x3,[x1]
+    shli x2,2
+    li32 x1,contexts
+    add x1,x2
+    stw sp,[x1]
+    shli x3,2
+    li32 x1,contexts
+    add x1,x3
+    ldw sp,[x1]
+    li32 x1,ticks
+    ldw x2,[x1]
+    addi x2,1
+    stw x2,[x1]
+    li8 x3,6
+    beq x2,x3,done
+    csrr x1,timer_lo
+    add3i x1,x1,3000
+    csrw cmp_lo,x1
+    ldw x1,[sp+28]
+    csrw epc,x1
+    ldw x1,[sp]
+    ldw x2,[sp+4]
+    ldw x3,[sp+8]
+    ldw x4,[sp+12]
+    ldw x5,[sp+16]
+    ldw x6,[sp+20]
+    ldw sp,[sp+24]
+    eret
+done:
+    li32 x1,count0
+    ldw x2,[x1]
+    bz x2,failed
+    ldw x2,[x1+4]
+    bz x2,failed
+    li8 x1,42
+    wfi
+failed:
+    li8 x1,-1
+    wfi
+.align 16
+current: .word 0
+ticks: .word 0
+count0: .word 0
+count1: .word 0
+contexts: .word 0,task1_frame
+.align 16
+task1_frame:
+    .word 0,0xabcdef01,0x5a5aa5a5,0,count1,0,58000,task1

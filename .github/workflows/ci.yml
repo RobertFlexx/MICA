@@ -1,4 +1,4 @@
-name: CI
+name: MICA verification
 on:
   push:
   pull_request:
@@ -9,81 +9,137 @@ concurrency:
   group: mica-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  tools:
-    name: ${{ matrix.os }} / ${{ matrix.cxx }} / ${{ matrix.build_type }}
+  software:
+    name: ${{ matrix.os }} / ${{ matrix.cxx }} / ${{ matrix.kind }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest, cxx: g++, build_type: Release }
-          - { os: ubuntu-latest, cxx: clang++, build_type: Debug }
-          - { os: macos-latest, cxx: clang++, build_type: Release }
+          - {os: ubuntu-24.04, cxx: g++, kind: Release}
+          - {os: ubuntu-24.04, cxx: clang++, kind: Debug}
+          - {os: macos-14, cxx: clang++, kind: Release}
     steps:
       - uses: actions/checkout@v4
-      - name: Tool versions
+      - name: Configure and build
         run: |
-          ${{ matrix.cxx }} --version
-          cmake --version
-          python3 --version
-      - name: Configure
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
-      - name: Build
-        run: cmake --build build --parallel 2
-      - name: Run software and binary compatibility suites
-        run: ctest --test-dir build --output-on-failure
-      - name: Assemble and disassemble smoke test
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.kind }} -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+          cmake --build build --parallel 4
+      - name: Software, firmware, generated specifications and documentation
+        run: ctest --test-dir build --output-on-failure --output-junit ctest.xml
+      - name: Install and package
         run: |
-          build/mica-as --xlen 32 --flow --map output.map examples/flow_copy32.mica -o output.bin
-          build/mica-dis --xlen 32 output.bin > output.dis
-          test -s output.map
-          test -s output.dis
-  sanitizers:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Configure sanitizers
-        run: cmake -S . -B build-san -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined'
-      - run: cmake --build build-san --parallel 2
-      - run: ctest --test-dir build-san --output-on-failure
-  rtl:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install HDL tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y iverilog ghdl yosys graphviz
-      - name: Build assembler
-        run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --parallel 2
-      - name: Existing scalar RTL testbenches
-        run: |
-          make -C rtl sim32 sim64 sim-flow32 sim-flow64
-          make -C rtl sim-bits32 sim-bits64 sim-trap sim-trap-irq
-      - name: Standalone Verilog and VHDL testbenches
-        run: make -C rtl sim-sram sim-watchdog
-      - name: SRAM synthesis check
-        run: yosys -Q -p 'read_verilog rtl/verilog/mica_sram.v; hierarchy -top mica_sram; proc; opt; memory; opt; check; stat' > sram-synthesis.log
-      - name: Validate diagrams
-        run: |
-          for diagram in schematics/*.dot; do dot -Tsvg "$diagram" -o /tmp/mica-diagram.svg; done
+          cmake --install build --prefix "$PWD/build/install"
+          cpack --config build/CPackConfig.cmake -B build/releases -G TGZ
+          for archive in build/releases/mica-sdk-1.0-r2-*.tar.gz; do
+            python3 scripts/check_release.py --binary "$archive" --output build/releases/validation.json
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rtl-synthesis-log
-          path: sram-synthesis.log
-          if-no-files-found: ignore
-  benchmark:
-    runs-on: ubuntu-latest
+          name: software-${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.kind }}
+          path: |
+            build/ctest.xml
+            build/Testing/Temporary/LastTest.log
+            build/releases/*.tar.gz
+            build/releases/validation.json
+  sanitizers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: ASan, UBSan and libFuzzer
+        run: |
+          cmake -S . -B build -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Debug -DMICA_FUZZ=ON -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined'
+          cmake --build build --parallel 4
+          ctest --test-dir build --output-on-failure --output-junit ctest.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sanitizer-results
+          path: |
+            build/ctest.xml
+            build/Testing/Temporary/LastTest.log
+  hardware:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache pinned HDL suite
+        uses: actions/cache@v4
+        id: hdl-cache
+        with:
+          path: ${{ runner.temp }}/mica-hdl/oss-cad-suite
+          key: oss-cad-suite-linux-x64-20261017
+      - name: Download pinned HDL suite
+        if: steps.hdl-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$RUNNER_TEMP/mica-hdl"
+          gh release download 2026-10-17 --repo YosysHQ/oss-cad-suite-build --pattern oss-cad-suite-linux-x64-20261017.tgz --dir "$RUNNER_TEMP/mica-hdl"
+          tar -xzf "$RUNNER_TEMP/mica-hdl/oss-cad-suite-linux-x64-20261017.tgz" -C "$RUNNER_TEMP/mica-hdl"
+      - name: Add tools
+        run: echo "$RUNNER_TEMP/mica-hdl/oss-cad-suite/bin" >> "$GITHUB_PATH"
+      - name: Build software and run HDL component/SoC tests
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel 4
+          make -C rtl sim32 sim64 sim-flow32 sim-flow64 sim-bits32 sim-bits64 sim-trap sim-trap-irq > build/hdl.log 2>&1
+          make -C rtl sim-sram sim-sram-txn sim-watchdog sim-watchdog-soc sim-firmware sim-scheduler sim-add64 sim-peripherals >> build/hdl.log 2>&1
+      - name: Verilator lint and retirement comparison
+        run: |
+          verilator --lint-only -Wall -Wno-UNUSEDPARAM -Wno-PINCONNECTEMPTY -Iisa/generated --top-module mica_arty_a7 rtl/mica_core_txn.sv rtl/mica_soc.sv rtl/mica_uart_tx.sv rtl/mica_crc_mmio.sv rtl/verilog/mica_sram_txn.v rtl/verilog/mica_sync_fifo.v rtl/verilog/mica_uart_rx.v boards/arty_a7/mica_arty_a7.sv
+          for width in 32 64; do
+            python3 scripts/build_rtl_sim.py --xlen "$width"
+            python3 scripts/build_rtl_sim.py --xlen "$width" --reuse 0
+          done
+          python3 scripts/build_rtl_sim.py --profile MICA-C
+          python3 scripts/build_rtl_sim.py --profile MICA-E
+          python3 verification/differential/run.py --tools build
+          python3 verification/differential/profiles.py --tools build
+      - name: Formal, synthesis, diagrams and measured experiments
+        run: |
+          python3 scripts/run_formal.py
+          python3 scripts/synthesize.py --tools build
+          python3 scripts/generate_schematics.py --check
+          python3 scripts/generate_soc_schematic.py --check
+          python3 benchmarks/hardware.py --tools build
+          python3 benchmarks/alu_activity.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hardware-evidence
+          path: |
+            build/hdl.log
+            build/peripherals/commands.log
+            build/peripherals/*.vcd
+            build/differential/results.json
+            build/formal/*.log
+            build/synthesis/*.json
+            build/synthesis/*.log
+            build/hardware-bench/results.json
+            build/alu-research/results.json
+            build/alu-research/*.log
+  workflow-lint:
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate workflow schema and expressions
+        run: |
+          gh release download v1.7.12 --repo rhysd/actionlint --pattern actionlint_1.7.12_linux_amd64.tar.gz --dir "$RUNNER_TEMP"
+          tar -xzf "$RUNNER_TEMP/actionlint_1.7.12_linux_amd64.tar.gz" -C "$RUNNER_TEMP"
+          "$RUNNER_TEMP/actionlint" .github/workflows/ci.yml
+  throughput:
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --parallel 2
-          python3 benchmarks/emulator_mips.py --assembler build/mica-as --emulator build/mica-run --iterations 30000000 --repeats 3 --output emulator-benchmark.json
+          cmake --build build --parallel 4
+          python3 benchmarks/emulator_mips.py --assembler build/mica-as --emulator build/mica-run --iterations 5000000 --repeats 3 --output build/emulator-results.json
       - uses: actions/upload-artifact@v4
         with:
-          name: emulator-benchmark
-          path: emulator-benchmark.json
+          name: host-throughput
+          path: build/emulator-results.json

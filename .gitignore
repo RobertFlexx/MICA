@@ -10,3 +10,9 @@ __pycache__/
 /benchmarks/emulator_mips_local.json
 *.o
 *.vcd
+
+/rtl/work-obj*.cf
+
+/rtl/tb_mica_watchdog
+/rtl/*.mem32
+/rtl/*.mem64

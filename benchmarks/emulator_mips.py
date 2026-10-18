@@ -22,7 +22,7 @@ def main():
     if args.iterations < 1 or args.iterations > 2_000_000_000 or args.repeats < 3:
         ap.error('use 1..2000000000 iterations and at least 3 repeats')
     result = {'microbenchmark': 'addi/dbnz counted loop, not general emulator throughput',
-              'platform': os.uname().machine, 'iterations': args.iterations,
+              'platform': os.uname().machine, 'host': os.uname().sysname + ' ' + os.uname().release, 'cpu_model': next((line.split(':',1)[1].strip() for line in Path('/proc/cpuinfo').read_text().splitlines() if line.startswith('model name')), 'unknown') if Path('/proc/cpuinfo').exists() else 'see host system profiler', 'iterations': args.iterations,
               'results': {}}
     with tempfile.TemporaryDirectory() as tmp:
         src = Path(tmp) / 'bench.mica'

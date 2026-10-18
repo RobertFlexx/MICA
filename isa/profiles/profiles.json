@@ -1,0 +1,52 @@
+{
+  "isa": "MICA 1.0",
+  "profiles": {
+    "MICA-C": {
+      "xlen": 32,
+      "registers": 8,
+      "extensions": [],
+      "status": "scalar transactional reference"
+    },
+    "MICA-E": {
+      "xlen": 32,
+      "registers": 8,
+      "extensions": [
+        "M",
+        "F",
+        "B",
+        "T"
+      ],
+      "status": "scalar transactional reference"
+    },
+    "MICA-64": {
+      "xlen": 64,
+      "registers": 16,
+      "extensions": [
+        "X",
+        "M",
+        "F",
+        "B",
+        "T"
+      ],
+      "status": "scalar transactional reference"
+    },
+    "MICA-DSP": {
+      "xlen": 32,
+      "registers": 8,
+      "extensions": [
+        "M",
+        "V"
+      ],
+      "status": "emulator experimental; no vector RTL"
+    },
+    "MICA-MP": {
+      "xlen": 32,
+      "registers": 8,
+      "extensions": [
+        "A",
+        "T"
+      ],
+      "status": "proposal; no multicore implementation"
+    }
+  }
+}

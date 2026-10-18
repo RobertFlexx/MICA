@@ -1,0 +1,16 @@
+digraph fetch {rankdir=LR;label="mica_core_txn fetch: actual local nets, XLEN32\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
+PC->address_mux[label="pc[32]"];
+address_mux->tag_compare[label="fetch_addr[32]"];
+cache_register->tag_compare[label="cache_tag[32]"];
+tag_compare->fsm[label="cache_valid[1]"];
+bus->word_register[label="i_rsp_rdata[32]"];
+word_register->halfword_mux[label="parcel_word[32]"];
+halfword_mux->decode[label="lo[16]"];
+halfword_mux->decode[label="hi[16]"];
+fsm->bus[label="i_req_valid[1]"];
+bus->fsm[label="i_req_ready[1]"];
+bus->fsm[label="i_rsp_valid[1]"];
+fsm->bus[label="i_rsp_ready[1]"];
+fsm->bus[label="i_req_addr[32]"];
+bus->fsm[label="i_rsp_error[1]"];
+}
