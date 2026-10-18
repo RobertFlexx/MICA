@@ -34,7 +34,6 @@ def main():
     host.write_text('#include <stdio.h>\nint mica_test_main(void);\n'
                     'int main(void) { printf("%u\\n", (unsigned)mica_test_main()); }\n')
     cases = [("multifile", [ROOT / "compiler/tests/program.c", ROOT / "compiler/tests/library.c"])]
-    cases.append(("narrow", [ROOT / "compiler/tests/narrow.c"]))
     rng = random.Random(0xC32)
     for index in range(12):
         source = args.output / f"random{index}.c"

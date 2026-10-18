@@ -36,7 +36,8 @@ def typed(text):
 def value(text):
     # Clang's scalar parameter and memory alignment attributes carry no data.
     _, rest = typed(text)
-    rest = re.sub(r"\b(?:noundef|signext|zeroext|nonnull|nocapture|readonly|writeonly)\b|\balign \d+\b", "", rest).strip()
+    # Strip GEP attributes and other known Clang attributes
+    rest = re.sub(r"\b(?:inbounds|nuw|nsw|noundef|signext|zeroext|nonnull|nocapture|readonly|writeonly)\b|\balign \d+\b", "", rest).strip()
     if not re.fullmatch(r"[%@][\w.]+|-?\d+|true|false|null", rest):
         raise Unsupported("unsupported value/attribute: " + text)
     return rest
