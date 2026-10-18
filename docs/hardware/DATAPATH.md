@@ -1,9 +1,7 @@
 # Hardware drawing index
 
-All **31 drawing paths** describe the current 2.0 implementation or an explicitly
-marked research proposal. Every drawing has editable DOT plus SVG, PNG and PDF.
-The older top-level paths are refreshed too; they no longer show obsolete
-combinational RAM, FETCH0/EXECUTE interfaces or an unimplemented transaction bridge.
+The 31 drawing paths cover the 2.0 implementation and labeled research proposals.
+Each drawing has editable DOT source and SVG, PNG and PDF renderings.
 
 ## Drawing sets
 
@@ -38,10 +36,9 @@ previews, source inputs and board constraints in
 [manifest.json](../../schematics/manifest.json). Its check catches changed source
 or preview files, including a stale preview whose DOT still matches.
 
-Signal existence and checksums do not prove electrical equivalence. These are
-architecture and connectivity drawings. Board electrical references and XDC
-pins are in [board connections](BOARD_CONNECTIONS.md). No PCB fabrication
-package, transistor netlist or implemented ASIC power domains are supplied.
+The drawings describe architecture and connectivity. Board electrical references
+and XDC pins are in [board connections](BOARD_CONNECTIONS.md). PCB fabrication
+files and transistor netlists are outside the SDK's scope.
 
 The standalone segmented adder remains an experiment in `rtl/mica_add64.sv`;
 the main 64-bit core uses the conventional arithmetic path.

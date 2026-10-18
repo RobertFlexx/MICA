@@ -252,4 +252,6 @@ Only legal in MICA 2.0, with the 2C feature bit enabled. See [MICA2.md](MICA2.md
 | 33..40 | `dbnz.s` | d3, signed halfword displacement6 | Decrement and branch when nonzero; no x0 counter. |
 | 41 | `stop` | d3=0, s3=0 | Terminal debug halt until reset. |
 
+`dbnz.s` symbol operands use ELF `PCREL6` (ID 11), relative to `PC+2` in 2-byte units. Local and external labels retain the two-byte encoding; out-of-range or unaligned targets are link errors.
+
 MICA 2.0 `wfi` retires then sleeps until a wake event. On the minimal profile, it does not require the T trap extension. `stop` is the explicit debug/terminal halt instruction.

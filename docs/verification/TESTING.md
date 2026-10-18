@@ -26,7 +26,7 @@ Vivado implementation and physical-board checks need their own target environmen
 
 ## Current 2.0 checks
 
-The [2.0 report](../engineering/MICA2_VERIFICATION.md) records new local runs.
+The [2.0 report](../engineering/MICA2_VERIFICATION.md) records the MICA 2.0 runs.
 `sim-mica2-32/64` execute compact operations. `sim-mica2-timer32/64` verify timer
 wake, handler return and STOP stability. `verification/differential/mica2.py`
 compares all three new profiles through 129 delayed-memory runs plus nine reset

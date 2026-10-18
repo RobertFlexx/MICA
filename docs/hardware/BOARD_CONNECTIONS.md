@@ -15,11 +15,10 @@ reuse this constraint file for another board or FPGA package.
 | uart_txd | D10 | LVCMOS33 | FPGA TX into onboard USB UART receive path |
 | uart_rxd | A9 | LVCMOS33 | host TX into FPGA RX, synchronized in mica_uart_rx |
 
-The constraint names differ from the vendor's UART naming, so direction matters. Use
+The table lists UART directions relative to the FPGA. Use
 the onboard programming/UART USB connector and the board's documented power
 configuration. The FPGA I/O voltage standard is 3.3V; board regulation,
-configuration wiring and voltage domains belong to the actual board schematic.
+configuration wiring and voltage domains are documented in the board schematic.
 Consult [Digilent's Arty A7 reference
 page](https://digilent.com/reference/programmable-logic/arty-a7/start) and its
-revision-specific schematic before changing external electrical wiring. No custom
-regulator, power-domain isolation or fabricated PCB design is claimed.
+revision-specific schematic before changing external electrical wiring.

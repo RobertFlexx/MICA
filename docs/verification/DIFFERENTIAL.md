@@ -35,4 +35,4 @@ wrap, x0 loads, branch displacement limits, counter wrap, ADRPC signed limits,
 high registers, F copy loops, signed word loads, illegal fields and precise
 faults. Delayed external wake checks that sleeping WFI issues no requests or
 extra retirement; T-enabled delivery and handler return are compared separately.
-Timer outcomes are checked by the SoC bench rather than comparing unlike clocks.
+The SoC bench checks timer outcomes against expected results.

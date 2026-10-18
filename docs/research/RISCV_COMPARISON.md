@@ -1,9 +1,8 @@
-# MICA 2.0 advantages over RISC-V
+# MICA 2.0 and RISC-V code-size comparison
 
-MICA's clearest demonstrated advantage is **denser counted loops**. A short
-decrement-and-branch occupies two bytes. With F enabled, a load or store can
-also advance its pointer in two bytes. Together, those features encode a
-byte-copy loop in six bytes and three instructions.
+MICA's short decrement-and-branch occupies two bytes. With F enabled, a load
+or store can also advance its pointer in two bytes. Together, these instructions
+encode a byte-copy loop in six bytes and three instructions.
 
 ## Assembled results
 
@@ -19,10 +18,10 @@ loads and stores. No linker padding, startup, exit code or data is counted.
 | Word-copy body | 6 | 24 | 12 | 12 |
 | Stack save and restore | 4 | 8 | 4 | 4 |
 
-For the byte-copy body, MICA is **62.5% smaller than RV32IC** and **50% smaller
-than RV32IC + Zcb**. For the word-copy body it is **50% smaller than either
-compressed configuration**. The fused branch itself saves 50%. These are
-kernel-specific encoding results, not average application reductions.
+The MICA byte-copy body is 62.5% smaller than RV32IC and 50% smaller than
+RV32IC + Zcb. The word-copy body is 50% smaller than either compressed
+configuration. The fused branch saves 50%. These measurements cover the listed
+loop bodies; application code size has not been measured.
 
 MICA's byte-copy body:
 
@@ -49,8 +48,8 @@ loop:
 The loop is entered with a positive element count and valid, naturally aligned
 buffers. MICA F and 2C are enabled. Under those preconditions, both versions
 perform one load, one store, two pointer advances and one counter decrement per
-element. Three versus six retired instructions is an architectural instruction
-count; it does not establish a twofold cycle or throughput improvement.
+element. The instruction counts are three for MICA and six for RISC-V.
+Cycle counts and throughput require hardware measurements.
 
 ## Register budget
 
@@ -62,13 +61,12 @@ Physical area depends on port count, implementation and synthesis; spills can
 erase a code-size advantage. MICA-2E offers sixteen slots when that tradeoff is
 preferable. No compiler-generated workload comparison is available yet.
 
-## Where RISC-V matches or exceeds this result
+## Stack access and extension coverage
 
 The [RISC-V C specification](https://docs.riscv.org/reference/isa/v20260120/unpriv/c-st-ext.html)
 already provides compact SP-relative word accesses, and RV64C provides compact
 doubleword stack accesses. The four-byte save/restore case ties MICA. RISC-V's
 SP-relative reach is substantially larger than MICA's eight full-width slots.
-MICA's stack forms are not a unique advantage over compressed RISC-V.
 
 The [Zc specification](https://docs.riscv.org/reference/isa/unpriv/zc.html)
 adds compressed byte/halfword accesses and multi-register stack operations.
@@ -78,7 +76,7 @@ extensions, such as [CORE-V](https://docs.openhwgroup.org/projects/cv32e40p-user
 also require their own comparison. The results apply to the named standard
 profiles, not every processor using RISC-V.
 
-## Reproduce and interpret
+## Reproduction
 
 ```sh
 python3 benchmarks/riscv_density.py --assembler build/mica-as --emulator build/mica-run
@@ -88,9 +86,8 @@ The [archived JSON](../engineering/results/mica2/riscv-density.json) contains
 each source, byte count and RISC-V encoding. Complete MICA byte/word copy
 programs execute in the emulator at both XLENs, and the MICA 2.0 retirement suite
 compares F copy execution against RTL. RISC-V is assembled and sized in this
-experiment; it is not independently executed here.
+experiment; RISC-V execution is outside its scope.
 
-The next hardware comparison must map both CPUs with the same memory, peripherals,
-extensions, clock constraints and tool flow, then measure complete workloads.
-**MICA currently has evidence for these encoding advantages; lower power and
-higher clock speed remain unmeasured.**
+A hardware comparison requires matched memory, peripherals, extensions, clock
+constraints and tool flow, followed by complete workload measurements. Power and
+maximum clock frequency have not been measured.

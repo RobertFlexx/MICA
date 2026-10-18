@@ -76,7 +76,7 @@ Vivado project reads VHDL natively. Icarus never elaborates VHDL directly.
 Run `make -C rtl sim-peripherals` after building the SDK, or `python3
 scripts/test_peripherals.py --tools build`. This runs Verilog-2005 FIFO/UART tests,
 a native VHDL CRC test, transactional adapter tests, and both XLEN SoC firmware
-tests, simulates the actual Arty top at 100 MHz with 4 KiB and its UART divider,
+tests, simulates the Arty top at 100 MHz with 4 KiB and its UART divider,
 then lints the enabled SoC with Verilator. Logs and waveforms are in
 `build/peripherals`. `examples/peripherals32.mica` checks CRC, receives `ABC`
 through three interrupts and echoes it at the UART pin. For the functional emulator
@@ -90,9 +90,8 @@ Timing and status-poll instruction counts therefore differ from RTL; functional
 results match. This is not a cycle-accurate serial simulation.
 
 The [editable SoC drawing](../../schematics/current/soc-peripherals.dot) and [SVG
-preview](../../schematics/current/soc-peripherals.svg) are generated from actual
+preview](../../schematics/current/soc-peripherals.svg) are generated from elaborated
 module connections, with a [port
 inventory](../../schematics/current/soc-ports.json). Run `python3
 scripts/generate_soc_schematic.py --check` to detect stale wiring. The `$` net names
-identify Yosys-generated SoC expressions rather than invented bus connections; their
-source locations are preserved in those names.
+identify Yosys-generated SoC expressions and preserve their source locations.

@@ -21,7 +21,7 @@ conversion, enabled-SoC lint and CRC/RX firmware on both XLENs. The `waveforms`
 directory contains compressed VCDs for native VHDL CRC/watchdog, Verilog UART
 RX/FIFO, SystemVerilog CRC bus transactions both SoCs and the actual Arty top.
 Decompress with `gzip -dk file.vcd.gz` before opening in a waveform viewer. These
-are simulation waveforms, not measured voltage traces. Regenerate the reports with
+record simulated digital signals. Regenerate the reports with
 BUILDING.md and archive them with `scripts/archive_evidence.py`.
 
 [Release validation](release.json) records install/archive smoke tests. Build

@@ -12,6 +12,7 @@ jobs:
   software:
     name: ${{ matrix.os }} / ${{ matrix.cxx }} / ${{ matrix.kind }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -26,7 +27,7 @@ jobs:
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.kind }} -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
           cmake --build build --parallel 4
       - name: Software, firmware, generated specifications and documentation
-        run: ctest --test-dir build --output-on-failure --output-junit ctest.xml
+        run: ctest --test-dir build --output-on-failure --no-tests=error --parallel 4 --output-junit ctest.xml
       - name: Install and package
         run: |
           cmake --install build --prefix "$PWD/build/install"
@@ -45,13 +46,14 @@ jobs:
             build/releases/validation.json
   sanitizers:
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: ASan, UBSan and libFuzzer
         run: |
           cmake -S . -B build -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Debug -DMICA_FUZZ=ON -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined'
           cmake --build build --parallel 4
-          ctest --test-dir build --output-on-failure --output-junit ctest.xml
+          ctest --test-dir build --output-on-failure --no-tests=error --parallel 4 --output-junit ctest.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -59,6 +61,27 @@ jobs:
           path: |
             build/ctest.xml
             build/Testing/Temporary/LastTest.log
+  source-release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check source manifest and build archives
+        run: |
+          python3 scripts/package_source.py
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel 4
+          cpack --config build/CPackConfig.cmake -B build/releases -G TGZ
+      - name: Validate extracted source and installed SDK
+        run: |
+          python3 scripts/check_release.py --binary build/releases/mica-sdk-2.0-Linux-x86_64.tar.gz --source build/releases/mica-sdk-2.0-source.tar.gz --output build/releases/source-validation.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-release
+          path: |
+            build/releases/mica-sdk-2.0-source.tar.gz
+            build/releases/source-validation.json
   hardware:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -121,6 +144,8 @@ jobs:
             build/peripherals/*.vcd
             build/differential/results.json
             build/differential-mica2/results.json
+            build/profile-tests/results.json
+            build/rtl/*/build.log
             build/formal/*.log
             build/synthesis/*.json
             build/synthesis/*.log
@@ -129,6 +154,7 @@ jobs:
             build/alu-research/*.log
   workflow-lint:
     runs-on: ubuntu-24.04
+    timeout-minutes: 5
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -140,6 +166,7 @@ jobs:
           "$RUNNER_TEMP/actionlint" .github/workflows/ci.yml
   throughput:
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - run: |

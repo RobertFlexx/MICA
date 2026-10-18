@@ -1,4 +1,5 @@
-/build/
+/build*/
+/cmake-build-*/
 /rtl/program.mem8
 /rtl/mica_sim
 __pycache__/

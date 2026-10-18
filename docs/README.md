@@ -1,13 +1,8 @@
 # MICA 2.0 documentation
 
-MICA's documents separate architectural behavior, implementation details and
-measured results. The ISA manual defines what a program observes; the hardware and
-toolchain guides explain how the current implementations provide it.
-
-The guide layout follows the MICA 1.0 SDK. Start with the
-[2.0 scalar specification](architecture/MICA2.md) for the current behavior, the
-[verification report](engineering/MICA2_VERIFICATION.md) for executed checks, and
-the [RISC-V comparison](research/RISCV_COMPARISON.md) for demonstrated advantages.
+The [2.0 scalar specification](architecture/MICA2.md) defines architectural behavior.
+The [verification report](engineering/MICA2_VERIFICATION.md) records executed checks;
+the [RISC-V comparison](research/RISCV_COMPARISON.md) reports measured code sizes.
 
 ## Getting started
 
@@ -41,7 +36,7 @@ through the reference core. [Memory ports](hardware/MEMORY_INTERFACE.md),
 behavior](hardware/CLOCK_RESET.md) define the integration contracts.
 [Drawings](hardware/DATAPATH.md) include all refreshed legacy paths, the
 [2.0 implementation set](hardware/MICA2_IMPLEMENTATION.md), RTL signal widths
-and actual SoC module connections. All previews have source/artifact hashes.
+and elaborated SoC module connections. All previews have source/artifact hashes.
 
 [Synthesis](hardware/SYNTHESIS.md) describes resource mapping;
 [timing](hardware/TIMING.md) records the current timing-validation status. The
@@ -58,10 +53,12 @@ and [coverage limits](verification/COVERAGE.md).
 [Prior art](research/PRIOR_ART.md) identifies related designs and comparison
 requirements.
 
-[Measured RISC-V encoding comparisons](research/RISCV_COMPARISON.md) show the
-compact counted-loop advantage and the cases that tie. They do not establish
-power or clock-speed advantages.
+[RISC-V encoding comparisons](research/RISCV_COMPARISON.md) cover compact
+counted loops and stack accesses. Power and clock frequency are unmeasured.
 
+The [workflow and ISA revision](engineering/WORKFLOW_ISA_REVISION.md) records
+the CI dependency repair, compact branch ELF support, alignment and trap fixes.
+The [roadmap](ROADMAP.md) defines implementation milestones and completion gates.
 The [2026-10-18 ELF/toolchain audit](engineering/AUDIT_2026-10-18.md) records
 current source changes, executed software tests and outstanding hardware gaps.
 The [2.0 report](engineering/MICA2_VERIFICATION.md) records earlier checks.

@@ -31,6 +31,6 @@ for vector memory use the short base register field.
 Vector CSR enabled starts at 1 when V exists; enabled=0 makes V execution illegal.
 Any V execution marks dirty=1. These two CSRs do not implement protected lazy state
 sharing. All 1024 bits must be preserved if a task switch permits V in multiple
-tasks. The supplied scheduler deliberately avoids V. Numerical tests cover
+tasks. The example scheduler does not use V. Numerical tests cover
 saturation, packing, shifts, dot products and memory in the interpreter; no SIMD
 hardware synthesis or parallel/narrow-lane energy comparison exists.

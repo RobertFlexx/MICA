@@ -1,9 +1,8 @@
 # MICA 2.0 verification report
 
-The earlier statement that RTL had not been simulated or synthesized in this
-environment is superseded by executed local HDL tests and Yosys mapping.
-**Power and clock-speed advantages remain unmeasured.** These are local tool
-results, not an independent hardware laboratory certification.
+This report covers local HDL simulation, retirement comparison, component formal
+checks and Yosys mapping. Tool versions and source hashes are recorded in the
+[environment record](results/mica2/environment.json).
 
 ## Executed checks
 
@@ -46,25 +45,23 @@ limits, high registers, F copy loops, illegal fields, access/alignment faults,
 ecall EPC, masked wake and interrupt handler return. Timer checks use expected
 SoC outcomes separately because RTL clock ticks differ from emulator steps.
 
-## Demonstrated advantage
+## Encoding results
 
 The [RISC-V comparison](../research/RISCV_COMPARISON.md) records a six-byte
 MICA F+2C byte-copy body versus sixteen bytes for RV32IC and twelve for RV32IC
 with Zcb. The copy body uses three instructions versus six. The stack
-save/restore case ties compressed RISC-V. These are specific encoding and
-instruction-count advantages.
+save/restore case ties compressed RISC-V.
 
-## Still pending
+## Validation limits
 
 Vivado placement/routing, timing closure, physical FPGA boot, measured rail power,
 maximum stable clock, thermal behavior and a matched RISC-V hardware experiment
-remain pending. Yosys cell counts are mapped resources; simulation cycles are
-memory-model dependent. Neither gives watts, joules or Fmax.
+remain pending. Synthesis results report mapped resources; simulated cycle
+counts depend on the memory model.
 
-The formal checks do not prove the processor, interrupt timing, all legal
-encodings or every peripheral interaction. No complete coverage closure is
-claimed. The historical [1.0 r2 report](IMPLEMENTATION_REPORT.md) and its evidence
-retain their original scope.
+Formal coverage is limited to the components listed above. Whole-core retirement,
+interrupt timing and peripheral interactions require further verification. The
+[1.0 r2 report](IMPLEMENTATION_REPORT.md) records the earlier compatibility work.
 
 ## Reproduce
 

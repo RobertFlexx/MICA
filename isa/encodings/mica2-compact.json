@@ -17,6 +17,12 @@
   },
   "stack_slot_bytes": "XLEN/8",
   "relative_branch_bits": 6,
+  "relative_branch_relocation": {
+    "name": "PCREL6",
+    "id": 11,
+    "base": "PC+2",
+    "scale": 2
+  },
   "notes": "dbnz.s bits 5:3 of delta in op8-33; bits 2:0 in rs3. Zero counter illegal.",
   "stop_semantics": "Enter STOP until reset. Intended for tests/debug firmware. WFI instead enters SLEEP on MICA2 regardless of T."
 }

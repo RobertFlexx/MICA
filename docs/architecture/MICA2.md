@@ -10,12 +10,9 @@ not move.
 
 ## Register budget
 
-`MICA-2C` keeps eight physical scalar registers, including zero, link and stack.
-`MICA-2E` and `MICA-2L` have 16. This is a configurable implementation cost,
-not a hidden bank. The three-bit operands in short instructions still address
-x0..x7. Short forms therefore retain register pressure. A proper compiler and
-matched area benchmark must decide whether larger register files pay for
-themselves.
+`MICA-2C` has eight physical scalar registers, including zero, link and stack.
+`MICA-2E` and `MICA-2L` have sixteen. Three-bit operands in short instructions
+address x0..x7 in all profiles.
 
 | Profile | XLEN | Registers | Scalar options | Hardware status |
 | --- | ---: | ---: | --- | --- |
@@ -39,7 +36,9 @@ register number. `offset = s * XLEN/8`. Valid offsets are 0..28 on XLEN32,
 and 0..56 on XLEN64. The base is always x7. `ldsp x0` must still perform the
 read and can fault. Writeback is never issued on a load error. Failed stores
 must not modify memory. A precise trap leaves all affected register state
-unchanged. The stack pointer is unchanged on both successful operations.
+unchanged. Neither form implicitly increments SP. When `ldsp` names x7 as its
+destination, its successful load replaces SP using the address calculated from
+the old SP. `stsp x7` stores the old SP without changing it.
 
 For `dbnz.s`, `d` cannot be x0. The signed six-bit halfword offset is encoded
 as `(op8-33)<<3 | s`; it is sign-extended and scaled by two. Branches are
@@ -47,6 +46,11 @@ relative to `PC+2`. The inclusive reach is **-64 to +62 bytes** relative to
 `PC+2`. Branch destination validation and wrap rules follow the 1.0
 specification. The decrement happens even when the branch is not taken. This
 instruction requires no separate count register or loop controller.
+In ELF objects, `dbnz.s d,symbol[+/-addend]` uses `PCREL6` (relocation ID 11).
+The linker patches the split displacement while preserving `d`, checks the
+instruction template and rejects an unaligned or out-of-range target. Local
+labels use the same relocation as external symbols. Linking never silently
+widens this two-byte instruction; use `dbnz` with F for longer reach.
 
 ## New PC-relative address instruction
 
@@ -62,8 +66,8 @@ The assembler argument is a **halfword displacement**, not a byte displacement.
 `adrpc` supports the `ADRPC16` ELF relocation for `adrpc d,symbol[+/-addend]`
 in relocatable assembly objects. It computes the signed halfword displacement
 relative to the **instruction PC**, not the next instruction. The linker rejects
-unaligned or out-of-range targets. This enables references to nearby literals
-and symbols, but is not a complete position-independent or compiler backend.
+unaligned or out-of-range targets. This supports references to nearby literals
+and symbols.
 
 ## Full-width and word behavior
 
@@ -73,9 +77,8 @@ the existing sign-extended 32-bit arithmetic result convention. The existing
 change is selected only in 2.0 mode. Existing MICA 1.0 images run with the
 old semantics when MICA2 is disabled. `ldsp` on XLEN64 reads all 64 bits.
 
-The 1.0 implementation's separate 32-bit W arithmetic instructions retain
-their sign-extended result. Flow loads still require separate typed handling
-for signed DSP operands and have not been redesigned here.
+The separate 32-bit W arithmetic instructions retain their sign-extended result.
+Flow loads retain their 1.0 zero-extension semantics.
 
 ## Sleep and trap changes
 
@@ -84,18 +87,15 @@ instructions until a wake signal arrives. The minimal core can wake using an
 external `irq_i`, without requiring the T trap extension. When T is enabled,
 software/external/timer pending bits can wake the core and delivery follows
 the existing interrupt enable and mask rules. Pending alone wakes, while
-actually entering the handler still requires the appropriate enable bits.
+handler entry requires the appropriate enable bits.
 
 For 2.0 software exception `ecall`, EPC is the **address of ecall**, not the
 next PC. A handler must advance EPC explicitly when it wants to skip the
 faulting instruction. This differs from 1.0 and matches other synchronous
 fault behavior. No instruction may partially retire as a consequence of a
-fault or an interrupt. There is still no exception priority controller,
-automatic stacking, nested handler support or protection MPU. Do not present
-this trap model as equivalent to Cortex-M.
-
-`stop` is not a substitute for sleep. It is intended for firmware tests,
-power-down experiments and debug endpoints, never for a normal RTOS idle loop.
+fault or an interrupt. T supports one active handler. Exception priorities,
+automatic stacking, nested handlers and memory protection are not implemented.
+Use `wfi` for an idle loop; `stop` terminates execution until reset.
 
 ## Implementation provenance
 

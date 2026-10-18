@@ -5,6 +5,16 @@ address arithmetic, wakeable WFI and explicit STOP to the preserved 1.0 SDK.
 
 ## Current revision
 
+- Fix CI on runners without ripgrep; source discovery and archive checks also
+  work without Git. Add extracted-source CI and installed 2.0 release tests.
+- Add `PCREL6` for separately assembled compact counted loops and retain object
+  alignment through linking, including at nonzero origins.
+- Reject literal overflow before shortening `li32`; make trap TVAL independent
+  of tracing and make ELF disassembly respect revision and extension metadata.
+- Define ordered compiler, RTL, FPGA and measurement milestones in the roadmap.
+
+## Earlier 2.0 revisions
+
 - Repair MICA 2.0 ELF feature parsing, linking and runtime revision checks, and
   reject objects with incompatible ISA semantics.
 - Add `ADRPC16` relocation support for existing PC-relative instructions,

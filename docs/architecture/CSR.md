@@ -29,15 +29,13 @@ Feature bits: X=0, M=1, F=2, A=3, V=4, B=5, T=6, PERF=7, 2C=8 (when enabled). RT
 Emulator always provides PERF. Counts wrap modulo 2^64. CSR half reads zero extend
 to XLEN even on MICA64. Read instret before retiring the csrr itself. Counter/timer
 clock units are platform specific: RTL clocks include stalls; the functional
-emulator advances once per attempted instruction. These values must not be compared
-as physical cycle performance.
+emulator advances once per attempted instruction.
 
 Use high/low/high retry when sampling a changing 64-bit counter on XLEN32. For timer
 programming, mask timer delivery, write cmp_hi to all ones, write cmp_lo, then the
-final cmp_hi and restore the mask. Timer writes need the same care. There is no
-atomic pair-write instruction. Setting cmp_hi to all ones is sufficient to quiesce
-the short supplied demonstrations; full wraparound applications must implement a
-platform timer policy.
+final cmp_hi and restore the mask. Timer writes also require delivery masking
+because there is no atomic pair-write instruction. The examples quiesce short
+runs by setting cmp_hi to all ones; applications must also handle timer wraparound.
 
 IP software state cannot clear the external level or timer condition. Clear software
 bit 0 with csrw ip,x0. Acknowledge the peripheral or move comparison into the future

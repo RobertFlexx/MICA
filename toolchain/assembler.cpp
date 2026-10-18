@@ -392,6 +392,7 @@ class Assembler {
        flow = false, bitops = false, traps = false, mica2 = false;
   U unique = 0;
   bool object_mode = false;
+  U object_alignment = 16;
   std::set<std::string> label_names, global_names, weak_names, external_names;
   std::vector<mica::elf::Reloc> relocations;
   size_t expanded_lines = 0, expanded_bytes = 0;
@@ -699,17 +700,21 @@ class Assembler {
       } else if (op == "dbnz") {
         kind = mica::elf::PCREL20;
         operand = 1;
+      } else if (op == "dbnz.s" && mica2) {
+        kind = mica::elf::PCREL6;
+        operand = 1;
       } else if (BR.contains(op)) {
         kind = mica::elf::PCREL14;
         operand = 2;
       }
       if (kind && operand < a.size() && add_reloc(a[operand], kind, pc)) {
         Line placeholder = l;
-        placeholder.a[operand] =
-            std::to_string(kind <= mica::elf::LI64 ||
-                                   kind == mica::elf::ADRPC16
-                               ? 0
-                               : pc + (kind <= mica::elf::PCREL11 ? 2 : 4));
+        placeholder.a[operand] = std::to_string(
+            kind <= mica::elf::LI64 || kind == mica::elf::ADRPC16
+                ? 0
+                : pc + (kind == mica::elf::PCREL6 || kind <= mica::elf::PCREL11
+                            ? 2
+                            : 4));
         return enc(placeholder, false);
       }
     }
@@ -765,6 +770,7 @@ class Assembler {
       U n = num(a[0], sizing);
       if (!n || n > 4096 || (n & (n - 1)))
         throw Error(".align requires power of two <=4096");
+      object_alignment = std::max(object_alignment, n);
       return Bytes(size_t((U(0) - pc) & (n - 1)), 0);
     }
     if (op == ".org") {
@@ -912,6 +918,8 @@ class Assembler {
       Bytes b;
       if (op == "li64" && xlen != 64)
         throw Error("li64 requires --xlen 64");
+      if (op == "li32" && xlen == 32 && !sizing)
+        range(n, 32, std::bit_cast<S>(n) < 0, "li32");
       // MICA 2.0 keeps relocatable li32 fixed-width. Only standalone numeric
       // literals shrink, so branch layout is identical in both assembly passes.
       if (mica2 && op == "li32" && xlen == 32 && !object_mode) {
@@ -926,8 +934,6 @@ class Assembler {
             return wide(2, d, n);
         }
       }
-      if (op == "li32" && xlen == 32 && !sizing)
-        range(n, 32, std::bit_cast<S>(n) < 0, "li32");
       if (op == "li") {
         bool known = true;
         try {
@@ -1245,13 +1251,13 @@ public:
   mica::elf::Object object(const Bytes &bytes) const {
     mica::elf::Object o;
     o.width = unsigned(xlen);
+    o.alignment = object_alignment;
     o.image = bytes;
     o.relocs = relocations;
     o.features = unsigned(xreg) | unsigned(multiply) << 1 |
                  unsigned(flow) << 2 | unsigned(atomic) << 3 |
                  unsigned(simd) << 4 | unsigned(bitops) << 5 |
-                 unsigned(traps) << 6 |
-                 (mica2 ? mica::elf::mica2_feature : 0u);
+                 unsigned(traps) << 6 | (mica2 ? mica::elf::mica2_feature : 0u);
     for (const auto &[name, value] : sy) {
       unsigned bind = weak_names.contains(name)     ? 2u
                       : global_names.contains(name) ? 1u
@@ -1275,6 +1281,7 @@ public:
     weak_names.clear();
     external_names.clear();
     relocations.clear();
+    object_alignment = 16;
     macros.clear();
     unique = 0;
     expanded_lines = expanded_bytes = 0;

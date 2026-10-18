@@ -21,6 +21,9 @@ a = p.parse_args()
 out = a.build_dir.resolve()
 logs = out / "validation"
 logs.mkdir(parents=True, exist_ok=True)
+results = []
+# A failed preflight must never leave a previous successful run as evidence.
+(logs / "results.json").write_text("[]\n")
 if a.all:
     missing = [
         tool
@@ -39,7 +42,6 @@ if a.all:
     ]
     if missing:
         raise SystemExit("Missing required --all tools: " + ", ".join(missing))
-results = []
 
 
 def run(name, command):
@@ -67,7 +69,20 @@ if not (out / "CMakeCache.txt").exists() and shutil.which("ninja"):
     configure += ["-G", "Ninja"]
 run("configure", configure)
 run("build", ["cmake", "--build", out, "--parallel", "4"])
-run("software", ["ctest", "--test-dir", out, "--output-on-failure", "--no-tests=error"])
+run(
+    "software",
+    [
+        "ctest",
+        "--test-dir",
+        out,
+        "--output-on-failure",
+        "--no-tests=error",
+        "--parallel",
+        "4",
+        "--output-junit",
+        str(logs / "ctest.xml"),
+    ],
+)
 if a.all:
     run(
         "hdl",

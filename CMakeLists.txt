@@ -20,7 +20,7 @@ endforeach()
 foreach(tool IN ITEMS mica-ld mica-objdump mica-nm mica-objcopy)
   target_compile_options(${tool} PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
 endforeach()
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
+find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter)
 include(GNUInstallDirs)
 install(
   TARGETS mica-as
@@ -41,14 +41,14 @@ add_test(
   NAME integration
   COMMAND
     ${CMAKE_COMMAND} -E env MICA_AS=$<TARGET_FILE:mica-as>
-    MICA_RUN=$<TARGET_FILE:mica-run> MICA_DIS=$<TARGET_FILE:mica-dis> python3
-    ${CMAKE_SOURCE_DIR}/tests/integration.py)
+    MICA_RUN=$<TARGET_FILE:mica-run> MICA_DIS=$<TARGET_FILE:mica-dis>
+    ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/integration.py)
 
 add_test(
   NAME binary_compatibility
   COMMAND
     ${CMAKE_COMMAND} -E env MICA_AS=$<TARGET_FILE:mica-as>
-    MICA_RUN=$<TARGET_FILE:mica-run> python3
+    MICA_RUN=$<TARGET_FILE:mica-run> ${Python3_EXECUTABLE}
     ${CMAKE_SOURCE_DIR}/tests/binary_compatibility.py --as
     $<TARGET_FILE:mica-as>)
 
@@ -56,7 +56,7 @@ add_test(
   NAME fast_differential
   COMMAND
     ${CMAKE_COMMAND} -E env MICA_AS=$<TARGET_FILE:mica-as>
-    MICA_RUN=$<TARGET_FILE:mica-run> python3
+    MICA_RUN=$<TARGET_FILE:mica-run> ${Python3_EXECUTABLE}
     ${CMAKE_SOURCE_DIR}/tests/fast_paths.py)
 
 add_test(NAME engineering
@@ -65,13 +65,16 @@ add_test(NAME engineering
 add_test(NAME mica2
          COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/mica2.py
                  --tools $<TARGET_FILE_DIR:mica-as>)
-add_test(NAME elf_revision
-         COMMAND ${Python3_EXECUTABLE}
-                 ${CMAKE_SOURCE_DIR}/tests/elf_revision.py
-                 --tools $<TARGET_FILE_DIR:mica-as>)
-add_test(NAME format_safety
-         COMMAND ${Python3_EXECUTABLE}
-                 ${CMAKE_SOURCE_DIR}/tests/format_safety.py)
+add_test(
+  NAME elf_revision
+  COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/elf_revision.py
+          --tools $<TARGET_FILE_DIR:mica-as>)
+add_test(
+  NAME isa_contract
+  COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/isa_contract.py
+          --tools $<TARGET_FILE_DIR:mica-as>)
+add_test(NAME format_safety COMMAND ${Python3_EXECUTABLE}
+                                    ${CMAKE_SOURCE_DIR}/tests/format_safety.py)
 add_test(
   NAME mica2_density
   COMMAND

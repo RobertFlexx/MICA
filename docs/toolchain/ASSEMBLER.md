@@ -22,6 +22,18 @@ option after `--profile` can override part of that configuration.
 Intel HEX has record syntax; SRAM initialization uses the separate word-file
 converter. See the [memory guide](../hardware/MEMORY_INTERFACE.md).
 
+MICA-32 `li32` accepts signed 32-bit values or unsigned 32-bit bit patterns.
+In 2.0 flat assembly, numeric literals can use shorter equivalent instructions;
+the full literal is range-checked before shortening. Object symbol loads retain
+a fixed-size relocation template. `.align` in an object also sets a placement
+requirement for the linker, with a minimum of 16 bytes.
+
+`mica-dis --assembly --mica2 program.bin` emits 2.0 assembly; use `--mica1` for a
+legacy raw image. Raw images require an explicit revision selection for
+revision-specific decoding. ELF disassembly uses its recorded
+revision, XLEN and required extensions, and an explicit mismatched revision is
+rejected. Reserved encodings are retained as data directives.
+
 The assembler supports labels, constants, expressions, macros, includes, repeats,
 conditionals, data directives, aliases and pseudoinstructions. Encoding diagnostics
 identify the file, line and source text. Column spans, machine-readable diagnostics,

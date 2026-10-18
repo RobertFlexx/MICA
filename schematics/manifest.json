@@ -133,7 +133,7 @@
     "boards/arty_a7/mica_arty_a7.sv": "722fd3d783b7ca1d4149155ab6fbb3b67f38de44ed34648446b1000e98644832",
     "isa/compatibility.json": "32a59163ce8ef5d196cd96569e5e51e6ae5571bd45b4eb2e315d1c95c405955a",
     "isa/encodings/mica1.json": "ffd51e41a27ca21dfb00ef332890c3f9a462ea66ab5ed8098523e18dd8b185c1",
-    "isa/encodings/mica2-compact.json": "3e3ca81eee934a3ae2e749da18700e350f903c4668225d4ffb481a230eb7ca28",
+    "isa/encodings/mica2-compact.json": "ba028bd2fb637087a22cf8f49a83d36af778414c48f2df7eb45e6b1b53e2c721",
     "isa/encodings/mica2.json": "82100be0c889f6342d2d24c85bf9bb6eb475d658510d156c3a4f60d3982ea989",
     "isa/profiles/profiles.json": "62f9a5813e26e4005a81525deea0b3d6baa3e8a94f90190bf473b66c08dbbdd0",
     "rtl/mica_add64.sv": "4d8c1b51fb32ba2fb6aa3b1bbcec6eb722ce87fb7d2b57836ca905836cab77ee",
@@ -170,6 +170,6 @@
     "scripts/generate_overview_schematics.py": "4c200b1bb54ee06a415946899a17db042410104ceb44a04914384ea4301dc48a",
     "scripts/generate_schematics.py": "8abd9aaf6067aacbfd567b034c349eaa5fcc0cc06a8da098b2c8ab6321a1ac3a",
     "scripts/generate_soc_schematic.py": "22d326dc804abbe92849bdd7eeed4124df83a23cefc28e411817740ce0b83c3c",
-    "sim/emulator.cpp": "5147304a9eacd3fa7d3f36e3d45bc77366f294ac23b1f6c22e514f5efd38204d"
+    "sim/emulator.cpp": "eb631c20b044542d750a5c9bedf009224e60972fe77d95b7e42c96f5ade3629f"
   }
 }

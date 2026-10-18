@@ -14,11 +14,10 @@ conditionally skips a comparison to an unavailable old SDK. Compiler diagnostics
 include GNU `__int128` extension warnings and a disassembler precedence warning. See
 `baseline-software.txt` for raw results.
 
-Initially installed: CMake, Ninja, GCC, Clang, Python, Graphviz. No HDL simulator,
-Yosys, SBY or Vivado was on PATH. HDL tools must be obtained and the baseline tested
-before hardware results are claimed. The obtained Icarus compiler built the original
-sim32 test, but its execution timed out after90 seconds. r2 replaces that core
-logic; all corresponding revised smoke tests now complete. See baseline-hdl.txt.
+The initial environment had CMake, Ninja, GCC, Clang, Python and Graphviz.
+HDL tools were installed separately. Icarus built the original sim32 test,
+which timed out after 90 seconds. The replacement r2 core passes the corresponding
+smoke tests. See baseline-hdl.txt.
 
 ## Findings
 
@@ -39,11 +38,11 @@ implementation report records which findings have been corrected.
 | S01 Security and memory safety | high | Recursive expression parser has no depth bound; line length and file reads unbounded before checks | Bound expression depth, source/file sizes and output allocation | Deep expressions, huge source and corrupt input tests under sanitizers |
 | S02 Security and memory safety | high | Atomic SC does not compare reservation width; destination validation can follow a store; vector accesses can partially update before range faults | Validate all operands and full RAM range before effects; width-qualified reservation | Mixed-width LR/SC, disabled registers, boundary vector tests |
 | P01 Performance | medium | Two-halfword fetch repeats memory work; no memory-transaction counters | Optional aligned-word fetch reuse with redirect and fence invalidation | Cached/uncached traces and measured fetch transactions |
-| P02 Performance | medium | No synthesized area/timing/activity evidence for ALU research or hardware comparisons | Conventional and segmented equivalent ALU experiments, archive actual tool output | Random equivalence, synthesis and VCD activity; no energy claims |
+| P02 Performance | medium | No synthesized area/timing/activity evidence for ALU research or hardware comparisons | Conventional and segmented equivalent ALU experiments, archive tool output | Random equivalence, synthesis and VCD activity; energy unmeasured |
 | M01 Missing functionality | medium | No pipelined core, general JIT, compiler backend, user protection, coherent multicore or SIMD RTL | Keep these out of verified hardware profiles; track explicit acceptance gates | Status matrix tied to executable tests |
 | D01 Documentation/usability | high | ISA directs reader to code; RTL and software exceptions/MMIO differ; benchmarks search obsolete `cycles=` output | Normative specification and generated encoding tables; correct benchmark parser | Generated-file check, examples, measured report |
 | V01 Verification gaps | high | RTL never simulated locally; tests include source regex instead of behavior; no retirement comparison | Executable RTL harness with deterministic random memory and architectural events | Verilator differential, Icarus/GHDL components, CI |
-| V02 Verification gaps | medium | No formal properties or malformed object corpus; workflow availability unverified | Narrow proofs with documented assumptions, bounded fuzz/sanitizer paths | Proof logs and honest timeout/missing-tool reporting |
+| V02 Verification gaps | medium | No formal properties or malformed object corpus; workflow availability unverified | Narrow proofs with documented assumptions, bounded fuzz/sanitizer paths | Proof logs, timeout status and missing-tool diagnostics |
 
 ## Compatibility policy
 
@@ -61,7 +60,7 @@ nonfaulting supported programs keep their encodings and results. The historical 
 3. Implement precise reference behavior and a comparable retirement stream.
 4. Implement transactional multicycle RTL and differential verification.
 5. Integrate synchronous SRAM and firmware/peripherals; verify HDL languages.
-6. Add real object/link tools and reproducible examples.
+6. Add object/link tools and reproducible examples.
 7. Measure bounded research experiments and complete release documentation.
 
 Later performance pipelines, protected multitasking, multicore and vector hardware
@@ -73,7 +72,7 @@ A01/A02/R01..R04/T01/S01/S02 are corrected for the advertised scalar reference
 scope, with regression tests. T01 also included a left-justified hexadecimal
 byte-comment display defect, now checked. T02 has a working constrained ELF
 image-object/linker implementation; independent sections and a mature parser remain
-open. P01/P02 have actual implementations and measurements. M01 remains explicitly
+open. P01/P02 have implementations and measurements. M01 remains
 incomplete. D01 and V01/V02 now have normative references, executable
 HDL/differential/formal paths and recorded evidence. Remaining coverage and physical
 validation limits appear in the implementation report.

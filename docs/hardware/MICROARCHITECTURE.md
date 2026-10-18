@@ -2,8 +2,9 @@
 
 `mica_core_txn` is a single-issue, nonoverlapped multicycle implementation of the
 scalar architecture. Parameters select XLEN32/64, XREG, M, F, B, T, PERF, RAM_BYTES
-and FETCH_REUSE, plus MICA2 for the 2.0 decode and sleep semantics. The register array has 8 or 16 entries. Disabled multiply/bit/CSR
-paths are explicitly isolated so synthesis can remove them.
+and FETCH_REUSE, plus MICA2 for the 2.0 decode and sleep semantics. The register
+array has 8 or 16 entries. Constant parameter guards allow synthesis to remove
+disabled multiply, bit-operation and CSR paths.
 
 | State | Work |
 | --- | --- |

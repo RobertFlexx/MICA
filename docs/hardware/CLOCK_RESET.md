@@ -1,8 +1,8 @@
 # Clock and reset
 
 The Arty wrapper uses the board's 100 MHz clock directly. There is no PLL/MMCM,
-clock divider or gated clock in the current 2.0 implementation. Clock enables and valid signals control state
-updates. The 100 MHz constraint is a requested clock, not proven Fmax.
+clock divider or gated clock in the 2.0 implementation. Clock enables and valid
+signals control state updates. The target clock is 100 MHz; Fmax is unmeasured.
 
 Button 0 asserts active-high reset at the board wrapper. A two-flop ASYNC_REG-marked
 shift register asynchronously asserts and synchronously releases active-low rst_ni.

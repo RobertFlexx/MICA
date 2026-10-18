@@ -1,7 +1,7 @@
 # Pipeline work
 
-The current MICA 2.0 CPU is the verified multicycle reference core. It separates pending effects
-from commit to provide precise retirement, but executes one instruction at a time.
+The MICA 2.0 CPU is a multicycle reference core. It separates pending effects
+from commit for precise retirement and executes one instruction at a time.
 The legacy core module adapts its external interface to this implementation.
 
 A three-stage pipeline is the next microarchitecture candidate. The main design

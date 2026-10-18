@@ -7,8 +7,7 @@ existing top-level paths. Every drawing has DOT, SVG, PNG and PDF versions.
 The [2.0 implementation guide](hardware/MICA2_IMPLEMENTATION.md) explains the
 changed decode, stack operations and sleep/wake paths. Core and SoC inventories
 come from Yosys elaboration with MICA2=1; a SHA-256 manifest detects stale sources
-and rendered previews. Future multicore and split-slice proposals are explicitly
-identified as research, with no corresponding production RTL claim.
+and rendered previews. Multicore and split-slice proposals are labeled as research.
 
 These are architectural/connectivity drawings. Physical pin assignments and
 the board vendor's electrical references are in

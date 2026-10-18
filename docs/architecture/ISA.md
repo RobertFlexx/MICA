@@ -93,10 +93,9 @@ loop.
 
 `fence` orders all preceding memory transactions before subsequent ones. `fence.i`
 additionally synchronizes instruction fetch. On the single-outstanding uncached core
-these require no extra transactions. `wfi` retires and halts this run, preserving
-legacy SDK semantics; it is not yet an interrupt-waking sleep. Without T, `ecall`
-also halts. With T it enters cause 11 and saves **next PC** in EPC. This historical
-convention is intentional. `eret` requires T and an active handler, restores PC/IE
+these require no extra transactions. Legacy `wfi` retires and halts execution.
+Without T, `ecall` also halts. With T it enters cause 11 and saves **next PC** in
+EPC. `eret` requires T and an active handler, restores PC/IE
 and clears handler state. Reserved operands in system/unary instructions are
 illegal.
 
@@ -126,5 +125,5 @@ Conformance tests: `tests/integration.py` (scalar, B/F/A/V and ABI),
 `tests/fast_paths.py` (engines), `verification/differential/run.py` (RTL32/64, all
 scalar families, reserved opcodes, bus delays, faults and interrupts). Encoding
 round trips include every possible short halfword in a byte stream and deterministic
-random long envelopes. These tests are evidence, not a claim of exhaustive processor
-verification.
+random long envelopes. Execution coverage is detailed in
+[coverage limits](../verification/COVERAGE.md).

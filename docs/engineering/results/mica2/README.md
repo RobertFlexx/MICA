@@ -1,10 +1,10 @@
 # MICA 2.0 verification evidence
 
-These reports belong to the current MICA 2.0 source. The parent directory's
-dated r2 artifacts belong to MICA 1.0.
+These reports cover the MICA 2.0 source hashes recorded in `environment.json`.
+The parent directory's r2 artifacts cover MICA 1.0.
 
 [regression.json](regression.json) retains each executed stage command, exit
-status and elapsed time. [environment.json](environment.json) records the actual
+status and elapsed time. [environment.json](environment.json) records the
 UTC execution time, tool versions, host platform and verified source hashes.
 The `logs` directory contains deterministic gzip copies of the raw stage logs.
 
@@ -15,13 +15,13 @@ nine additional reset replays are reported in the log.
 emitted byte counts, and RISC-V instruction encodings.
 [Synthesis results](synthesis/results.json) retain all seven profile mappings and
 their primitive counts; per-profile JSON and compressed logs sit beside them.
-[Fetch results](fetch-results.json) and [ALU results](alu-results.json) are
-activity/cycle experiments, not measured electrical power.
+[Fetch results](fetch-results.json) and [ALU results](alu-results.json) record
+activity and simulated cycles.
 
 Regenerate with `scripts/verify.py --all`, followed by
 `scripts/archive_mica2_evidence.py`. The archiver rejects failed or incomplete
-regressions. No physical FPGA, routed timing, measured watts/joules, independent
-lab review or cross-ISA hardware performance result is represented here.
+regressions. Physical FPGA tests, routed timing, electrical power and cross-ISA
+hardware performance are outside this archive's scope.
 
 The successful ASan/UBSan/fuzz run is in `logs/sanitizers.log.gz`.
 `logs/sanitizers-lsan-unavailable.log.gz` retains the initial LeakSanitizer

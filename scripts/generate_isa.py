@@ -137,6 +137,13 @@ def generate():
         else:
             raise ValueError(f"Unknown 2C mnemonic {name}")
     assert len(set([31, 32, 41] + compact["opcodes"]["dbnz.s"])) == 11
+    relocation = compact["relative_branch_relocation"]
+    doc += (
+        f"\n`dbnz.s` symbol operands use ELF `{relocation['name']}` "
+        f"(ID {relocation['id']}), relative to `{relocation['base']}` in "
+        f"{relocation['scale']}-byte units. Local and external labels retain the "
+        "two-byte encoding; out-of-range or unaligned targets are link errors.\n"
+    )
     doc += "\nMICA 2.0 `wfi` retires then sleeps until a wake event. "
     doc += "On the minimal profile, it does not require the T trap extension. "
     doc += "`stop` is the explicit debug/terminal halt instruction.\n"

@@ -63,9 +63,6 @@ register-bank expansion as well as the 2.0 decode. MICA-64 and MICA-2L have
 sixteen slots. All mappings include the same 4 KiB RAM and TX/GPIO; only the
 explicit peripherals configuration adds RX/FIFO and CRC.
 
-The flow checks synthesis consistency, not routed timing or electrical power.
-No area, Fmax or energy advantage over another ISA is inferred from these counts.
-
 In this matched minimal-SoC mapping, enabling 2.0 adds **51 LUTs (1.1%) and
-2 flip-flops** over MICA-C. That is the measured cost of compact decode and
-wakeable WFI in this configuration, not a cross-ISA area advantage.
+2 flip-flops** over MICA-C for compact decode and wakeable WFI.
+Routed timing, electrical power and cross-ISA resource comparisons are pending.

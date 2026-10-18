@@ -6,8 +6,9 @@ import gzip
 import hashlib
 import io
 from pathlib import Path
-import subprocess
 import tarfile
+
+from source_files import source_files
 
 ROOT = Path(__file__).resolve().parents[1]
 p = argparse.ArgumentParser()
@@ -16,40 +17,15 @@ p.add_argument(
 )
 p.add_argument("--update-checksums", action="store_true")
 a = p.parse_args()
-# Uploaded source trees have no .git directory. Package from the tree in that case.
-if (ROOT / ".git").exists():
-    paths = (
-        subprocess.check_output(
-            ["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"], cwd=ROOT
-        )
-        .decode()
-        .split("\0")
-    )
-else:
-    paths = [str(path.relative_to(ROOT)) for path in ROOT.rglob("*") if path.is_file()]
 files = []
-for name in sorted(set(paths)):
-    if not name:
-        continue
+for name in source_files(ROOT):
     path = ROOT / name
     if path.is_symlink() or not path.is_file():
         raise SystemExit("source archive requires regular files: " + name)
-    if any(
-        part
-        in [
-            ".git",
-            ".aws",
-            ".codex",
-            ".agents",
-            "build",
-            "__pycache__",
-            ".venv",
-            ".pytest_cache",
-        ]
-        for part in Path(name).parts
-    ):
-        continue
     files.append(name)
+if "SHA256SUMS" not in files:
+    files.append("SHA256SUMS")
+    files.sort()
 checksums = "".join(
     hashlib.sha256((ROOT / name).read_bytes()).hexdigest() + "  " + name + "\n"
     for name in files

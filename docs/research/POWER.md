@@ -1,9 +1,7 @@
 # Switching activity and power
 
-The current power-related measurements are RTL transition counts and fetch
-transactions. They identify activity changes worth investigating in a physical flow.
-A capacitance, clock-tree and leakage model is still needed to estimate energy per
-completed task.
+Available measurements cover RTL transition counts and fetch transactions.
+Estimating energy per task also requires capacitance, clock-tree and leakage models.
 
 ## Segmented ALU
 
@@ -19,9 +17,8 @@ uses combinational operand isolation, with no clock gate. The conventional and
 segmented upper-sum counts are 160,682 and 30,104.
 
 VCD stable-value counts omit gate glitches, routing capacitance and clock/leakage
-cost. Those omissions matter when converting activity into watts. The main 64-bit
-core also has its own conventional arithmetic path, so this experiment measures the
-standalone units rather than whole-core power.
+cost. The experiment covers standalone units; the main 64-bit core uses its own
+conventional arithmetic path.
 
 ## Fetch traffic
 
@@ -32,10 +29,7 @@ implementation cost have not yet been measured.
 
 ## MICA 2.0 status
 
-RTL simulation and mapped synthesis are now executed locally; the
-[verification report](../engineering/MICA2_VERIFICATION.md) records them.
 Wakeable WFI suppresses new bus requests and retirement while the clock and
-counters continue. Smaller instruction bodies and fewer retired instructions
-are useful activity indicators, but **no measured power or energy advantage
-over RISC-V exists yet**. The [encoding comparison](RISCV_COMPARISON.md) keeps
-those claims separate.
+counters continue. The [verification report](../engineering/MICA2_VERIFICATION.md)
+records simulation and resource mapping; the [encoding comparison](RISCV_COMPARISON.md)
+records loop code sizes. Physical power and energy measurements are pending.

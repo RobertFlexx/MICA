@@ -16,10 +16,7 @@ performs no store. Old .w values zero extend to XLEN. AMOs read old memory,
 calculate the low-width replacement, write, then return old memory as one
 instruction. These are sequential interpreter operations.
 
-For a future MICA-MP implementation the intended research baseline is sequential
-consistency across ordinary memory and atomics, with a single global ordering point
-and fences ordering MMIO as well. This is a proposal: no shared arbiter, coherence
-protocol, inter-core interrupt delivery or multi-hart happens-before implementation
-is supplied. Firmware using the current A library does not establish multicore
-hardware support. No progress/fairness guarantee for LR/SC across harts or coherent
-DMA is claimed.
+The proposed MICA-MP memory model uses sequential consistency for ordinary memory
+and atomics, a global ordering point, and fences that also order MMIO. Multicore
+arbitration, coherence, inter-core interrupts, LR/SC progress guarantees and
+coherent DMA remain unspecified or unimplemented.

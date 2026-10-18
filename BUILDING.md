@@ -2,8 +2,8 @@
 
 The software builds with CMake 3.20+, Python 3.10+, and GCC or Clang accepting
 C++23. The vector interpreter also uses the compilers' `__int128` extension.
-Current 2.0 results use Linux. The [archived 1.0 CI run](docs/engineering/results/ci.json)
-is historical; it is not evidence of a new 2.0 remote workflow run.
+MICA 2.0 validation uses Linux. Historical Linux/macOS results are in the
+[1.0 CI archive](docs/engineering/results/ci.json).
 
 ## Software
 
@@ -20,6 +20,9 @@ The seven tools are written to `build/`. The install tree also contains the
 assembly libraries, startup code, examples, headers and documentation.
 `bin/linux-x86_64` holds the historical binaries used for compatibility work;
 source builds leave those files alone.
+CTest uses the Python interpreter selected by CMake; `Python3_EXECUTABLE` can
+select a particular installation. Repository file discovery needs no ripgrep,
+and extracted source archives can run their tests without Git.
 
 ### Sanitizers and fuzzing
 
@@ -73,9 +76,8 @@ assembler path as a quoted `ASM` argument. `sim-peripherals` runs the native
 Verilog/VHDL blocks, the converted CRC engine, both word-size SoCs and the actual
 Arty board top. Logs and waveforms are written under `build/peripherals`.
 
-Spaces in directory names are legal. Some HDL build tools need reminding.
-The Verilator and SBY runners stage their generated builds in temporary paths
-without spaces, then copy the results back into `build`.
+The Verilator and SBY runners support repository paths containing spaces by
+staging builds in temporary paths without spaces and copying results into `build`.
 
 For the fetch experiment, also build both word sizes with `--reuse 0`, then run
 `python3 benchmarks/hardware.py --tools build`. The separate ALU experiment is
@@ -93,6 +95,9 @@ This command builds the tools, runs the software and hardware suites, and saves
 stage commands, logs and exit status under `build/verify/validation`. `--all`
 requires every listed HDL tool. Without that option the runner executes the
 software build and CTest suite only. `--build-dir` selects another output tree.
+A new invocation clears the previous stage summary before checking dependencies,
+so an unavailable tool cannot leave a previous successful run as current evidence.
+The software stage also writes `validation/ctest.xml`.
 
 ## SDK archives
 
@@ -107,9 +112,13 @@ metadata and gzip header make the archive repeatable for identical source
 contents. Review the included files before updating the manifest.
 
 `scripts/check_release.py` extracts the binary SDK and tests the installed
-tools, separate compilation, startup library and UART/CRC firmware. Supply
+tools, separate compilation under both ISA revisions, compact branch/address
+relocations, object alignment, startup library and UART/CRC firmware. Supply
 `--source` as well to verify source checksums and perform a clean build and CTest
 run. See its `--help` for archive arguments. Build outputs stay under `build/`.
+CI checks the source manifest before packaging and runs these extracted-source
+checks in a separate release job. Build and sanitizer output directories are
+excluded from the source archive.
 
 ## MICA 2.0 comparisons, drawings and evidence
 
@@ -150,7 +159,7 @@ C++/SystemVerilog/Verilog use `.clang-format`; Python uses `pyproject.toml`;
 CMake uses `.cmake-format.yaml`. `--cmake-format PATH` selects a formatter
 installed with a supported Python version. JSON uses two-space indentation.
 The formatter stages every changed file in memory and does not write any
-source if a format tool fails. It deliberately leaves assembly, VHDL, shell,
+source if a format tool fails. It excludes assembly, VHDL, shell,
 Tcl, constraints and other data-sensitive inputs untouched; trimming spaces
 inside a shell here-document or YAML scalar can change behavior.
 Generated tables and drawings retain their generator's canonical output.

@@ -106,8 +106,14 @@ int main(int argc, char **argv) {
         e::fail("cannot mix MICA 1.0 and 2.0 objects");
       linked.width = o.width;
       linked.features |= o.features;
-      while (linked.image.size() % 16)
-        linked.image.push_back(0);
+      // Preserve alignment requested inside an object, including with a
+      // nonzero origin. Padding is part of the bounded output image.
+      const e::U padding =
+          (e::U(0) - (origin + linked.image.size())) & (o.alignment - 1);
+      if (linked.image.size() > length ||
+          padding > length - linked.image.size())
+        e::fail("image alignment exceeds memory region");
+      linked.image.resize(linked.image.size() + size_t(padding), 0);
       offsets.push_back(linked.image.size());
       if (linked.image.size() > length ||
           o.image.size() > length - linked.image.size())
@@ -163,7 +169,7 @@ int main(int argc, char **argv) {
     }
     if (entry.empty() && globals.contains("_start"))
       entry = "_start";
-    linked.entry = origin;
+    linked.entry = origin + offsets.front();
     if (!entry.empty()) {
       auto it = globals.find(entry);
       if (it == globals.end())

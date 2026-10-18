@@ -41,8 +41,8 @@ static std::string target(U pc, int size, U rel, int bits) {
 }
 #include "../isa/generated/disassembler.inc"
 #include "../isa/encoding.hpp"
-static std::string decode(U pc, U h, U p, int xlen) {
-  if (!mica::legal_encoding(std::uint16_t(h), std::uint32_t(p), xlen))
+static std::string decode(U pc, U h, U p, int xlen, unsigned features) {
+  if (!mica::legal_encoding(std::uint16_t(h), std::uint32_t(p), xlen, features))
     return ".half " + hex(h) + ((h >> 14) == 3 ? "," + hex(p & 65535) : "");
   int cls = int(h >> 14);
   if (cls == 0) {
@@ -196,6 +196,8 @@ int main(int argc, char **argv) {
     std::string file;
     int xlen = 32;
     bool assembly = false;
+    int revision = -1;
+    unsigned features = mica::elf::feature_mask;
     U base = 0;
     for (int i = 1; i < argc; i++) {
       std::string a = argv[i];
@@ -205,13 +207,16 @@ int main(int argc, char **argv) {
         xlen = std::stoi(argv[i]);
         if (xlen != 32 && xlen != 64)
           throw std::runtime_error("invalid xlen");
-      } else if (a == "--assembly")
+      } else if (a == "--mica1" || a == "--mica2")
+        revision = a == "--mica2" ? 1 : 0;
+      else if (a == "--assembly")
         assembly = true;
       else if (a == "--version") {
         std::cout << "mica-dis 2.0 development\n";
         return 0;
       } else if (a == "--help") {
-        std::cout << "mica-dis [--xlen 32|64] program.bin\n";
+        std::cout
+            << "mica-dis [--assembly] [--mica1|--mica2] [--xlen 32|64] program.bin|program.elf\n";
         return 0;
       } else if (!file.empty() || a.starts_with('-'))
         throw std::runtime_error("unexpected option or extra file");
@@ -226,12 +231,21 @@ int main(int argc, char **argv) {
     auto buf = mica::elf::read_file(file);
     if (mica::elf::is_elf(buf)) {
       auto object = mica::elf::parse(buf);
+      const int file_revision =
+          (object.features & mica::elf::mica2_feature) ? 1 : 0;
+      if (revision >= 0 && revision != file_revision)
+        throw std::runtime_error(
+            "ELF ISA revision differs from selected disassembly mode");
+      revision = file_revision;
+      features = object.features;
       buf = object.image;
       xlen = int(object.width);
       base = object.base;
     }
+    if (revision == 0)
+      features &= ~mica::elf::mica2_feature;
     if (assembly)
-      std::cout << ".arch mica" << xlen << "\n";
+      std::cout << ".arch mica" << xlen << (revision == 1 ? "v2" : "") << "\n";
     for (size_t i = 0; i < buf.size();) {
       size_t left = buf.size() - i;
       if (left < 2) {
@@ -250,12 +264,13 @@ int main(int argc, char **argv) {
                 ? ((h & 1023) << 16) | (U(buf[i + 2]) | (U(buf[i + 3]) << 8))
                 : 0;
       if (assembly) {
-        std::cout << decode(i + base, h, p, xlen) << "\n";
+        std::cout << decode(i + base, h, p, xlen, features) << "\n";
         i += size_t(len);
         continue;
       }
       std::cout << std::setw(10) << std::left << hex(i + base) << " "
-                << std::setw(20) << decode(i + base, h, p, xlen) << " ; ";
+                << std::setw(20) << decode(i + base, h, p, xlen, features)
+                << " ; ";
       std::cout << std::right;
       for (int j = 0; j < len; j++)
         std::cout << std::hex << std::setfill('0') << std::setw(2)

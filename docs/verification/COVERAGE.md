@@ -9,7 +9,5 @@ encodings, but a round trip by itself is not an execution test.
 Open gaps include exhaustive long encoding legality, all CSR transitions, formal CPU
 retirement, every interrupt arrival point, bus reset races after non-idempotent
 peripheral writes, vector hardware, multicore ordering and pipeline hazards.
-Protected task isolation, all FPGA clock corners and physical-board boot have no
-coverage because those paths are not implemented or not available. No coverage
-percentage or verification closure is claimed without an instrumented coverage
-database.
+Protected task isolation, FPGA clock corners and physical-board boot are untested.
+Coverage percentages require an instrumented coverage database.

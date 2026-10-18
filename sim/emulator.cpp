@@ -1152,8 +1152,10 @@ public:
       U here = pc, instruction = 0;
       int length = 0;
       std::array<U, 16> before{};
-      if (retirement.is_open()) {
+      if (retirement.is_open())
         before = x;
+      // TVAL is architectural state, even when no retirement log is requested.
+      if (traps || retirement.is_open()) {
         if (!(pc & 1) && pc <= ram.size() && ram.size() - size_t(pc) >= 2) {
           instruction = U(ram[size_t(pc)]) | (U(ram[size_t(pc) + 1]) << 8);
           length = (instruction >> 14) == 3 ? 4 : 2;

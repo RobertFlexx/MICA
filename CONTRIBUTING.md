@@ -1,7 +1,7 @@
 # Contributing to MICA
 
-Useful changes come with a small example that demonstrates the problem or the
-new behavior. For instruction changes, start with the [ISA manual](docs/architecture/ISA.md)
+Changes should include a small example that demonstrates the problem or the
+new behavior. For instruction changes, use the [ISA manual](docs/architecture/ISA.md)
 and [audit](docs/engineering/AUDIT.md); the emulator and RTL need to agree on
 both successful execution and faults.
 
@@ -9,8 +9,8 @@ both successful execution and faults.
 
 MICA keeps its 1.0 instruction encodings. Compatible implementation changes use
 engineering revisions. Existing allocations and the frozen firmware fixtures
-are part of that contract. A failing fixture needs an explanation and a fix,
-rather than a freshly assembled replacement that happens to pass.
+are part of that contract. Investigate and correct failing fixtures; preserve
+the original fixture bytes.
 
 Allocations live in `isa/encodings/mica1.json`; configurations live in
 `isa/profiles/profiles.json`. After editing them, run
@@ -26,8 +26,8 @@ the change and include the commands and results in the pull request.
 
 Memory changes need tests for latency, response ownership, faults and reset.
 Trap changes need a retirement comparison and a context-preservation case.
-Peripheral changes need a test that observes the bus or serial pins. A store
-that happens twice under backpressure is particularly unpopular with UARTs.
+Peripheral changes need a test that observes the bus or serial pins, including
+checks for duplicate writes under backpressure.
 
 When a differential test fails, keep the first mismatching event and the input
 that produced it. A field belongs outside the comparison only when its
@@ -40,10 +40,13 @@ Keep RTL port names and generated drawings in sync. Benchmark reports should
 include inputs, validated outputs, tool versions, configuration and raw results.
 Area, timing and power are separate measurements; each needs its own evidence.
 
+Use concise technical prose in documentation. Describe behavior, requirements,
+results and limitations; omit conversational asides and editing-session commentary.
+
 Generated build products and growing fuzz corpora stay outside commits. Checked-in
 ISA tables, drawing sources and release evidence are intentional exceptions.
 Use repository-relative paths in guides and scripts so another checkout can run
-them without borrowing the original developer's directory layout.
+them independently of the original development environment.
 
 Format SDK sources with `python3 scripts/format_code.py`; use `--check` for
 a read-only check. Regenerate all schematic sets after RTL or generator changes.

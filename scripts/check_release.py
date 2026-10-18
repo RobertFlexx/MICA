@@ -128,6 +128,54 @@ with tempfile.TemporaryDirectory(prefix="mica-release-") as temp:
         )
         if not copy.read_text().endswith(":00000001FF\n"):
             raise SystemExit("installed HEX conversion failed")
+        # Exercise the current ISA through installed tools, not just legacy ELF.
+        parts = {
+            "counted_main": ".global _start\n.extern helper\n_start: li8 x1,0\n"
+            "li8 x2,7\n.global loop\nloop: addi x1,6\nb helper\n",
+            "counted_helper": ".global helper\n.extern loop,payload\n"
+            "helper: dbnz.s x2,loop\nadrpc x3,payload\n"
+            "ldbu x4,[x3]\nadd x1,x4\nstop\n",
+            "counted_data": ".align 256\n.global payload\npayload: .byte 0\n",
+        }
+        objects = []
+        for name, code in parts.items():
+            source = work / f"{name}{width}.mica"
+            obj = source.with_suffix(".o")
+            source.write_text(code)
+            run(
+                [
+                    tools / "mica-as",
+                    "--mica2",
+                    "--xlen",
+                    width,
+                    "-c",
+                    source,
+                    "-o",
+                    obj,
+                ],
+                work,
+            )
+            objects.append(obj)
+        elf = work / f"counted{width}.elf"
+        run(
+            [
+                tools / "mica-ld",
+                *objects,
+                "--elf",
+                elf,
+                "-o",
+                work / f"counted{width}.bin",
+            ],
+            work,
+        )
+        result = run([tools / "mica-run", "--mica2", "--xlen", width, elf], work)
+        if "x1=0x2a" not in result.stderr or "x3=0x100" not in result.stderr:
+            raise SystemExit(
+                "installed MICA 2.0 compact branch/address/alignment failed"
+            )
+        listing = run([tools / "mica-dis", "--assembly", elf], work).stdout
+        if f".arch mica{width}v2" not in listing or "dbnz.s" not in listing:
+            raise SystemExit("installed MICA 2.0 disassembly failed")
     sdk = binary / "share/mica"
     objects = []
     for source in [
@@ -198,6 +246,6 @@ a.output.write_text(
     + "\n"
 )
 print(
-    f"PASS extracted SDK tools, separate compilation for both XLENs, peripherals"
+    f"PASS extracted SDK tools, legacy and MICA 2.0 ELF for both XLENs, peripherals"
     + (", source checksums and clean build/CTest" if a.source else "")
 )

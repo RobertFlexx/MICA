@@ -3,7 +3,7 @@
 The implemented format is little-endian **ELF64**, including for MICA32, with
 experimental e_machine=0xff4d. This number is not officially assigned to MICA.
 ET_REL objects and ET_EXEC images use the same constrained section layout: null,
-`.mica.image` (PROGBITS/WAX, alignment 16), `.rela.mica.image` (RELA), `.symtab`
+`.mica.image` (PROGBITS/WAX, alignment at least 16), `.rela.mica.image` (RELA), `.symtab`
 (24-byte entries), `.strtab`, `.shstrtab`. e_flags bit 0 selects XLEN64; bits 8..15
 record required X/M/F/A/V/B/T/PERF features. Bit 16 records the MICA 2.0
 semantic revision. Bits 1..7 and 17..31 must be zero. A 2.0 object cannot be
@@ -20,7 +20,11 @@ Text/data/rodata/bss directives remain organization markers in one image section
 BSS bytes are materialized; the startup example also clears its explicit BSS range.
 Separate independently placed sections, NOBITS, debug info, dynamic linking and
 archives are not implemented. Symbols use local/global/weak binding, undefined
-section 0, image section 1 or absolute SHN_ABS. The linker honors strong over weak
+section 0, image section 1 or absolute SHN_ABS. The assembler records the maximum
+`.align` requirement (up to 4096) in an object's image section. The linker aligns
+each fragment's absolute placement to that requirement and includes padding in
+the memory-region bound. Executable image origins remain 16-byte aligned.
+The linker honors strong over weak
 definitions, rejects duplicate strong definitions, and resolves an undefined weak
 reference to zero. Local names remain scoped to their object.
 
@@ -31,10 +35,14 @@ reference to zero. Local names remain scoped to their object.
 | PCREL8,PCREL11 | 5, 6 | short conditional/unconditional halfword displacement |
 | PCREL14,PCREL20,PCREL24 | 7, 8, 9 | long comparison/counted/jump displacement |
 | ADRPC16 | 10 | long WIDE/ADRPC immediate; signed PC-relative halfwords from instruction PC |
+| PCREL6 | 11 | MICA 2.0 `dbnz.s` split six-bit signed halfword displacement |
 
 RELA addends are signed 64-bit. Absolute result is S+A; relative displacement is
 `(S+A-(P+instruction_length))/2`, where P is the patched instruction address.
 `ADRPC16` is `(S+A-P)/2` instead, because `adrpc` uses the instruction's PC.
+`PCREL6` uses `(S+A-(P+2))/2`, with byte reach -64..+62 from P+2. It patches
+`op8=33+(displacement[5:3])` and `s=displacement[2:0]`, retaining the nonzero
+three-bit counter field. Both relocations require the MICA2 feature flag.
 Offsets must be even and fit the signed field. LI relocations replace all 16-bit
 pieces while retaining register/opcode fields and verifying the shift instructions
 in LI64. Values too large for LI32/ABS32 are rejected. No other relocation IDs are

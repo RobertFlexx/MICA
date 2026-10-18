@@ -85,8 +85,7 @@ Formal checks cover all-input combinational ALU equivalence, response ownership 
 stability for a small SRAM, and FIFO ordering/occupancy through 16 sampled clocks.
 The FIFO check is bounded; induction has not closed with the current
 observable-state assertions. The [formal guide](../verification/FORMAL.md) records
-assumptions and scope. LeakSanitizer ran with process inspection available; sandbox
-startup restrictions were resolved without disabling checks.
+assumptions and scope. LeakSanitizer completed with process inspection enabled.
 
 ## Fetch and ALU experiments
 
@@ -138,7 +137,7 @@ physical MICA clock. The earlier EPYC report belongs to r1.
 
 ## FPGA and release validation
 
-The actual `mica_arty_a7` top passes simulation with a 100 MHz input, 4 KiB SRAM,
+The `mica_arty_a7` top passes simulation with a 100 MHz input, 4 KiB SRAM,
 RX/CRC enabled and synchronized reset release. The test checks timer handling,
 GPIO/halt/fault LEDs and the serialized self-test message. Vivado implementation,
 post-route timing, physical programming/boot and power measurements remain pending.

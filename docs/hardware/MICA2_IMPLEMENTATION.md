@@ -67,9 +67,9 @@ evidence and component formal scope.
 ## Performance
 
 The [RISC-V comparison](../research/RISCV_COMPARISON.md) demonstrates smaller
-counted memory loops with actual assembler output. The [synthesis guide](SYNTHESIS.md)
-records mapped area costs. A fair hardware comparison still needs matched cores,
+counted memory loops from assembler output. The [synthesis guide](SYNTHESIS.md)
+records mapped area costs. Hardware comparisons require matched cores,
 SRAM, peripherals, tools and clock constraints.
 
 Vivado place/route, timing closure, physical board boot and rail power remain
-pending. No measured MICA-versus-RISC-V Fmax or energy advantage is available.
+pending.

@@ -14,9 +14,9 @@ fast interpreter and specialized counted-loop translation. The last is not a gen
 JIT or a realistic whole-program throughput rating. Process launch is included. CPU
 identity, OS, repetitions and iteration count accompany results.
 
-The engineering report links archived r2 JSON inputs/results. The earlier r1 EPYC
-report is historical and was not produced on this host. No independent ISA baseline
-has yet been run in the same synthesis or power configuration.
+The engineering report links archived r2 inputs and results. The EPYC report
+records r1 measurements. Matched synthesis and power results for an independent
+ISA baseline are not available.
 
 ## MICA 2.0 versus RISC-V encoding
 

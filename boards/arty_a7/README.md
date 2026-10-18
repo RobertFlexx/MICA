@@ -7,5 +7,5 @@ the checked package-pin assignments.
 
 The [FPGA guide](../../docs/hardware/FPGA_BUILD.md) covers image selection,
 Vivado builds and serial-console behavior. [Board connections](../../docs/hardware/BOARD_CONNECTIONS.md)
-records pin direction and electrical references. The actual top passes
+lists pin direction and electrical references. The board top passes
 simulation; physical boot and post-route timing remain to be measured.

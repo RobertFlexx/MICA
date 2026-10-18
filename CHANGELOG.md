@@ -2,13 +2,18 @@
 
 ## MICA 2.0
 
+Fix the formatter dependency that broke Linux/macOS CI. Add extracted-source
+release validation and installed MICA 2.0 smoke tests. Add `PCREL6` compact
+branch relocations, preserve ELF object alignment, reject overflowing literals
+before relaxation, and correct trace-dependent trap values and ELF disassembly.
+Expand the roadmap into ordered milestones with explicit completion gates.
+
 Repair the 2.0 ELF feature flag mismatch, require compatible revisions when
 linking or loading, report ISA requirements in `mica-objdump`, and implement
 `ADRPC16` relocations for cross-object PC-relative addresses. Harden signed
 relocation addends, branch displacement arithmetic and operand parsing. Add
 32/64-bit firmware integration tests and transactional source formatting.
 No machine instruction encoding was altered.
-
 
 Add compact full-width stack accesses, short counted branches, ADRPC, wakeable
 WFI, explicit STOP, signed XLEN64 word loads and 8/16-register profiles.

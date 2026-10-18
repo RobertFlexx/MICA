@@ -36,6 +36,8 @@ For separately assembled MICA 2.0 firmware, the `ADRPC16` relocation lets
 The [linker guide](docs/toolchain/LINKER.md) includes reproducible MICA-32 and
 MICA-64 examples. ELF files retain the ISA revision: `mica-run --mica2` executes
 2.0 ELF, while mismatched 1.0/2.0 objects or runtime modes are rejected.
+Compact `dbnz.s` loops also support separate compilation through `PCREL6`;
+the linker checks their range and preserves requested data alignment.
 
 For a first program, save this as `hello.mica`:
 
@@ -50,7 +52,7 @@ Assemble with `build/mica-as --mica2 hello.mica -o hello.bin`, then run
 `build/mica-run --mica2 hello.bin`. The register dump reports `x1=0x2a`.
 Use `stop` to end a test and `wfi` to sleep until a pending event wakes the core.
 
-## What is here
+## Components
 
 | Component | Current implementation |
 | --- | --- |
@@ -92,6 +94,5 @@ Contribution guidelines are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 MICA is released under the [MIT license](LICENSE).
 
-# so what this all uh info compiles down to.
--------------------------
-MICA (Microcontroller Instruction Core Architecture) is an independent 32/64-bit RISC architecture designed for microcontrollers, embedded systems, and low-power processors. Its goal is to challenge RISC-V in these areas by offering compact instructions, efficient execution, simpler hardware, and better performance per watt without unnecessary complexity. MICA aims to become a practical alternative for everything from small industrial controllers to more capable multicore embedded processors, with efficiency and flexibility at the center of its design.
+The [roadmap](docs/ROADMAP.md) defines the compiler, core implementation and
+physical validation milestones for the embedded platform.

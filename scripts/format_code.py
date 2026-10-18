@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 import subprocess
 
+from source_files import source_files
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -20,25 +22,7 @@ def main():
         help="format only this repository-relative source file (repeatable)",
     )
     args = parser.parse_args()
-    names = subprocess.check_output(
-        [
-            "rg",
-            "--files",
-            "--hidden",
-            "-g",
-            "!build*/**",
-            "-g",
-            "!.git/**",
-            "-g",
-            "!.agents/**",
-            "-g",
-            "!.aws/**",
-            "-g",
-            "!.codex/**",
-        ],
-        cwd=ROOT,
-        text=True,
-    ).splitlines()
+    names = source_files(ROOT)
     if args.path:
         selected = set(names)
         for name in args.path:

@@ -30,6 +30,8 @@ with tempfile.TemporaryDirectory(prefix="mica-docs-") as temp:
             width = "64" if ".arch mica64" in code else "32"
             v2 = ".arch mica32v2" in code or ".arch mica64v2" in code
             opts = ["--mica2"] if v2 else []
+            if re.search(r"^\s*\.(?:global|globl|weak|extern)\b", code, re.M):
+                opts.append("-c")
             result = subprocess.run(
                 [
                     a.assembler,
