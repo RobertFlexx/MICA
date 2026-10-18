@@ -89,3 +89,7 @@ repairs, test results, measurements and remaining work. Contribution guidelines
 are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 MICA is released under the [MIT license](LICENSE).
+
+# so what this all uh info compiles down to.
+-------------------------
+MICA (Microcontroller Instruction Core Architecture) is an independent 32/64-bit RISC architecture designed for microcontrollers, embedded systems, and low-power processors. Its goal is to challenge RISC-V in these areas by offering compact instructions, efficient execution, simpler hardware, and better performance per watt without unnecessary complexity. MICA aims to become a practical alternative for everything from small industrial controllers to more capable multicore embedded processors, with efficiency and flexibility at the center of its design.
