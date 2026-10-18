@@ -1,4 +1,5 @@
 # MICA 1.0
+> ***Microcontroller Instruction Core Architecture***
 
 MICA is an experimental 32-bit and 64-bit processor architecture for embedded
 software. It uses mixed 16-bit and 32-bit instructions and has a C++23 toolchain,
