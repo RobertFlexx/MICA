@@ -1,5 +1,5 @@
 digraph ports {rankdir=LR;node[shape=box,fontname="monospace"];
-core[label="mica_core_txn\nXLEN=32, XREG=0\nclk_i rising edge / rst_ni active low"];
+core[label="MICA 2.0: mica_core_txn\nMICA2=1, XLEN=32, XREG=0\nclk_i rising edge / rst_ni active low"];
 n0[label="clk_i[1]"];
 n0->core;
 n1[label="irq_i[1]"];

@@ -1,12 +1,16 @@
-digraph mica_bit {
-  graph [label="MICA 1.0 / B optional XLEN bit unit (major 11)", labelloc=t, rankdir=LR, fontsize=19, fontname="DejaVu Sans", bgcolor="white", pad=.3];
-  node [shape=box, style="rounded,filled", fillcolor="#f4f7fb",color="#38576c",fontname="DejaVu Sans",fontsize=11];
-  edge [color="#466478",fontname="DejaVu Sans",fontsize=10];
-  fetch [label="16+16 bit fetch\nmajor=11\n26-bit payload"];
-  ctrl [label="Decode op[25:20]\nrd[19:16]\nra[15:12]\nrb[11:8]\nzero[7:0]",fillcolor="#e6eefc"];
-  guards [label="BITOPS parameter\nXREG register guards\nunary rb=0\nreserved zero check",fillcolor="#fff0d0"];
-  rf [label="16 x XLEN register file\nx0 fixed zero"];
-  ops [label="Optional B ALU\nCLZ, CTZ, popcnt, REV8\nrotate, min/max\nbit mask & Boolean"];
-  mux [label="XLEN result mux\nwrite rd or fault",fillcolor="#dff3e6"];
-  fetch->ctrl;ctrl->guards;guards->ops [label="valid op"];guards->mux [label="illegal"];rf->ops [label="ra, rb (XLEN)"];ops->mux [label="result[XLEN-1:0]"];mux->rf [label="rd writeback"];
+digraph G {
+graph [rankdir=LR,labelloc=t,fontname="DejaVu Sans",fontsize=16,pad=0.3];
+node [shape=box,style="rounded,filled",fillcolor="#f1f5f9",color="#475569",fontname="DejaVu Sans",fontsize=11];
+edge [fontname="DejaVu Sans",fontsize=9,color="#334155"];
+label="MICA 2.0 | optional B execution through precise commit";
+decode [label="Major 11, op[25:20]\ndst[19:16], a[15:12], b[11:8]\nreserved low bits zero"];
+guard [label="BITOPS parameter / register guards\nunary b=0; valid opcode"];
+rf [label="8 or 16 x XLEN register array\nx0 fixed zero"];
+alu [label="CLZ / CTZ / POPCNT / REV8\nrotate / min / max / Boolean ops"];
+pending [label="q_value1 / q_dst1 / q_w1\nCOMMIT or precise fault"];
+decode -> guard [label="validate"];
+rf -> alu [label="operands"];
+guard -> alu [label="legal"];
+alu -> pending [label="XLEN result"];
+pending -> rf [label="successful retirement"];
 }

@@ -17,7 +17,7 @@ RVFI or RISC-V binary compatibility.
 
 The driver holds responses, randomizes request acceptance and response delays,
 checks stalled request stability, and drops outstanding ownership on joint reset.
-Tests include successful programs, all reserved R opcodes 31..255, odd jumps,
+Compatibility-mode tests include successful programs, reserved R opcodes 31..255, odd jumps,
 read/write/fetch faults, invalid CSRs and software/external interrupts. External IRQ
 is injected during delayed store/load transactions and compared at their following
 architectural boundary. Reset replays exercise clean restart.
@@ -28,3 +28,11 @@ Timer/scheduler behavior is checked against expected outcomes separately in emul
 and SoC, because clock ticks and functional steps differ. Tracing turns off
 fast/native dispatch; optimized-engine behavior is checked separately by the
 fast-path suite.
+
+The 2.0 suite, `verification/differential/mica2.py`, uses MICA-2C/2E/2L drivers
+and the matching tool profiles. It checks all stack slots, SP aliases, address
+wrap, x0 loads, branch displacement limits, counter wrap, ADRPC signed limits,
+high registers, F copy loops, signed word loads, illegal fields and precise
+faults. Delayed external wake checks that sleeping WFI issues no requests or
+extra retirement; T-enabled delivery and handler return are compared separately.
+Timer outcomes are checked by the SoC bench rather than comparing unlike clocks.

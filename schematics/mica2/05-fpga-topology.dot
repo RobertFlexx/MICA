@@ -1,0 +1,50 @@
+digraph G {
+  graph [fontname="DejaVu Sans", fontsize=16, labelloc=t, rankdir=LR, bgcolor="white", pad=0.30, nodesep=0.55, ranksep=1.0, splines=polyline, compound=true];
+  node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#475569", fontname="DejaVu Sans", fontsize=11, margin="0.18,0.12"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#334155", arrowsize=0.7];
+ label="MICA 2.0 | SoC wiring and board-level boundary";
+  board [label="Arty A7
+CLK100MHZ, btn_reset
+uart_rxd, uart_txd
+led[3:0]", fillcolor="#dbeafe"];
+  reset [label="Reset synchronizer
+rst_release[1:0]
+rst_ni", fillcolor="#f1f5f9"];
+  soc [label="mica_soc
+XLEN, RAM_BYTES
+MICA2 parameter (default 0)", fillcolor="#dbeafe"];
+  core [label="mica_core_txn
+transactional CPU", fillcolor="#dcfce7"];
+  memory [label="mica_sram_txn
+shared code/data RAM
+synchronous responses", fillcolor="#fef3c7"];
+  mux [label="Address decode
+ram_select / crc_select
+MMIO response mux", fillcolor="#fef3c7"];
+  uart [label="mica_uart_tx
+115200 at 100 MHz", fillcolor="#dcfce7"];
+  rx [label="Optional UART RX + FIFO
+RX interrupt source", fillcolor="#dcfce7"];
+  crc [label="Optional CRC-32 bridge
+VHDL checksum.engine", fillcolor="#dcfce7"];
+  gpio [label="GPIO + halt/fault LEDs
+leds_o[1:0], halted, fault", fillcolor="#dcfce7"];
+  watch [label="SoC IRQ synchronizer
+irq_sync[1:0]
+Arty external irq_i tied low", fillcolor="#f1f5f9"];
+  board -> reset [label="CLK100MHZ/btn_reset",style="solid"];
+  reset -> soc [label="rst_ni; clock is direct",style="solid"];
+  soc -> core [label="MICA2, XLEN",style="solid"];
+  core -> memory [label="i_req/i_rsp",style="solid"];
+  core -> mux [label="d_req/d_rsp",style="solid"];
+  mux -> memory [label="RAM transaction",style="solid"];
+  mux -> uart [label="uart_send,uart_byte",style="solid"];
+  mux -> gpio [label="MMIO write",style="solid"];
+  uart -> board [label="uart_txd",style="solid"];
+  board -> rx [label="uart_rxd",style="solid"];
+  rx -> core [label="receive_interrupt",style="solid"];
+  mux -> rx [label="FIFO MMIO",style="solid"];
+  mux -> crc [label="CRC MMIO",style="solid"];
+  gpio -> board [label="led[3:0]",style="solid"];
+  watch -> core [label="irq_sync[1]",style="solid"];
+}

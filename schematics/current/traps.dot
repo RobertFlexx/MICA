@@ -1,4 +1,4 @@
-digraph traps {rankdir=LR;label="mica_core_txn traps: actual local nets, XLEN32\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
+digraph traps {rankdir=LR;label="MICA 2.0: mica_core_txn traps: actual local nets, XLEN32, MICA2=1\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
 external->pending_logic[label="irq_i[1]"];
 software_pending->pending_logic[label="ip_reg[32]"];
 timer->pending_logic[label="timer_count[64]"];

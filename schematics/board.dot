@@ -1,19 +1,23 @@
-digraph mica_board {
- graph [rankdir=LR, bgcolor="white", fontname="DejaVu Sans", label="FPGA build wiring plan | generic 3.3 V dev board | pin assignments are board-specific", labelloc=t, fontsize=15, pad=0.35, nodesep=0.38, ranksep=0.8];
- node [shape=box, style="rounded,filled", fillcolor="#f0f4f9", color="#637f9a", fontname="DejaVu Sans", fontsize=11, margin="0.2,0.15"];
- edge [color="#61768b", arrowsize=0.7, fontname="DejaVu Sans", fontsize=10];
- power [label="FPGA dev board\nUSB/5 V supply\nboard regulators create 3.3 V", fillcolor="#faf0d9"];
- clock [label="12 MHz oscillator\n(or adjust CLOCK_HZ)"];
- reset [label="Reset pushbutton\nactive-low / debounce"];
- soc [label="FPGA fabric\nMICA scalar core\n+ on-chip SRAM + UART TX", fillcolor="#dcebdc", width=2.5, height=1.2];
- usb [label="USB-to-UART adapter\n3.3 V logic levels\nGND shared"];
- led [label="8 LEDs\nseries resistors\nper-board current budget"];
- pc [label="Host PC\nserial terminal"];
- power -> soc [label="board-provided rails"];
- clock -> soc [label="clk_i"];
- reset -> soc [label="rst_ni"];
- soc -> usb [label="uart_tx_o -> RXD"];
- usb -> soc [label="GND, not a UART RX pin", dir=none, style=dashed];
- soc -> led [label="leds_o[7:0]"];
- usb -> pc [label="USB"];
+digraph G {
+graph [rankdir=LR,labelloc=t,fontname="DejaVu Sans",fontsize=16,pad=0.3];
+node [shape=box,style="rounded,filled",fillcolor="#f1f5f9",color="#475569",fontname="DejaVu Sans",fontsize=11];
+edge [fontname="DejaVu Sans",fontsize=9,color="#334155"];
+label="MICA 2.0 | Arty connections read from the checked XDC";
+fpga [label="Arty A7-100 / xc7a100tcsg324-1\n100 MHz requested clock, active-high BTN0\nasync assert / synchronous reset release\nMICA2 parameter defaults to 0"];
+p0 [label="CLK100MHZ: E3\nLVCMOS33"];
+p1 [label="btn_reset: D9\nLVCMOS33"];
+p2 [label="led[0]: H5\nLVCMOS33"];
+p3 [label="led[1]: J5\nLVCMOS33"];
+p4 [label="led[2]: T9\nLVCMOS33"];
+p5 [label="led[3]: T10\nLVCMOS33"];
+p6 [label="uart_txd: D10\nLVCMOS33"];
+p7 [label="uart_rxd: A9\nLVCMOS33"];
+p0 -> fpga [label="CLK100MHZ"];
+p1 -> fpga [label="btn_reset"];
+fpga -> p2 [label="led[0]"];
+fpga -> p3 [label="led[1]"];
+fpga -> p4 [label="led[2]"];
+fpga -> p5 [label="led[3]"];
+fpga -> p6 [label="uart_txd"];
+p7 -> fpga [label="uart_rxd"];
 }

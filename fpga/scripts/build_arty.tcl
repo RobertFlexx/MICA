@@ -4,9 +4,11 @@ set root [file normalize [file join [file dirname [info script]] ../..]]
 set out [file join $root build fpga]
 file mkdir $out
 set firmware selftest32
-if {$argc > 1} { error "Usage: vivado ... -tclargs selftest32|peripherals32" }
+set mica2 0
+if {$argc > 1} { error "Usage: vivado ... -tclargs selftest32|peripherals32|mica2_short32" }
 if {$argc == 1} { set firmware [lindex $argv 0] }
-if {$firmware ni {selftest32 peripherals32}} { error "Unsupported board firmware: $firmware" }
+if {$firmware ni {selftest32 peripherals32 mica2_short32}} { error "Unsupported board firmware: $firmware" }
+if {$firmware eq "mica2_short32"} { set mica2 1 }
 set rom [file join $root build firmware ${firmware}.bin]
 if {![file exists $rom]} { error "Build firmware first: python3 scripts/build_firmware.py --tools build" }
 set memfile [file join $out program.mem32]
@@ -18,7 +20,7 @@ read_verilog [list [file join $root rtl verilog mica_sram_txn.v] [file join $roo
 read_vhdl -vhdl2008 [file join $root rtl vhdl mica_crc32.vhd]
 read_xdc [file join $root boards arty_a7 arty_a7.xdc]
 set_property top mica_arty_a7 [current_fileset]
-set_property generic [list "INIT_FILE=\"$memfile\"" TRAP=1 PERF=1 UART_RX=1 CRC_ENABLE=1] [current_fileset]
+set_property generic [list "INIT_FILE=\"$memfile\"" MICA2=$mica2 TRAP=1 PERF=1 UART_RX=1 CRC_ENABLE=1] [current_fileset]
 synth_design -top mica_arty_a7 -part xc7a100tcsg324-1
 report_utilization -file [file join $out synthesis-utilization.rpt]
 write_checkpoint -force [file join $out synthesized.dcp]

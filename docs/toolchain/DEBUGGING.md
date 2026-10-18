@@ -21,4 +21,4 @@ Breakpoint continue steps over the current stopped instruction before checking t
 next boundary. Watchpoints stop after the complete instruction; they do not roll
 back memory. Debug access is an explicit host capability, not a hardware privilege
 bypass instruction. There is no GDB RSP stub, symbol-aware source stepping, FPGA
-debug module or external halt input in r2.
+debug module or external halt input in the current scalar RTL.

@@ -70,3 +70,28 @@ sim-sram-txn:
 sim-add64:
 	$(IVERILOG) -g2012 -s tb_add64 -o mica_add64_sim mica_add64.sv tb_add64.sv
 	$(VVP) mica_add64_sim
+
+# MICA 2.0 compact forms. This uses the transactional SoC, not a mock CPU.
+.PHONY: sim-mica2-32 sim-mica2-64
+sim-mica2-32:
+	"$(ASM)" --mica2 --xlen 32 ../examples/mica2_short32.mica -o program_mica2.bin
+	$(PYTHON) ../toolchain/bin2mem8.py program_mica2.bin program_mica2.mem32 --width 32 --pad-bytes 65536
+	$(IVERILOG) -g2012 -I../isa/generated -s tb_mica2 -o mica2_sim $(SV) tb_mica2.sv
+	$(VVP) mica2_sim
+sim-mica2-64:
+	"$(ASM)" --mica2 --xlen 64 ../examples/mica2_short64.mica -o program_mica2.bin
+	$(PYTHON) ../toolchain/bin2mem8.py program_mica2.bin program_mica2.mem64 --width 64 --pad-bytes 65536
+	$(IVERILOG) -g2012 -I../isa/generated -s tb_mica2 -Ptb_mica2.XLEN=64 -o mica2_sim $(SV) tb_mica2.sv
+	$(VVP) mica2_sim
+
+.PHONY: sim-mica2-timer32 sim-mica2-timer64
+sim-mica2-timer32:
+	"$(ASM)" --mica2 --trap --xlen 32 ../examples/mica2_timer32.mica -o program_mica2_timer.bin
+	$(PYTHON) ../toolchain/bin2mem8.py program_mica2_timer.bin program_mica2_timer.mem32 --width 32 --pad-bytes 65536
+	$(IVERILOG) -g2012 -I../isa/generated -s tb_mica2_timer -o mica2_timer_sim $(SV) tb_mica2_timer.sv
+	$(VVP) mica2_timer_sim
+sim-mica2-timer64:
+	"$(ASM)" --mica2 --trap --xlen 64 ../examples/mica2_timer64.mica -o program_mica2_timer.bin
+	$(PYTHON) ../toolchain/bin2mem8.py program_mica2_timer.bin program_mica2_timer.mem64 --width 64 --pad-bytes 65536
+	$(IVERILOG) -g2012 -I../isa/generated -s tb_mica2_timer -Ptb_mica2_timer.XLEN=64 -o mica2_timer_sim $(SV) tb_mica2_timer.sv
+	$(VVP) mica2_timer_sim

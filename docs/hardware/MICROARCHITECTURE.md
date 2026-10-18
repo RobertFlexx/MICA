@@ -2,7 +2,7 @@
 
 `mica_core_txn` is a single-issue, nonoverlapped multicycle implementation of the
 scalar architecture. Parameters select XLEN32/64, XREG, M, F, B, T, PERF, RAM_BYTES
-and FETCH_REUSE. The register array has 8 or 16 entries. Disabled multiply/bit/CSR
+and FETCH_REUSE, plus MICA2 for the 2.0 decode and sleep semantics. The register array has 8 or 16 entries. Disabled multiply/bit/CSR
 paths are explicitly isolated so synthesis can remove them.
 
 | State | Work |
@@ -14,6 +14,7 @@ paths are explicitly isolated so synthesis can remove them.
 | DECODE | validate all fields, read operands, compute pending effects |
 | DREQ/DWAIT | hold data request, wait for successful completion or fault |
 | COMMIT | apply pending register/CSR writes, update PC, issue retirement event |
+| SLEEP | MICA2 WFI: suppress requests and retirement until raw pending event |
 | STOP | halt until reset |
 
 Decode produces pending writes; it does not write registers. F can queue two
@@ -33,3 +34,6 @@ to become idle; polling firmware remains valid. Optional UART RX/FIFO and a VHDL
 engine use the same transactional bus; see [peripherals](PERIPHERALS.md). The VHDL
 watchdog is separately verified and can feed the external IRQ through the documented
 GHDL converted-netlist integration test.
+
+See the [2.0 implementation guide](MICA2_IMPLEMENTATION.md) for compact
+stack/loop decode, PC-relative addressing and sleep/wake behavior.

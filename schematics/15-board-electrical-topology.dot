@@ -1,21 +1,23 @@
-digraph Board {
- graph [rankdir=TB, nodesep=0.58,ranksep=1.0,fontname="DejaVu Sans",pad=0.4,labelloc=t,labeljust=l,bgcolor="#ffffff",label="MICA | Arty A7 physical integration\nPin map from included XDC. This is a connectivity drawing, not a PCB netlist."];
- node [shape=record,style=filled,fontname="DejaVu Sans",fontsize=10,penwidth=1.3,color="#355779",fillcolor="#f0f7fd"];
- edge [fontname="DejaVu Sans",fontsize=9,color="#3c5f81",arrowsize=0.7];
- osc [label="{Onboard oscillator|100 MHz|E3: CLK100MHZ|LVCMOS33}",fillcolor="#fff0d8"];
- rst [label="{Onboard BTN0|D9: btn_reset|active high request|async assert / sync release}",fillcolor="#fff0d8"];
- reset [label="{2FF reset release|rst_release[1:0]|rst_ni|same CLK100MHZ domain}"];
- fpga [label="{Artix-7 FPGA|mica_arty_a7.sv|mica_soc.sv|mica_core.sv|UART TX + GPIO|Single synchronous clock}",fillcolor="#e6f8f1"];
- leds [label="{Onboard LEDs|H5 = led[0] GPIO0|J5 = led[1] GPIO1|T9 = led[2] halted|T10 = led[3] fault}",fillcolor="#fdf1d6"];
- uart [label="{Onboard USB-UART bridge|D10: uart_txd|115200 8N1 nominal|FPGA TX to host RX}",fillcolor="#fdf1d6"];
- host [label="{Host PC|USB serial terminal|NO external level shifter needed\nfor onboard bridge}"];
- wdog [label="{mica_watchdog.vhd, optional|counter and early/late fault|NOT wired into current SoC|requires reset/error policy}",fillcolor="#fff0f1",color="#b23838"];
- osc -> fpga [label="CLK100MHZ, 1 bit"];
- osc -> reset [label="clock"];
- rst -> reset [label="btn_reset, 1 bit"];
- reset -> fpga [label="rst_ni, 1 bit"];
- fpga -> leds [label="led[3:0], 4 bits"];
- fpga -> uart [label="uart_txd, 1 bit"];
- uart -> host [label="USB"];
- wdog -> fpga [style=dashed,color="#b23838",label="integration pending"];
+digraph G {
+graph [rankdir=LR,labelloc=t,fontname="DejaVu Sans",fontsize=16,pad=0.3];
+node [shape=box,style="rounded,filled",fillcolor="#f1f5f9",color="#475569",fontname="DejaVu Sans",fontsize=11];
+edge [fontname="DejaVu Sans",fontsize=9,color="#334155"];
+label="MICA 2.0 | Arty connections read from the checked XDC";
+fpga [label="Arty A7-100 / xc7a100tcsg324-1\n100 MHz requested clock, active-high BTN0\nasync assert / synchronous reset release\nMICA2 parameter defaults to 0"];
+p0 [label="CLK100MHZ: E3\nLVCMOS33"];
+p1 [label="btn_reset: D9\nLVCMOS33"];
+p2 [label="led[0]: H5\nLVCMOS33"];
+p3 [label="led[1]: J5\nLVCMOS33"];
+p4 [label="led[2]: T9\nLVCMOS33"];
+p5 [label="led[3]: T10\nLVCMOS33"];
+p6 [label="uart_txd: D10\nLVCMOS33"];
+p7 [label="uart_rxd: A9\nLVCMOS33"];
+p0 -> fpga [label="CLK100MHZ"];
+p1 -> fpga [label="btn_reset"];
+fpga -> p2 [label="led[0]"];
+fpga -> p3 [label="led[1]"];
+fpga -> p4 [label="led[2]"];
+fpga -> p5 [label="led[3]"];
+fpga -> p6 [label="uart_txd"];
+p7 -> fpga [label="uart_rxd"];
 }

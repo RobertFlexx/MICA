@@ -1,0 +1,32 @@
+digraph G {
+  graph [fontname="DejaVu Sans", fontsize=16, labelloc=t, rankdir=LR, bgcolor="white", pad=0.30, nodesep=0.55, ranksep=1.0, splines=polyline, compound=true];
+  node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#475569", fontname="DejaVu Sans", fontsize=11, margin="0.18,0.12"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#334155", arrowsize=0.7];
+ label="MICA 2.0 | stack loads/stores and precise retirement";
+  decode [label="R opcode 31/32
+register d[2:0], slot[2:0]", fillcolor="#dbeafe"];
+  read [label="Read SP (x7) and d
+old architectural values", fillcolor="#dcfce7"];
+  ea [label="EA = x7 + slot * XLEN/8
+XLEN=32: 0..28 bytes
+XLEN=64: 0..56 bytes", fillcolor="#fef3c7"];
+  issue [label="DREQ
+d_req_valid + d_req_addr
+wait for d_req_ready", fillcolor="#f1f5f9"];
+  wait [label="DWAIT
+d_rsp_valid + d_rsp_ready
+backpressure stable", fillcolor="#f1f5f9"];
+  error [label="Access fault
+no register writeback
+store error: memory unchanged", fillcolor="#fee2e2"];
+  commit [label="COMMIT
+ldsp: write d = loaded XLEN
+stsp: no GPR write
+SP remains unchanged", fillcolor="#dcfce7"];
+  decode -> read [label="d,slot",style="solid"];
+  read -> ea [label="SP+index",style="solid"];
+  ea -> issue [label="q_addr",style="solid"];
+  issue -> wait [label="accepted request",style="solid"];
+  wait -> error [label="d_rsp_error=1",style="solid"];
+  wait -> commit [label="d_rsp_error=0",style="solid"];
+}

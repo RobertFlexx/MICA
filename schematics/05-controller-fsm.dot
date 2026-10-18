@@ -1,18 +1,35 @@
-digraph G {rankdir=LR; label="MICA 1.0 | current multicycle controller state machine";
-graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
-
-node [shape=ellipse,style=filled];
-reset [label="reset",fillcolor="#fbe8e6"];
-f0 [label="FETCH0\nlatch low halfword",fillcolor="#dff6f2"];
-f1 [label="FETCH1\nlatch high halfword",fillcolor="#dff6f2"];
-ex [label="EXECUTE\ndecode + commit",fillcolor="#ffeecf"];
-halt [label="HALTED\nno further fetch",fillcolor="#fbe8e6"];
-reset -> f0;
-f0 -> f1 [label="inst[15:14] == 11"];
-f0 -> ex [label="inst[15:14] != 11"];
-f1 -> ex;
-ex -> f0 [label="legal and not stop"];
-ex -> halt [label="wfi / ecall or fault"];
-halt -> halt;
-
+digraph G {
+graph [rankdir=LR,labelloc=t,fontname="DejaVu Sans",fontsize=16,pad=0.3];
+node [shape=box,style="rounded,filled",fillcolor="#f1f5f9",color="#475569",fontname="DejaVu Sans",fontsize=11];
+edge [fontname="DejaVu Sans",fontsize=9,color="#334155"];
+label="MICA 2.0 | transactional controller, MICA2=1";
+START [label="START\ninterrupt/alignment boundary"];
+LOOKUP [label="LOOKUP\n32-bit aligned fetch reuse"];
+IREQ [label="IREQ\nhold instruction request"];
+IWAIT [label="IWAIT\nawait instruction response"];
+PARCEL [label="PARCEL\nselect lo/hi halfword"];
+DECODE [label="DECODE\nvalidate, queue effects"];
+DREQ [label="DREQ\nhold data request"];
+DWAIT [label="DWAIT\nawait data response"];
+COMMIT [label="COMMIT\nregister/CSR/PC writes, retirement"];
+SLEEP [label="SLEEP\nno fetch/data requests or retirement"];
+STOP [label="STOP\nterminal until reset"];
+START -> LOOKUP [label="next instruction"];
+LOOKUP -> PARCEL [label="reuse hit"];
+LOOKUP -> IREQ [label="miss"];
+IREQ -> IWAIT [label="i_req_ready"];
+IWAIT -> PARCEL [label="successful response"];
+PARCEL -> LOOKUP [label="second parcel needed"];
+PARCEL -> DECODE [label="complete instruction"];
+DECODE -> DREQ [label="memory"];
+DECODE -> COMMIT [label="nonmemory"];
+DREQ -> DWAIT [label="d_req_ready"];
+DWAIT -> COMMIT [label="successful response"];
+COMMIT -> START [label="continue"];
+COMMIT -> SLEEP [label="q_wait: WFI"];
+COMMIT -> STOP [label="q_stop: explicit STOP"];
+SLEEP -> START [label="pending wake event"];
+DECODE -> START [label="recoverable trap -> TVEC"];
+DWAIT -> START [label="recoverable access fault -> TVEC"];
+DECODE -> STOP [label="unrecoverable fault"];
 }

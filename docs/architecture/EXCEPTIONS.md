@@ -13,7 +13,9 @@
 
 For synchronous faults EPC is the faulting instruction's PC. No register write, flow
 base update or store effect may commit. Faults do not retire. For legacy T ecall,
-EPC is sequentialPC and the instruction does retire. Entry copies IE to previous IE,
+EPC is sequentialPC and the instruction does retire. MICA 2.0 ecall instead saves
+the faulting instruction PC; the handler must advance EPC to skip it. The ecall
+retirement event still carries trap cause 11. Entry copies IE to previous IE,
 clears IE, sets handler-active and redirects to TVEC. No general register is saved
 by hardware. Firmware owns its stack frame.
 

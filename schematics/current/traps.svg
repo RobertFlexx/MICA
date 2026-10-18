@@ -9,7 +9,7 @@
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 375)">
 <title>traps</title>
 <polygon fill="white" stroke="transparent" points="-4,4 -4,-375 1145,-375 1145,4 -4,4"/>
-<text text-anchor="middle" x="570.5" y="-22.8" font-family="Times,serif" font-size="14.00">mica_core_txn traps: actual local nets, XLEN32</text>
+<text text-anchor="middle" x="570.5" y="-22.8" font-family="Times,serif" font-size="14.00">MICA 2.0: mica_core_txn traps: actual local nets, XLEN32, MICA2=1</text>
 <text text-anchor="middle" x="570.5" y="-7.8" font-family="Times,serif" font-size="14.00">All sequential state uses clk_i; asynchronous active&#45;low rst_ni</text>
 <!-- external -->
 <g id="node1" class="node">

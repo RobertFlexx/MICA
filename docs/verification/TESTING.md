@@ -23,3 +23,14 @@ v0.1 SDK comparison is skipped because that external SDK is unavailable.
 
 Linux and macOS jobs pass in the [recorded implementation CI run](../engineering/results/ci.json).
 Vivado implementation and physical-board checks need their own target environment.
+
+## Current 2.0 checks
+
+The [2.0 report](../engineering/MICA2_VERIFICATION.md) records new local runs.
+`sim-mica2-32/64` execute compact operations. `sim-mica2-timer32/64` verify timer
+wake, handler return and STOP stability. `verification/differential/mica2.py`
+compares all three new profiles through 129 delayed-memory runs plus nine reset
+replays, including compact branch/address boundaries and precise stack faults.
+`scripts/verify.py --all` includes these stages, all seven synthesis mappings,
+all drawing checks and the optional LLVM code-size stage. Current evidence is
+separate from the historical 1.0 CI record above.

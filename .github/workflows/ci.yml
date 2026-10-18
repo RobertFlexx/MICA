@@ -31,7 +31,7 @@ jobs:
         run: |
           cmake --install build --prefix "$PWD/build/install"
           cpack --config build/CPackConfig.cmake -B build/releases -G TGZ
-          for archive in build/releases/mica-sdk-1.0-r2-*.tar.gz; do
+          for archive in build/releases/mica-sdk-2.0-*.tar.gz; do
             python3 scripts/check_release.py --binary "$archive" --output build/releases/validation.json
           done
       - uses: actions/upload-artifact@v4
@@ -84,7 +84,7 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --parallel 4
-          make -C rtl sim32 sim64 sim-flow32 sim-flow64 sim-bits32 sim-bits64 sim-trap sim-trap-irq > build/hdl.log 2>&1
+          make -C rtl sim32 sim64 sim-mica2-32 sim-mica2-64 sim-mica2-timer32 sim-mica2-timer64 sim-flow32 sim-flow64 sim-bits32 sim-bits64 sim-trap sim-trap-irq > build/hdl.log 2>&1
           make -C rtl sim-sram sim-sram-txn sim-watchdog sim-watchdog-soc sim-firmware sim-scheduler sim-add64 sim-peripherals >> build/hdl.log 2>&1
       - name: Verilator lint and retirement comparison
         run: |
@@ -95,14 +95,20 @@ jobs:
           done
           python3 scripts/build_rtl_sim.py --profile MICA-C
           python3 scripts/build_rtl_sim.py --profile MICA-E
+          python3 scripts/build_rtl_sim.py --profile MICA-2C
+          python3 scripts/build_rtl_sim.py --profile MICA-2E
+          python3 scripts/build_rtl_sim.py --profile MICA-2L
           python3 verification/differential/run.py --tools build
+          python3 verification/differential/mica2.py --tools build
           python3 verification/differential/profiles.py --tools build
       - name: Formal, synthesis, diagrams and measured experiments
         run: |
+          python3 scripts/generate_mica2_diagrams.py --check
           python3 scripts/run_formal.py
           python3 scripts/synthesize.py --tools build
           python3 scripts/generate_schematics.py --check
           python3 scripts/generate_soc_schematic.py --check
+          python3 scripts/generate_overview_schematics.py --check
           python3 benchmarks/hardware.py --tools build
           python3 benchmarks/alu_activity.py
       - uses: actions/upload-artifact@v4
@@ -114,6 +120,7 @@ jobs:
             build/peripherals/commands.log
             build/peripherals/*.vcd
             build/differential/results.json
+            build/differential-mica2/results.json
             build/formal/*.log
             build/synthesis/*.json
             build/synthesis/*.log

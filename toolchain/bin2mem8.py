@@ -19,5 +19,10 @@ if a.pad_bytes:
     data = data.ljust(a.pad_bytes, b"\0")
 n = a.width // 8
 data = data.ljust((len(data) + n - 1) // n * n, b"\0")
-a.output.write_text("".join(f"{int.from_bytes(data[i:i+n], 'little'):0{n*2}x}\n" for i in range(0, len(data), n)))
+a.output.write_text(
+    "".join(
+        f"{int.from_bytes(data[i:i+n], 'little'):0{n*2}x}\n"
+        for i in range(0, len(data), n)
+    )
+)
 print(f"wrote {len(data)} bytes as {a.width}-bit words")

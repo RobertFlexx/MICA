@@ -15,6 +15,10 @@ The physical transactional register array has eight entries without X and sixtee
 with X. Reset clears registers and initializes SP according to the configured RAM
 size. There are no register windows or hidden bank state.
 
+MICA-2C selects eight slots; MICA-2E and MICA-2L select sixteen. Short 2.0
+stack/branch forms still address x0..x7. Stack addressing always uses old x7,
+even when x7 is the load destination.
+
 F loads can commit a destination and a distinct base update together. Stores update
 only the base. x0 ignores writes but never suppresses memory access. The register
 array uses asynchronous reads and up to two commit writes; it is not a block RAM

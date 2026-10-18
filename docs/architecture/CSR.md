@@ -1,4 +1,4 @@
-# MICA 1.0 CSR map
+# Scalar CSR map (MICA 1.0 and 2.0)
 
 CSR IDs are unsigned aux8 in major 5. `csrr d,id` requires ra=rb=0; `csrw id,a`
 requires rd=rb=0. Unsupported IDs and writes to read-only IDs raise
@@ -25,7 +25,7 @@ illegal-instruction cause 2 before side effects. Accesses execute in the
 | 19 | tval | T RW | 0; faulting address, raw instruction bits for illegal instruction, or 0 on interrupt/ecall |
 | 20..255 | reserved | illegal | no storage semantics |
 
-Feature bits: X=0, M=1, F=2, A=3, V=4, B=5, T=6, PERF=7. RTL never advertises A/V.
+Feature bits: X=0, M=1, F=2, A=3, V=4, B=5, T=6, PERF=7, 2C=8 (when enabled). RTL never advertises A/V.
 Emulator always provides PERF. Counts wrap modulo 2^64. CSR half reads zero extend
 to XLEN even on MICA64. Read instret before retiring the csrr itself. Counter/timer
 clock units are platform specific: RTL clocks include stalls; the functional

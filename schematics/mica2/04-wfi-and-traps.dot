@@ -1,0 +1,31 @@
+digraph G {
+  graph [fontname="DejaVu Sans", fontsize=16, labelloc=t, rankdir=LR, bgcolor="white", pad=0.30, nodesep=0.55, ranksep=1.0, splines=polyline, compound=true];
+  node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#475569", fontname="DejaVu Sans", fontsize=11, margin="0.18,0.12"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#334155", arrowsize=0.7];
+ label="MICA 2.0 | wakeable WFI and terminal STOP";
+  start [label="START
+check interrupts, alignment", fillcolor="#dbeafe"];
+  commit [label="COMMIT
+retire WFI, update PC
+q_wait set in MICA2", fillcolor="#dcfce7"];
+  sleep [label="SLEEP
+i_req_valid=0
+d_req_valid=0
+no new retirement", fillcolor="#fff3cd"];
+  pending [label="Wake detection
+external irq_i always
+with T: software ip_reg
+and timer_count >= timer_cmp", fillcolor="#f1f5f9"];
+  resume [label="START after wake
+interrupt trap only if T enabled,
+status_reg[0] and ie_reg mask", fillcolor="#dcfce7"];
+  halt [label="STOP on legacy WFI (MICA2=0)
+or 2.0 explicit stop", fillcolor="#fee2e2"];
+  start -> commit [label="fetch/decode WFI",style="solid"];
+  commit -> sleep [label="MICA2, with or without T",style="solid"];
+  commit -> halt [label="legacy, no T",style="solid"];
+  sleep -> pending [label="clock continues",style="solid"];
+  pending -> sleep [label="no event",style="solid"];
+  pending -> resume [label="pending != 0",style="solid"];
+  resume -> start [label="next tick",style="solid"];
+}

@@ -1,6 +1,6 @@
 # Development priorities
 
-The r2 reference core, toolchain and retirement tests provide a baseline for further
+The 2.0 reference core, toolchain and retirement tests provide a baseline for further
 work. The immediate hardware priorities are the measured area cost, a first
 pipelined implementation and Arty board bring-up. Toolchain work centers on
 independent ELF sections, stronger diagnostics and compiler code generation.

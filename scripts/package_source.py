@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Deterministic source archive from nonignored repository files, with checksums."""
+
 import argparse
 import gzip
 import hashlib
@@ -10,10 +11,22 @@ import tarfile
 
 ROOT = Path(__file__).resolve().parents[1]
 p = argparse.ArgumentParser()
-p.add_argument("--output", type=Path, default=ROOT / "build/releases/mica-sdk-1.0-r2-source.tar.gz")
+p.add_argument(
+    "--output", type=Path, default=ROOT / "build/releases/mica-sdk-2.0-source.tar.gz"
+)
 p.add_argument("--update-checksums", action="store_true")
 a = p.parse_args()
-paths = subprocess.check_output(["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"], cwd=ROOT).decode().split("\0")
+# Uploaded source trees have no .git directory. Package from the tree in that case.
+if (ROOT / ".git").exists():
+    paths = (
+        subprocess.check_output(
+            ["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"], cwd=ROOT
+        )
+        .decode()
+        .split("\0")
+    )
+else:
+    paths = [str(path.relative_to(ROOT)) for path in ROOT.rglob("*") if path.is_file()]
 files = []
 for name in sorted(set(paths)):
     if not name:
@@ -21,22 +34,40 @@ for name in sorted(set(paths)):
     path = ROOT / name
     if path.is_symlink() or not path.is_file():
         raise SystemExit("source archive requires regular files: " + name)
-    if any(part in [".git", ".aws", ".codex", ".agents", "build"] for part in Path(name).parts):
+    if any(
+        part
+        in [
+            ".git",
+            ".aws",
+            ".codex",
+            ".agents",
+            "build",
+            "__pycache__",
+            ".venv",
+            ".pytest_cache",
+        ]
+        for part in Path(name).parts
+    ):
         continue
     files.append(name)
-checksums = "".join(hashlib.sha256((ROOT / name).read_bytes()).hexdigest() + "  " + name + "\n"
-                    for name in files if name != "SHA256SUMS")
+checksums = "".join(
+    hashlib.sha256((ROOT / name).read_bytes()).hexdigest() + "  " + name + "\n"
+    for name in files
+    if name != "SHA256SUMS"
+)
 if a.update_checksums:
     (ROOT / "SHA256SUMS").write_text(checksums)
 elif (ROOT / "SHA256SUMS").read_text() != checksums:
     raise SystemExit("stale source checksums; review files then use --update-checksums")
 a.output.parent.mkdir(parents=True, exist_ok=True)
-with a.output.open("wb") as raw, gzip.GzipFile(filename="", fileobj=raw, mode="wb", mtime=0) as zipped:
+with a.output.open("wb") as raw, gzip.GzipFile(
+    filename="", fileobj=raw, mode="wb", mtime=0
+) as zipped:
     with tarfile.open(fileobj=zipped, mode="w|") as archive:
         for name in files:
             path = ROOT / name
             data = path.read_bytes()
-            info = tarfile.TarInfo("mica-sdk-1.0-r2/" + name)
+            info = tarfile.TarInfo("mica-sdk-2.0/" + name)
             info.size = len(data)
             info.mode = path.stat().st_mode & 0o777
             info.mtime = 0

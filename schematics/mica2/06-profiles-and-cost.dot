@@ -1,0 +1,31 @@
+digraph G {
+  graph [fontname="DejaVu Sans", fontsize=16, labelloc=t, rankdir=LR, bgcolor="white", pad=0.30, nodesep=0.55, ranksep=1.0, splines=polyline, compound=true];
+  node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#475569", fontname="DejaVu Sans", fontsize=11, margin="0.18,0.12"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#334155", arrowsize=0.7];
+ label="MICA 2.0 | minimum and expanded implementation profiles";
+  shared [label="Shared architecture
+16/32-bit instruction decode
+32-bit fetch, XLEN-bit data bus
+Transactional retirement", fillcolor="#dbeafe"];
+  c [label="MICA-2C
+XLEN32, 8 GPR slots
+No multiply or SIMD required
+MICA2 compact ops", fillcolor="#dcfce7"];
+  e [label="MICA-2E
+XLEN32, 16 GPR slots
+M, F, B, T, 2C
+Larger register bank, more registers", fillcolor="#fff3cd"];
+  l [label="MICA-2L
+XLEN64, 16 GPR slots
+M, F, B, T, 2C
+Higher hardware cost", fillcolor="#fee2e2"];
+  metrics [label="Measure per core, same flow
+LUTs, FFs, Fmax, memory traffic
+joules/workload after hardware test", fillcolor="#f1f5f9"];
+  shared -> c [label="smallest",style="solid"];
+  shared -> e [label="compiler-friendly",style="solid"];
+  shared -> l [label="optional 64-bit",style="solid"];
+  c -> metrics [label="baseline",style="solid"];
+  e -> metrics [label="tradeoff",style="solid"];
+  l -> metrics [label="tradeoff",style="solid"];
+}

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Check actual disabled-extension RTL configurations, including fatal faults."""
+
 import argparse
 from pathlib import Path
 import subprocess
@@ -29,13 +30,43 @@ cases = [
 for profile, name, source, expected in cases:
     path = a.output / (profile + "-" + name + ".mica")
     path.write_text(source)
-    binary, reference, rtltrace = [path.with_suffix(ext) for ext in [".bin", ".ref.jsonl", ".rtl.jsonl"]]
-    checked([a.tools / "mica-as", "--xreg", "--mul", "--flow", "--bitops", path, "-o", binary])
-    commands = [[a.tools / "mica-run", "--profile", profile, "--memory", "65536", "--retire-trace", reference, binary],
-                [a.rtl / (profile + "-reuse1/Vmica_core_txn"), binary, rtltrace, 17]]
+    binary, reference, rtltrace = [
+        path.with_suffix(ext) for ext in [".bin", ".ref.jsonl", ".rtl.jsonl"]
+    ]
+    checked(
+        [
+            a.tools / "mica-as",
+            "--xreg",
+            "--mul",
+            "--flow",
+            "--bitops",
+            path,
+            "-o",
+            binary,
+        ]
+    )
+    commands = [
+        [
+            a.tools / "mica-run",
+            "--profile",
+            profile,
+            "--memory",
+            "65536",
+            "--retire-trace",
+            reference,
+            binary,
+        ],
+        [a.rtl / (profile + "-reuse1/Vmica_core_txn"), binary, rtltrace, 17],
+    ]
     for command in commands:
-        result = subprocess.run([str(x) for x in command], capture_output=True, text=True, timeout=10)
+        result = subprocess.run(
+            [str(x) for x in command], capture_output=True, text=True, timeout=10
+        )
         if result.returncode != expected:
-            raise AssertionError(f"{name}: exit {result.returncode} != {expected}: {result.stderr}")
+            raise AssertionError(
+                f"{name}: exit {result.returncode} != {expected}: {result.stderr}"
+            )
     compare(reference, rtltrace, profile + "/" + name)
-print(f"PASS {len(cases)} configured profile programs, including disabled instruction faults")
+print(
+    f"PASS {len(cases)} configured profile programs, including disabled instruction faults"
+)

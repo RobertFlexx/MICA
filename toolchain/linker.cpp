@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
       else if (opt == "-T")
         script = next();
       else if (opt == "--version") {
-        std::cout << "mica-ld 1.0 engineering-r2\n";
+        std::cout << "mica-ld 2.0 development\n";
         return 0;
       } else if (opt == "--help") {
         std::cout

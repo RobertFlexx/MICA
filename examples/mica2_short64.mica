@@ -1,0 +1,10 @@
+.arch mica64v2
+li8 x1, 23
+stsp x1,[sp+8]
+li8 x1, 0
+ldsp x1,[sp+8]
+li8 x2, 5
+again:
+    addi x1, 1
+    dbnz.s x2,again
+stop

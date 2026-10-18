@@ -1,0 +1,382 @@
+[
+  {
+    "name": "configure",
+    "command": [
+      "cmake",
+      "-S",
+      "/home/robert/Downloads/mica-sdk-v2.0",
+      "-B",
+      "/home/robert/Downloads/mica-sdk-v2.0/build/verify",
+      "-DCMAKE_BUILD_TYPE=Release"
+    ],
+    "exit": 0,
+    "seconds": 0.204
+  },
+  {
+    "name": "build",
+    "command": [
+      "cmake",
+      "--build",
+      "/home/robert/Downloads/mica-sdk-v2.0/build/verify",
+      "--parallel",
+      "4"
+    ],
+    "exit": 0,
+    "seconds": 10.448
+  },
+  {
+    "name": "software",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "/home/robert/Downloads/mica-sdk-v2.0/build/verify",
+      "--output-on-failure",
+      "--no-tests=error"
+    ],
+    "exit": 0,
+    "seconds": 2.136
+  },
+  {
+    "name": "hdl",
+    "command": [
+      "make",
+      "-C",
+      "rtl",
+      "ASM=/home/robert/Downloads/mica-sdk-v2.0/build/verify/mica-as",
+      "sim32",
+      "sim64",
+      "sim-mica2-32",
+      "sim-mica2-64",
+      "sim-mica2-timer32",
+      "sim-mica2-timer64",
+      "sim-flow32",
+      "sim-flow64",
+      "sim-bits32",
+      "sim-bits64",
+      "sim-trap",
+      "sim-trap-irq",
+      "sim-sram",
+      "sim-sram-txn",
+      "sim-watchdog",
+      "sim-watchdog-soc",
+      "sim-firmware",
+      "sim-scheduler",
+      "sim-add64",
+      "sim-peripherals"
+    ],
+    "exit": 0,
+    "seconds": 5.292
+  },
+  {
+    "name": "lint",
+    "command": [
+      "verilator",
+      "--lint-only",
+      "-Wall",
+      "-Wno-UNUSEDPARAM",
+      "-Wno-PINCONNECTEMPTY",
+      "-Iisa/generated",
+      "--top-module",
+      "mica_arty_a7",
+      "rtl/mica_core_txn.sv",
+      "rtl/mica_soc.sv",
+      "rtl/mica_uart_tx.sv",
+      "rtl/mica_crc_mmio.sv",
+      "rtl/verilog/mica_sync_fifo.v",
+      "rtl/verilog/mica_uart_rx.v",
+      "rtl/verilog/mica_sram_txn.v",
+      "boards/arty_a7/mica_arty_a7.sv"
+    ],
+    "exit": 0,
+    "seconds": 0.136
+  },
+  {
+    "name": "driver-32-0",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/build_rtl_sim.py",
+      "--xlen",
+      "32",
+      "--reuse",
+      "0"
+    ],
+    "exit": 0,
+    "seconds": 3.803
+  },
+  {
+    "name": "driver-32-1",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/build_rtl_sim.py",
+      "--xlen",
+      "32",
+      "--reuse",
+      "1"
+    ],
+    "exit": 0,
+    "seconds": 3.769
+  },
+  {
+    "name": "driver-64-0",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/build_rtl_sim.py",
+      "--xlen",
+      "64",
+      "--reuse",
+      "0"
+    ],
+    "exit": 0,
+    "seconds": 3.802
+  },
+  {
+    "name": "driver-64-1",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/build_rtl_sim.py",
+      "--xlen",
+      "64",
+      "--reuse",
+      "1"
+    ],
+    "exit": 0,
+    "seconds": 3.849
+  },
+  {
+    "name": "MICA-C",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/build_rtl_sim.py",
+      "--profile",
+      "MICA-C"
+    ],
+    "exit": 0,
+    "seconds": 3.564
+  },
+  {
+    "name": "MICA-E",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/build_rtl_sim.py",
+      "--profile",
+      "MICA-E"
+    ],
+    "exit": 0,
+    "seconds": 3.775
+  },
+  {
+    "name": "MICA-2C",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/build_rtl_sim.py",
+      "--profile",
+      "MICA-2C"
+    ],
+    "exit": 0,
+    "seconds": 3.557
+  },
+  {
+    "name": "MICA-2E",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/build_rtl_sim.py",
+      "--profile",
+      "MICA-2E"
+    ],
+    "exit": 0,
+    "seconds": 3.798
+  },
+  {
+    "name": "MICA-2L",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/build_rtl_sim.py",
+      "--profile",
+      "MICA-2L"
+    ],
+    "exit": 0,
+    "seconds": 5.184
+  },
+  {
+    "name": "differential",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "verification/differential/run.py",
+      "--tools",
+      "/home/robert/Downloads/mica-sdk-v2.0/build/verify"
+    ],
+    "exit": 0,
+    "seconds": 4.246
+  },
+  {
+    "name": "differential-mica2",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "verification/differential/mica2.py",
+      "--tools",
+      "/home/robert/Downloads/mica-sdk-v2.0/build/verify"
+    ],
+    "exit": 0,
+    "seconds": 0.387
+  },
+  {
+    "name": "profiles",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "verification/differential/profiles.py",
+      "--tools",
+      "/home/robert/Downloads/mica-sdk-v2.0/build/verify"
+    ],
+    "exit": 0,
+    "seconds": 0.084
+  },
+  {
+    "name": "formal",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/run_formal.py"
+    ],
+    "exit": 0,
+    "seconds": 37.018
+  },
+  {
+    "name": "synthesis",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/synthesize.py",
+      "--tools",
+      "/home/robert/Downloads/mica-sdk-v2.0/build/verify"
+    ],
+    "exit": 0,
+    "seconds": 234.022
+  },
+  {
+    "name": "diagrams",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/generate_schematics.py",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 1.66
+  },
+  {
+    "name": "soc-diagram",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/generate_soc_schematic.py",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 1.766
+  },
+  {
+    "name": "mica2-diagrams",
+    "command": [
+      "/home/linuxbrew/.linuxbrew/opt/python@3.15/bin/python3.15",
+      "scripts/generate_mica2_diagrams.py",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.037
+  },
+  {
+    "name": "build-final",
+    "command": [
+      "cmake",
+      "--build",
+      "build/verify",
+      "--parallel",
+      "4"
+    ],
+    "exit": 0,
+    "seconds": 0.008
+  },
+  {
+    "name": "software-final",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "build/verify",
+      "--output-on-failure",
+      "--no-tests=error"
+    ],
+    "exit": 0,
+    "seconds": 2.0
+  },
+  {
+    "name": "differential-mica2-final",
+    "command": [
+      "python3",
+      "verification/differential/mica2.py",
+      "--tools",
+      "build/verify"
+    ],
+    "exit": 0,
+    "seconds": 0.348
+  },
+  {
+    "name": "overview-diagrams",
+    "command": [
+      "python3",
+      "scripts/generate_overview_schematics.py",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.059
+  },
+  {
+    "name": "riscv-density",
+    "command": [
+      "python3",
+      "benchmarks/riscv_density.py",
+      "--assembler",
+      "build/verify/mica-as",
+      "--emulator",
+      "build/verify/mica-run"
+    ],
+    "exit": 0,
+    "seconds": 0.236
+  },
+  {
+    "name": "fetch-benchmark",
+    "command": [
+      "python3",
+      "benchmarks/hardware.py",
+      "--tools",
+      "build/verify"
+    ],
+    "exit": 0,
+    "seconds": 0.317
+  },
+  {
+    "name": "alu-benchmark",
+    "command": [
+      "python3",
+      "benchmarks/alu_activity.py"
+    ],
+    "exit": 0,
+    "seconds": 1.066
+  },
+  {
+    "name": "workflow",
+    "command": [
+      "actionlint",
+      ".github/workflows/ci.yml"
+    ],
+    "exit": 0,
+    "seconds": 0.009
+  },
+  {
+    "name": "formatting",
+    "command": [
+      "python3",
+      "scripts/format_code.py",
+      "--check",
+      "--cmake-format",
+      "build/cmake-format-compatible"
+    ],
+    "exit": 0,
+    "seconds": 8.882
+  }
+]

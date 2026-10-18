@@ -1,11 +1,11 @@
-# MICA 1.0 normative ISA, engineering r2
+# MICA 1.0 scalar compatibility reference
 
-This manual, [encoding allocation](ENCODINGS.md), [CSR map](CSR.md),
+MICA 2.0 overrides specific rules in [MICA2.md](MICA2.md). This manual, the compatibility rules in the [CSR map](CSR.md),
 [exceptions](EXCEPTIONS.md), [memory model](MEMORY_MODEL.md), [SIMD](SIMD.md) and
 [ABI](ABI.md) define MICA 1.0. Proposals in research documents do not add
 architectural behavior. Undefined/reserved encodings are illegal, never NOP. The
-machine-readable allocation is `isa/encodings/mica1.json`; generated tables provide
-the operation pseudocode and canonical syntax for every allocation.
+machine-readable 1.0 allocation is `isa/encodings/mica1.json`; the
+[generated tables](ENCODINGS.md) describe the current 2.0 superset.
 
 ## State and notation
 

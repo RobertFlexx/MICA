@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Regression tests for the r2 fault contract, ELF tools and untrusted inputs."""
+
 import argparse
 import json
 from pathlib import Path
@@ -20,7 +21,12 @@ class Engineering(unittest.TestCase):
         self.dir = Path(self.temp.name)
 
     def command(self, tool, *args, ok=True):
-        p = subprocess.run([str(TOOLS / tool), *map(str, args)], capture_output=True, text=True, timeout=20)
+        p = subprocess.run(
+            [str(TOOLS / tool), *map(str, args)],
+            capture_output=True,
+            text=True,
+            timeout=20,
+        )
         if ok:
             self.assertEqual(p.returncode, 0, p.stderr)
         else:
@@ -40,10 +46,19 @@ class Engineering(unittest.TestCase):
 
     def test_crc_and_uart_devices(self):
         import binascii
-        rng = random.Random(0xc32)
+
+        rng = random.Random(0xC32)
         data = bytes(rng.randrange(256) for _ in range(257))
-        self.command("mica-as", "--trap", ROOT / "examples/peripherals32.mica", "-o", self.dir / "peripherals.bin")
-        p = self.run_image(self.dir / "peripherals.bin", "--trap", "--uart-input", "414243")
+        self.command(
+            "mica-as",
+            "--trap",
+            ROOT / "examples/peripherals32.mica",
+            "-o",
+            self.dir / "peripherals.bin",
+        )
+        p = self.run_image(
+            self.dir / "peripherals.bin", "--trap", "--uart-input", "414243"
+        )
         self.assertEqual(p.stdout, "ABC")
         self.assertIn("x1=0x2a", p.stderr)
         for width in [32, 64]:
@@ -57,7 +72,10 @@ class Engineering(unittest.TestCase):
             self.assertIn(f"x1=0x{crc:x}", p.stderr)
             self.assertIn("x2=0x101", p.stderr)
             self.assertIn(f"x3=0x{crc & 255:x}", p.stderr)
-        image = self.assemble("uart", "li32 x4,0xffff0010\nldw x1,[x4+8]\nldbu x2,[x4+4]\nldbu x3,[x4+4]\nldbu x5,[x4+4]\nldw x6,[x4+8]\nwfi\n")
+        image = self.assemble(
+            "uart",
+            "li32 x4,0xffff0010\nldw x1,[x4+8]\nldbu x2,[x4+4]\nldbu x3,[x4+4]\nldbu x5,[x4+4]\nldw x6,[x4+8]\nwfi\n",
+        )
         p = self.run_image(image, "--uart-input", "00fF")
         for text in ["x1=0x209", "x2=0x0", "x3=0xff", "x5=0x0", "x6=0x8"]:
             self.assertIn(text, p.stderr)
@@ -67,8 +85,16 @@ class Engineering(unittest.TestCase):
     def test_separate_compilation_and_conversion(self):
         for width in [32, 64]:
             flags = ["--xlen", str(width), "-c"]
-            start = self.assemble("start", f".arch mica{width}\n.global _start\n.extern helper\n_start: li8 x1,40\ncall helper\nwfi\n", *flags)
-            helper = self.assemble("helper", f".arch mica{width}\n.global helper\nhelper: addi x1,2\nret\n", *flags)
+            start = self.assemble(
+                "start",
+                f".arch mica{width}\n.global _start\n.extern helper\n_start: li8 x1,40\ncall helper\nwfi\n",
+                *flags,
+            )
+            helper = self.assemble(
+                "helper",
+                f".arch mica{width}\n.global helper\nhelper: addi x1,2\nret\n",
+                *flags,
+            )
             binary, elf = self.dir / "out.bin", self.dir / "out.elf"
             self.command("mica-ld", start, helper, "-o", binary, "--elf", elf)
             first = (binary.read_bytes(), elf.read_bytes())
@@ -88,7 +114,9 @@ class Engineering(unittest.TestCase):
 
     def test_all_relocations(self):
         # Absolute addresses, local addresses and every relative field width.
-        start = self.assemble("relocs", """.arch mica64
+        start = self.assemble(
+            "relocs",
+            """.arch mica64
 .global _start
 .extern target
 _start: li32 x1,target+2
@@ -103,12 +131,33 @@ j target
 call target
 local: .word target+4,local
 .quad target+8
-""", "-c", "--xlen", "64", "--flow")
-        end = self.assemble("target", ".arch mica64\n.global target\ntarget: wfi\n", "-c", "--xlen", "64")
+""",
+            "-c",
+            "--xlen",
+            "64",
+            "--flow",
+        )
+        end = self.assemble(
+            "target",
+            ".arch mica64\n.global target\ntarget: wfi\n",
+            "-c",
+            "--xlen",
+            "64",
+        )
         out = self.dir / "linked.bin"
         self.command("mica-ld", start, end, "-o", out, "--elf", self.dir / "linked.elf")
         table = self.command("mica-objdump", start).stdout
-        for name in ["ABS32", "ABS64", "LI32", "LI64", "PCREL8", "PCREL11", "PCREL14", "PCREL20", "PCREL24"]:
+        for name in [
+            "ABS32",
+            "ABS64",
+            "LI32",
+            "LI64",
+            "PCREL8",
+            "PCREL11",
+            "PCREL14",
+            "PCREL20",
+            "PCREL24",
+        ]:
             self.assertIn(name, table)
         image = out.read_bytes()
         target = len(image) - 2
@@ -116,27 +165,39 @@ local: .word target+4,local
         p = self.run_image(self.dir / "linked.elf", "--xlen", 64, "--flow")
         self.assertIn(f"x1=0x{target+2:x}", p.stderr)
         self.assertIn(f"x2=0x{target:x}", p.stderr)
-        self.assertEqual(int.from_bytes(image[56:60], "little"), target+4)
+        self.assertEqual(int.from_bytes(image[56:60], "little"), target + 4)
 
     def test_linker_errors_and_weak_symbols(self):
-        a = self.assemble("a", ".global _start\n.extern missing\n_start: call missing\nwfi\n", "-c")
-        self.assertIn("undefined symbol", self.command("mica-ld", a, "-o", self.dir / "o", ok=False).stderr)
+        a = self.assemble(
+            "a", ".global _start\n.extern missing\n_start: call missing\nwfi\n", "-c"
+        )
+        self.assertIn(
+            "undefined symbol",
+            self.command("mica-ld", a, "-o", self.dir / "o", ok=False).stderr,
+        )
         b = self.assemble("b", ".global _start\n_start: wfi\n", "-c")
         self.command("mica-ld", b, b, "-o", self.dir / "o", ok=False)
-        c = self.assemble("c", ".weak optional\n.global _start\n_start: li32 x1,optional\nwfi\n", "-c")
+        c = self.assemble(
+            "c", ".weak optional\n.global _start\n_start: li32 x1,optional\nwfi\n", "-c"
+        )
         self.command("mica-ld", c, "-o", self.dir / "o")
         self.assertIn("x1=0x0", self.run_image(self.dir / "o").stderr)
         far = self.assemble("far", ".global target\n.space 1024\ntarget: wfi\n", "-c")
-        near = self.assemble("near", ".global _start\n_start: bz x1,target\nwfi\n", "-c")
-        self.assertIn("out of range", self.command("mica-ld", near, far, "-o", self.dir / "o", ok=False).stderr)
+        near = self.assemble(
+            "near", ".global _start\n_start: bz x1,target\nwfi\n", "-c"
+        )
+        self.assertIn(
+            "out of range",
+            self.command("mica-ld", near, far, "-o", self.dir / "o", ok=False).stderr,
+        )
 
     def test_malformed_elf(self):
         obj = self.assemble("elf", ".global _start\n_start: wfi\n", "-c").read_bytes()
         rng = random.Random(0x1CA)
-        samples = [obj[:n] for n in [0, 1, 4, 16, 63, 64, len(obj)-1]]
+        samples = [obj[:n] for n in [0, 1, 4, 16, 63, 64, len(obj) - 1]]
         for offset in [4, 5, 18, 40, 48, 58, 60, 62]:
             b = bytearray(obj)
-            b[offset:offset+2] = b"\xff\xff"
+            b[offset : offset + 2] = b"\xff\xff"
             samples.append(bytes(b))
         for _ in range(20):
             samples.append(rng.randbytes(rng.randrange(1, 1024)))
@@ -147,29 +208,47 @@ local: .word target+4,local
             self.command("mica-ld", path, "-o", self.dir / "bad.bin", ok=False)
 
     def test_disassembly_byte_comments(self):
-        image=self.assemble("bytes","li8 x1,1\nwfi\n")
-        text=self.command("mica-dis",image).stdout
-        self.assertIn("; 0141",text)
-        self.assertIn("; 8004",text)
+        image = self.assemble("bytes", "li8 x1,1\nwfi\n")
+        text = self.command("mica-dis", image).stdout
+        self.assertIn("; 0141", text)
+        self.assertIn("; 8004", text)
 
     def test_lossless_disassembly(self):
         # Includes every short halfword plus random long envelopes and odd tails.
         rng = random.Random(441)
         for width in [32, 64]:
-            image = b"".join(n.to_bytes(2, "little") for n in range(65536)) + rng.randbytes(8193)
+            image = b"".join(
+                n.to_bytes(2, "little") for n in range(65536)
+            ) + rng.randbytes(8193)
             path = self.dir / "round.bin"
             path.write_bytes(image)
             text = self.command("mica-dis", "--assembly", "--xlen", width, path).stdout
-            result = self.assemble("round", text, "--xlen", str(width), "--xreg", "--mul", "--flow", "--bitops", "--atomic", "--simd", "--trap")
+            result = self.assemble(
+                "round",
+                text,
+                "--mica2",
+                "--xlen",
+                str(width),
+                "--xreg",
+                "--mul",
+                "--flow",
+                "--bitops",
+                "--atomic",
+                "--simd",
+                "--trap",
+            )
             self.assertEqual(image, result.read_bytes())
 
     def test_expression_and_preprocessor_limits(self):
         data = self.dir / "data.dat"
         data.write_bytes(b"\x12\x34")
-        output = self.assemble("pre", '.const N,2\n.if N\n.repeat N\n.byte 7\n.endrepeat\n.else\n.error "inactive"\n.endif\n.incbin "data.dat"\n')
+        output = self.assemble(
+            "pre",
+            '.const N,2\n.if N\n.repeat N\n.byte 7\n.endrepeat\n.else\n.error "inactive"\n.endif\n.incbin "data.dat"\n',
+        )
         self.assertEqual(output.read_bytes(), b"\x07\x07\x12\x34")
         source = self.dir / "deep.mica"
-        source.write_text(".word " + "("*300 + "1" + ")"*300)
+        source.write_text(".word " + "(" * 300 + "1" + ")" * 300)
         self.assertIn("nesting", self.command("mica-as", source, ok=False).stderr)
 
     def test_mixed_width_reservation(self):
@@ -210,32 +289,52 @@ wfi
         self.run_image(one, "--steps", "1")
 
     def test_bounded_copy_ranges(self):
-        libraries='\n'.join(f'.include "{ROOT / "stdlib" / name}"' for name in ["bounded32.mica","flow.mica"])
-        for count,expected in [(4,0x44332211),(5,0)]:
-            source=f"li32 x1,dst\nli32 x2,src\nli8 x3,{count}\nli32 x4,dst+4\nli32 x5,src+4\ncall mica_memcpy_bounded\nli32 x4,dst\nldw x2,[x4]\nwfi\n{libraries}\n.align 4\nsrc: .word 0x44332211\ndst: .word 0\n"
-            image=self.assemble("bounded",source,"--flow")
-            result=self.run_image(image,"--flow")
-            self.assertIn(f"x2=0x{expected:x}",result.stderr)
+        libraries = "\n".join(
+            f'.include "{ROOT / "stdlib" / name}"'
+            for name in ["bounded32.mica", "flow.mica"]
+        )
+        for count, expected in [(4, 0x44332211), (5, 0)]:
+            source = f"li32 x1,dst\nli32 x2,src\nli8 x3,{count}\nli32 x4,dst+4\nli32 x5,src+4\ncall mica_memcpy_bounded\nli32 x4,dst\nldw x2,[x4]\nwfi\n{libraries}\n.align 4\nsrc: .word 0x44332211\ndst: .word 0\n"
+            image = self.assemble("bounded", source, "--flow")
+            result = self.run_image(image, "--flow")
+            self.assertIn(f"x2=0x{expected:x}", result.stderr)
 
     def test_fir_against_independent_reference(self):
         source = ROOT / "examples/fir32.mica"
         binary, symbols = self.dir / "fir.bin", self.dir / "fir.map"
         self.command("mica-as", "--mul", source, "-o", binary, "--map", symbols)
-        address = next(int(line.split()[0],16) for line in symbols.read_text().splitlines() if line.endswith(" results"))
-        result = self.run_image(binary,"--mul","--peek",f"{address}:16")
-        raw=bytes.fromhex(re.search(r"MEM\[0x[0-9a-f]+\]=([0-9a-f]+)",result.stderr)[1])
-        samples, coefficients=[1,-2,3,4,-5,6,7],[2,-3,4,-1]
-        expected=[sum(samples[i+j]*coefficients[j] for j in range(4)) & 0xffffffff for i in range(4)]
-        actual=[int.from_bytes(raw[i:i+4],"little") for i in range(0,16,4)]
-        self.assertEqual(expected,actual)
+        address = next(
+            int(line.split()[0], 16)
+            for line in symbols.read_text().splitlines()
+            if line.endswith(" results")
+        )
+        result = self.run_image(binary, "--mul", "--peek", f"{address}:16")
+        raw = bytes.fromhex(
+            re.search(r"MEM\[0x[0-9a-f]+\]=([0-9a-f]+)", result.stderr)[1]
+        )
+        samples, coefficients = [1, -2, 3, 4, -5, 6, 7], [2, -3, 4, -1]
+        expected = [
+            sum(samples[i + j] * coefficients[j] for j in range(4)) & 0xFFFFFFFF
+            for i in range(4)
+        ]
+        actual = [int.from_bytes(raw[i : i + 4], "little") for i in range(0, 16, 4)]
+        self.assertEqual(expected, actual)
 
     def test_profile_and_debugger(self):
-        image=self.assemble("debug","li8 x1,40\naddi x1,2\nwfi\n","--profile","MICA-C")
-        result=subprocess.run([str(TOOLS/"mica-run"),"--debug",str(image)],input="step\nsetreg 2 99\nbreak 4\ncontinue\nregs\nquit\n",capture_output=True,text=True,timeout=10)
-        self.assertEqual(result.returncode,0,result.stderr)
-        self.assertIn("x1=0x2a",result.stderr)
-        self.assertIn("x2=0x63",result.stderr)
-        self.command("mica-run","--profile","MICA-MP",image,ok=False)
+        image = self.assemble(
+            "debug", "li8 x1,40\naddi x1,2\nwfi\n", "--profile", "MICA-C"
+        )
+        result = subprocess.run(
+            [str(TOOLS / "mica-run"), "--debug", str(image)],
+            input="step\nsetreg 2 99\nbreak 4\ncontinue\nregs\nquit\n",
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("x1=0x2a", result.stderr)
+        self.assertIn("x2=0x63", result.stderr)
+        self.command("mica-run", "--profile", "MICA-MP", image, ok=False)
 
     def test_timer_interrupt(self):
         source = """li32 x5,handler

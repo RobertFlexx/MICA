@@ -1,17 +1,16 @@
-digraph G { rankdir=LR; label="MICA 1.0 | F extension compact and extended flow sequencing";
-graph [fontname="DejaVu Sans",fontsize=17,labelloc=t,labeljust=l,pad="0.32",nodesep="0.48",ranksep="0.8",bgcolor="white"]; node [fontname="DejaVu Sans",fontsize=11,style="rounded,filled",shape=box,color="#335277",fillcolor="#f3f7fb",penwidth=1.5,margin="0.16,0.12"]; edge [fontname="DejaVu Sans",fontsize=9,color="#56718f",arrowsize=.7];
-
-read [label="Read base register\nEffective address = old base",fillcolor="#ffeecf"];
-check [label="Check base != x0 and data\nCheck alignment and width\nCheck register availability"];
-mem [label="Execute bus load/store\nldpi.b/h/w/q\nstpi.b/h/w/q",fillcolor="#dff6f2"];
-wb [label="Commit destination/load\nCommit base += stride\n2/4-byte instruction"];
-fail [label="Fault: no architectural commit\nPhysical RTL needs bus error input",fillcolor="#fbe8e6"];
-loop [label="dbnz counter,target\ncounter := counter - 1\nif counter != 0: branch",fillcolor="#e0eef7"];
-read -> check;
-check -> mem [label="legal"];
-check -> fail [label="invalid"];
-mem -> wb [label="completed"];
-wb -> loop [label="next instruction"];
-loop -> read [label="taken"];
-
+digraph G {
+graph [rankdir=LR,labelloc=t,fontname="DejaVu Sans",fontsize=16,pad=0.3];
+node [shape=box,style="rounded,filled",fillcolor="#f1f5f9",color="#475569",fontname="DejaVu Sans",fontsize=11];
+edge [fontname="DejaVu Sans",fontsize=9,color="#334155"];
+label="MICA 2.0 | F memory operations with compact counted branches";
+decode [label="DECODE: read old base/data\nF enabled; base != 0 and base != data\ncheck alignment and register IDs"];
+request [label="DREQ / DWAIT\nd_req_valid/ready; d_rsp_valid/ready\naddress = old base"];
+commit [label="COMMIT on successful response\nload destination + base update\nstore base update only"];
+fault [label="Access fault: discard pending writes\nno base/destination update\nfailed store must have no side effect"];
+loop [label="dbnz.s: 2-byte counter branch\ncounter -= 1; branch if nonzero\n-64..+62 bytes from PC+2"];
+decode -> request [label="legal"];
+request -> commit [label="d_rsp_error=0"];
+request -> fault [label="d_rsp_error=1"];
+commit -> loop [label="next instruction"];
+loop -> decode [label="taken"];
 }

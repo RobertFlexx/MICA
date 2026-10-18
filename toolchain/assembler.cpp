@@ -387,7 +387,7 @@ struct Macro {
 class Assembler {
   int xlen = 32;
   bool xreg = false, simd = false, atomic = false, multiply = false,
-       flow = false, bitops = false, traps = false;
+       flow = false, bitops = false, traps = false, mica2 = false;
   U unique = 0;
   bool object_mode = false;
   std::set<std::string> label_names, global_names, weak_names, external_names;
@@ -692,7 +692,8 @@ class Assembler {
     }
     if (op == ".arch") {
       nargs(l, 1);
-      if (a[0] != (xlen == 64 ? "mica64" : "mica32"))
+      if (a[0] != (xlen == 64 ? "mica64" : "mica32") &&
+          !(mica2 && a[0] == (xlen == 64 ? "mica64v2" : "mica32v2")))
         throw Error("architecture mismatch");
       return {};
     }
@@ -807,7 +808,41 @@ class Assembler {
     }
     if (pc % 2)
       throw Error("instruction at odd address; use .align 2");
+    if (op == "stop") {
+      if (!mica2)
+        throw Error("stop requires --mica2");
+      nargs(l, 0);
+      return r16(41);
+    }
+    if (op == "dbnz.s") {
+      if (!mica2)
+        throw Error("dbnz.s requires --mica2");
+      nargs(l, 2);
+      const int d = reg(a[0], false);
+      if (d == 0)
+        throw Error("dbnz.s cannot modify x0");
+      U displacement = sizing ? 0 : rel(num(a[1], false), pc, 2, 6);
+      return r16(33 + int((displacement >> 3) & 7), d, int(displacement & 7));
+    }
+    if (op == "ldsp" || op == "stsp") {
+      if (!mica2)
+        throw Error(op + " requires --mica2");
+      nargs(l, 2);
+      const int d = reg(a[0], false);
+      const auto [base, byte_off] = mem(a[1], sy, sizing, false);
+      if (base != 7)
+        throw Error(op + " requires [sp+offset]");
+      const U stride = U(xlen / 8);
+      if (!sizing && byte_off % stride)
+        throw Error("stack slot must be naturally aligned");
+      const U slot = byte_off / stride;
+      if (!sizing)
+        range(slot, 3, false, "stack slot");
+      return r16(op == "ldsp" ? 31 : 32, d, int(slot & 7));
+    }
     if (auto it = R.find(op); it != R.end()) {
+      if ((op == "ldsp" || op == "stsp") && !mica2)
+        throw Error("requires --mica2");
       if (op == "mul" && !multiply)
         throw Error("mul needs --mul");
       if (op == "nop" || op == "wfi" || op == "fence" || op == "ecall" ||
@@ -854,6 +889,20 @@ class Assembler {
       Bytes b;
       if (op == "li64" && xlen != 64)
         throw Error("li64 requires --xlen 64");
+      // MICA 2.0 keeps relocatable li32 fixed-width. Only standalone numeric
+      // literals shrink, so branch layout is identical in both assembly passes.
+      if (mica2 && op == "li32" && xlen == 32 && !object_mode) {
+        const std::string literal = trim(a[1]);
+        if (std::regex_match(
+                literal, std::regex(R"([+-]?(0[xX][0-9a-fA-F]+|[0-9]+))"))) {
+          const std::int32_t signed32 =
+              std::bit_cast<std::int32_t>(std::uint32_t(n));
+          if (signed32 >= -128 && signed32 <= 127 && d < 8)
+            return i16(0, d, n);
+          if (signed32 >= -32768 && signed32 <= 32767)
+            return wide(2, d, n);
+        }
+      }
       if (op == "li32" && xlen == 32 && !sizing)
         range(n, 32, std::bit_cast<S>(n) < 0, "li32");
       if (op == "li") {
@@ -956,10 +1005,12 @@ class Assembler {
                  U(it->second << 22) | U(d << 18) | U(ra << 14) | (n & 0x3fff));
     }
     if (auto it = WIDE.find(op); it != WIDE.end()) {
+      if (op == "adrpc" && !mica2)
+        throw Error("adrpc requires --mica2");
       nargs(l, 2);
       U imm = num(a[1], sizing);
       if (!sizing)
-        range(imm, 16, it->second == 2, op);
+        range(imm, 16, it->second == 2 || it->second == 3, op);
       return wide(it->second, reg(a[0], xreg), imm);
     }
     if (auto it = BR.find(op); it != BR.end()) {
@@ -1159,9 +1210,9 @@ class Assembler {
 
 public:
   Assembler(int w, bool xr, bool v, bool a, bool m, bool f, bool bits,
-            bool trap = false)
+            bool trap = false, bool rev2 = false)
       : xlen(w), xreg(xr), simd(v), atomic(a), multiply(m), flow(f),
-        bitops(bits), traps(trap) {}
+        bitops(bits), traps(trap), mica2(rev2) {}
   const Symbols &symbols() const {
     return sy;
   }
@@ -1176,7 +1227,7 @@ public:
     o.features = unsigned(xreg) | unsigned(multiply) << 1 |
                  unsigned(flow) << 2 | unsigned(atomic) << 3 |
                  unsigned(simd) << 4 | unsigned(bitops) << 5 |
-                 unsigned(traps) << 6;
+                 unsigned(traps) << 6 | unsigned(mica2) << 8;
     for (const auto &[name, value] : sy) {
       unsigned bind = weak_names.contains(name)     ? 2u
                       : global_names.contains(name) ? 1u
@@ -1282,7 +1333,7 @@ int main(int argc, char **argv) {
     fs::path input, output, hex, listing, mapfile;
     int xlen = 32;
     bool xr = false, v = false, a = false, m = false, fl = false, bit = false,
-         relocatable = false, trap = false;
+         relocatable = false, trap = false, mica2 = false;
     for (int i = 1; i < argc; i++) {
       std::string s = argv[i];
       auto next = [&]() {
@@ -1297,7 +1348,9 @@ int main(int argc, char **argv) {
         xlen = std::stoi(w);
       } else if (s == "-c")
         relocatable = true;
-      else if (s == "--trap") {
+      else if (s == "--mica2") {
+        mica2 = true;
+      } else if (s == "--trap") {
         trap = true;
       } else if (s == "--profile") {
         auto name = next();
@@ -1315,6 +1368,7 @@ int main(int argc, char **argv) {
             v = f & 16;
             bit = f & 32;
             trap = f & 64;
+            mica2 = f & 256;
             found = true;
           }
         if (!found)
@@ -1340,11 +1394,11 @@ int main(int argc, char **argv) {
       else if (s == "--map")
         mapfile = next();
       else if (s == "--version") {
-        std::cout << "mica-as 1.0 engineering-r2\n";
+        std::cout << "mica-as 2.0 development\n";
         return 0;
       } else if (s == "--help") {
         std::cout
-            << "mica-as [-c] [--profile MICA-C|MICA-E|MICA-64|MICA-DSP] [--xlen 32|64] [--xreg] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [-o path] [--hex path] [--listing path] [--map path] file.mica\n";
+            << "mica-as [--mica2] [-c] [--profile MICA-C|MICA-E|MICA-64|MICA-DSP] [--xlen 32|64] [--xreg] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [-o path] [--hex path] [--listing path] [--map path] file.mica\n";
         return 0;
       } else if (s.starts_with('-'))
         throw Error("unknown flag: " + s);
@@ -1362,7 +1416,7 @@ int main(int argc, char **argv) {
     if (relocatable && !hex.empty())
       throw Error(
           "--hex needs a flat image; link objects then use mica-objcopy");
-    Assembler assembler(xlen, xr, v, a, m, fl, bit, trap);
+    Assembler assembler(xlen, xr, v, a, m, fl, bit, trap, mica2);
     assembler.set_object_mode(relocatable);
     auto [bytes, lines] = assembler.assemble(input);
     auto file_bytes =

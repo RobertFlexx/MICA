@@ -44,3 +44,6 @@ Generated build products and growing fuzz corpora stay outside commits. Checked-
 ISA tables, drawing sources and release evidence are intentional exceptions.
 Use repository-relative paths in guides and scripts so another checkout can run
 them without borrowing the original developer's directory layout.
+
+Format SDK sources with `python3 scripts/format_code.py`; use `--check` for
+a read-only check. Regenerate all schematic sets after RTL or generator changes.

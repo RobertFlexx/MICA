@@ -1,0 +1,630 @@
+{
+  "method": "Verilated multicycle core; five fixed seeds; request stalls 25%, response delay 0..8 fetch / 0..10 data; one RAM address space",
+  "limits": "No physical clock, routing, energy or independent-ISA baseline measurement",
+  "results": [
+    {
+      "name": "arithmetic32",
+      "xlen": 32,
+      "fetch_reuse": 0,
+      "rom_bytes": 28,
+      "retired": 8,
+      "median_cycles": 129,
+      "ipc": 0.06201550387596899,
+      "fetches_per_retired": 1.375,
+      "runs": [
+        {
+          "cycles": 132,
+          "fetches": 11,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 115,
+          "fetches": 11,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 129,
+          "fetches": 11,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 128,
+          "fetches": 11,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 138,
+          "fetches": 11,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "arithmetic32",
+      "xlen": 32,
+      "fetch_reuse": 1,
+      "rom_bytes": 28,
+      "retired": 8,
+      "median_cycles": 100,
+      "ipc": 0.08,
+      "fetches_per_retired": 0.875,
+      "runs": [
+        {
+          "cycles": 112,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 88,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 100,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 113,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 96,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "arithmetic64",
+      "xlen": 64,
+      "fetch_reuse": 0,
+      "rom_bytes": 80,
+      "retired": 17,
+      "median_cycles": 355,
+      "ipc": 0.04788732394366197,
+      "fetches_per_retired": 1.9411764705882353,
+      "runs": [
+        {
+          "cycles": 350,
+          "fetches": 33,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 355,
+          "fetches": 33,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 374,
+          "fetches": 33,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 327,
+          "fetches": 33,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 363,
+          "fetches": 33,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "arithmetic64",
+      "xlen": 64,
+      "fetch_reuse": 1,
+      "rom_bytes": 80,
+      "retired": 17,
+      "median_cycles": 259,
+      "ipc": 0.06563706563706563,
+      "fetches_per_retired": 1.0,
+      "runs": [
+        {
+          "cycles": 260,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 253,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 259,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 255,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 267,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "memory-copy",
+      "xlen": 32,
+      "fetch_reuse": 0,
+      "rom_bytes": 124,
+      "retired": 43,
+      "median_cycles": 757,
+      "ipc": 0.05680317040951123,
+      "fetches_per_retired": 1.3488372093023255,
+      "runs": [
+        {
+          "cycles": 736,
+          "fetches": 58,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 784,
+          "fetches": 58,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 757,
+          "fetches": 58,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 722,
+          "fetches": 58,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 783,
+          "fetches": 58,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "memory-copy",
+      "xlen": 32,
+      "fetch_reuse": 1,
+      "rom_bytes": 124,
+      "retired": 43,
+      "median_cycles": 595,
+      "ipc": 0.07226890756302522,
+      "fetches_per_retired": 0.6976744186046512,
+      "runs": [
+        {
+          "cycles": 596,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 595,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 564,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 586,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 596,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "strings",
+      "xlen": 32,
+      "fetch_reuse": 0,
+      "rom_bytes": 400,
+      "retired": 82,
+      "median_cycles": 1094,
+      "ipc": 0.07495429616087751,
+      "fetches_per_retired": 1.0731707317073171,
+      "runs": [
+        {
+          "cycles": 1093,
+          "fetches": 88,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 1094,
+          "fetches": 88,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 1094,
+          "fetches": 88,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 1069,
+          "fetches": 88,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 1115,
+          "fetches": 88,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "strings",
+      "xlen": 32,
+      "fetch_reuse": 1,
+      "rom_bytes": 400,
+      "retired": 82,
+      "median_cycles": 907,
+      "ipc": 0.09040793825799338,
+      "fetches_per_retired": 0.7195121951219512,
+      "runs": [
+        {
+          "cycles": 931,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 906,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 907,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 929,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 905,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "division",
+      "xlen": 32,
+      "fetch_reuse": 0,
+      "rom_bytes": 104,
+      "retired": 334,
+      "median_cycles": 4104,
+      "ipc": 0.0813840155945419,
+      "fetches_per_retired": 1.1047904191616766,
+      "runs": [
+        {
+          "cycles": 4145,
+          "fetches": 369,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        },
+        {
+          "cycles": 4104,
+          "fetches": 369,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        },
+        {
+          "cycles": 4075,
+          "fetches": 369,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        },
+        {
+          "cycles": 4113,
+          "fetches": 369,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        },
+        {
+          "cycles": 4054,
+          "fetches": 369,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "division",
+      "xlen": 32,
+      "fetch_reuse": 1,
+      "rom_bytes": 104,
+      "retired": 334,
+      "median_cycles": 3222,
+      "ipc": 0.10366232153941651,
+      "fetches_per_retired": 0.7005988023952096,
+      "runs": [
+        {
+          "cycles": 3269,
+          "fetches": 234,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        },
+        {
+          "cycles": 3212,
+          "fetches": 234,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        },
+        {
+          "cycles": 3222,
+          "fetches": 234,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        },
+        {
+          "cycles": 3268,
+          "fetches": 234,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        },
+        {
+          "cycles": 3219,
+          "fetches": 234,
+          "loads": 1,
+          "stores": 1,
+          "events": 334,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "crc32",
+      "xlen": 32,
+      "fetch_reuse": 0,
+      "rom_bytes": 91,
+      "retired": 582,
+      "median_cycles": 6837,
+      "ipc": 0.08512505484861782,
+      "fetches_per_retired": 1.0120274914089347,
+      "runs": [
+        {
+          "cycles": 6795,
+          "fetches": 589,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        },
+        {
+          "cycles": 6815,
+          "fetches": 589,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        },
+        {
+          "cycles": 6968,
+          "fetches": 589,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        },
+        {
+          "cycles": 6837,
+          "fetches": 589,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        },
+        {
+          "cycles": 6839,
+          "fetches": 589,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "crc32",
+      "xlen": 32,
+      "fetch_reuse": 1,
+      "rom_bytes": 91,
+      "retired": 582,
+      "median_cycles": 5276,
+      "ipc": 0.11031084154662624,
+      "fetches_per_retired": 0.5962199312714777,
+      "runs": [
+        {
+          "cycles": 5314,
+          "fetches": 347,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        },
+        {
+          "cycles": 5262,
+          "fetches": 347,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        },
+        {
+          "cycles": 5312,
+          "fetches": 347,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        },
+        {
+          "cycles": 5276,
+          "fetches": 347,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        },
+        {
+          "cycles": 5220,
+          "fetches": 347,
+          "loads": 19,
+          "stores": 10,
+          "events": 582,
+          "fault": 0
+        }
+      ]
+    }
+  ]
+}

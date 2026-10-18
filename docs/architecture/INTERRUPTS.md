@@ -18,5 +18,11 @@ every register they modify, including LR if calling a subroutine.
 `examples/scheduler32.mica` saves x1..x7 and EPC in 32-byte frames and alternates
 two trusted tasks for six timer ticks. Each task checks sentinel registers.
 `examples/selftest32.mica` tests a timer handler plus UART/GPIO. The simulator
-harness also injects external IRQ during a delayed store and a delayed load. WFI
-retains its historical halt behavior and does not implement wake-on-IRQ.
+harness also injects external IRQ during a delayed store and a delayed load.
+
+With MICA2=1, WFI retires and enters SLEEP. Raw pending events wake the core
+even when interrupt masks are clear. Handler delivery still requires T,
+status.IE and the matching IE bit. Without T, external irq_i wakes directly.
+Legacy MICA2=0 WFI retains its terminal halt behavior. The
+[2.0 tests](../engineering/MICA2_VERIFICATION.md) cover masked wake, handler
+return and timer wake; STOP remains terminal until reset.

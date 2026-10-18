@@ -12,7 +12,8 @@ module tb_trap;
              .INIT_FILE("program_trap.mem32"))
       dut(.clk_i(clk),
           .rst_ni(rst_n),
-          .uart_rx_i(1'b1),.irq_i(1'b0),
+          .uart_rx_i(1'b1),
+          .irq_i(1'b0),
           .uart_tx_o(uart_tx),
           .leds_o(leds),
           .halted_o(halted),

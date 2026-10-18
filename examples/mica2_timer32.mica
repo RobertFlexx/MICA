@@ -1,0 +1,17 @@
+.arch mica32v2
+li32 x5,handler
+csrw tvec,x5
+li8 x1,2
+csrw ie,x1
+li8 x1,1
+csrw status,x1
+li32 x1,600
+csrw cmp_lo,x1
+csrw cmp_hi,x0
+wfi
+li8 x1,42
+stop
+handler:
+    li8 x3,-1
+    csrw cmp_hi,x3
+    eret

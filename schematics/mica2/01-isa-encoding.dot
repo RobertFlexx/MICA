@@ -1,0 +1,38 @@
+digraph G {
+  graph [fontname="DejaVu Sans", fontsize=16, labelloc=t, rankdir=LR, bgcolor="white", pad=0.30, nodesep=0.55, ranksep=1.0, splines=polyline, compound=true];
+  node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#475569", fontname="DejaVu Sans", fontsize=11, margin="0.18,0.12"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#334155", arrowsize=0.7];
+ label="MICA 2.0 | compact encodings and shared execution hardware";
+  r [label="R class, 16 bits
+[15:14]=00, [13:6]=op8
+[5:3]=data/counter, [2:0]=slot/offset", fillcolor="#dbeafe"];
+  legacy [label="MICA 1.0
+R opcodes 0..22, 23..30 F
+Remains decodable", fillcolor="#e2e8f0"];
+  ldsp [label="op=31: ldsp
+EA = old SP + slot * XLEN/8
+load XLEN, write data register", fillcolor="#dcfce7"];
+  stsp [label="op=32: stsp
+EA = old SP + slot * XLEN/8
+store XLEN, SP unchanged", fillcolor="#dcfce7"];
+  dbnz [label="op=33..40: dbnz.s
+6-bit signed halfword displacement
+reg <- reg-1; branch if nonzero
+-64..+62 byte reach", fillcolor="#dcfce7"];
+  stop [label="op=41: stop
+Explicit terminal debug halt
+WFI remains wakeable sleep", fillcolor="#fee2e2"];
+  wide [label="WIDE major 2, op=3
+adrpc d,disp16
+d = PC + (sext(disp16) * 2)", fillcolor="#fff3cd"];
+  gate [label="MICA2 parameter / feature bit 8
+Illegal on 1.0 cores
+No second ALU or register bank", fillcolor="#fef2f2"];
+  r -> legacy [label="existing",style="solid"];
+  r -> ldsp [label="2.0",style="solid"];
+  r -> stsp [label="2.0",style="solid"];
+  r -> dbnz [label="2.0",style="solid"];
+  r -> stop [label="2.0",style="solid"];
+  r -> gate [label="feature",style="solid"];
+  gate -> wide [label="enable",style="solid"];
+}

@@ -1,0 +1,3 @@
+.arch mica32v2
+adrpc x1,2
+stop

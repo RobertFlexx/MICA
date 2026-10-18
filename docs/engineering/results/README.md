@@ -32,3 +32,6 @@ independent-ISA comparison result is included.
 [CI results](ci.json) identify implementation commit `4e57212` and its seven
 successful jobs, including macOS. The raw local logs above retain the host and
 commands from their original execution.
+
+For current MICA 2.0 evidence, use the separately archived
+[2.0 results](mica2/README.md). The r2 files above retain their original 1.0 scope.

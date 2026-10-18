@@ -1,5 +1,17 @@
 # Change log
 
+## MICA 2.0
+
+Add compact full-width stack accesses, short counted branches, ADRPC, wakeable
+WFI, explicit STOP, signed XLEN64 word loads and 8/16-register profiles.
+Preserve the 1.0 decode and all frozen firmware fixtures. Verify the new RTL
+with Icarus, Verilator retirement comparison and Yosys mapping; fix masked
+wake, XLEN32 stack wrapping and 64-bit decode width expressions.
+
+Refresh all documentation and schematic paths, restore the omitted Vivado
+script, add reproducible RISC-V density measurements, archive current evidence
+separately and format SDK sources. Physical timing and power remain unmeasured.
+
 ## MICA 1.0, engineering r2
 
 Transactional multicycle SystemVerilog core, precise fault commit, aligned-word

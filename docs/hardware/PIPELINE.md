@@ -1,6 +1,6 @@
 # Pipeline work
 
-The verified r2 CPU is the multicycle reference core. It separates pending effects
+The current MICA 2.0 CPU is the verified multicycle reference core. It separates pending effects
 from commit to provide precise retirement, but executes one instruction at a time.
 The legacy core module adapts its external interface to this implementation.
 

@@ -5,6 +5,10 @@ address and entry. ELF objects must be linked first; XLEN and required features 
 checked during loading. RAM defaults to 1 MiB and can be selected from 4096 bytes to
 512 MiB. Memory ranges and natural alignment are checked before instruction effects.
 
+Select 2.0 with `--mica2` or `--profile MICA-2C`, `MICA-2E`, or `MICA-2L`.
+The default retains compatibility behavior. In 2.0, `wfi` sleeps and `stop`
+ends execution. Pending events wake independently of interrupt-delivery masks.
+
 ## Execution engines
 
 The reference interpreter is the default and defines the comparison behavior.

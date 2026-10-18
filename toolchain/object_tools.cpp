@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
       std::string opt = argv[i];
       if (opt == "--version") {
-        std::cout << tool << " 1.0 engineering-r2\n";
+        std::cout << tool << " 2.0 development\n";
         return 0;
       }
       if (opt == "--help") {

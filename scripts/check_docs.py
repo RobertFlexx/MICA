@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Check local Markdown links, generated allocation, and executable asm snippets."""
+
 import argparse
 from pathlib import Path
 import re
@@ -27,10 +28,33 @@ with tempfile.TemporaryDirectory(prefix="mica-docs-") as temp:
             source = Path(temp) / f"example{count}.mica"
             source.write_text(code)
             width = "64" if ".arch mica64" in code else "32"
-            result = subprocess.run([a.assembler, "--xlen", width, "--xreg", "--mul", "--flow", "--simd", "--atomic", "--bitops", "--trap", str(source), "-o", str(source.with_suffix(".bin"))],
-                                    capture_output=True, text=True, timeout=10)
+            v2 = ".arch mica32v2" in code or ".arch mica64v2" in code
+            opts = ["--mica2"] if v2 else []
+            result = subprocess.run(
+                [
+                    a.assembler,
+                    *opts,
+                    "--xlen",
+                    width,
+                    "--xreg",
+                    "--mul",
+                    "--flow",
+                    "--simd",
+                    "--atomic",
+                    "--bitops",
+                    "--trap",
+                    str(source),
+                    "-o",
+                    str(source.with_suffix(".bin")),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
             if result.returncode:
-                errors.append(f"{path.relative_to(ROOT)}: asm example {count}: {result.stderr}")
+                errors.append(
+                    f"{path.relative_to(ROOT)}: asm example {count}: {result.stderr}"
+                )
 if errors:
     raise SystemExit("\n".join(errors))
 print(f"PASS {len(files)} Markdown files and {count} executable assembly snippets")

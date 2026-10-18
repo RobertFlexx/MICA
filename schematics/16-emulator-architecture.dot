@@ -1,20 +1,17 @@
-digraph Engine {
- graph [rankdir=TB,nodesep=0.48,ranksep=0.9,fontname="DejaVu Sans",labelloc=t,labeljust=l,pad=0.4,bgcolor="#ffffff",label="MICA 1.0 SDK | emulator execution architecture\nAll engines share CPU state and the reference interpreter remains authoritative"];
- node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=11,color="#365779",penwidth=1.3,fillcolor="#eff6fb",margin="0.15,0.12"];
- edge [fontname="DejaVu Sans",fontsize=9,color="#365779",arrowsize=0.7];
- cli [label="mica-run CLI\n--fast / --native-loops / default"];
- select [shape=diamond,label="engine?",fillcolor="#fff1dc"];
- ref [label="Reference step()\nall documented scalar, SIMD,\nA, B, F, T profiles",fillcolor="#dff5eb"];
- fast [label="fast_step()\ninlined short scalar + dbnz\nfall back on unusual opcodes",fillcolor="#e3eefb"];
- trans [label="native_counted_loop()\nonly addi + backward dbnz\nno traps or trace / full step budget",fillcolor="#e3eefb"];
- state [label="Shared CPU state\nx[16], v[8], csr[256], RAM, PC\nretired count and modeled steps",fillcolor="#fff1d8"];
- bad [label="No x86 code emission\nNo general JIT\nNo cycles-per-instruction claim",fillcolor="#fff0f0",color="#b23838"];
- cli -> select;
- select -> ref [label="default"];
- select -> fast [label="--fast"];
- select -> trans [label="--native-loops"];
- trans -> fast [label="otherwise"];
- fast -> ref [label="unsupported"];
- ref -> state; fast -> state; trans -> state;
- trans -> bad [style=dotted,arrowhead=none];
+digraph G {
+graph [rankdir=LR,labelloc=t,fontname="DejaVu Sans",fontsize=16,pad=0.3];
+node [shape=box,style="rounded,filled",fillcolor="#f1f5f9",color="#475569",fontname="DejaVu Sans",fontsize=11];
+edge [fontname="DejaVu Sans",fontsize=9,color="#334155"];
+label="MICA 2.0 | SDK emulator execution paths";
+cli [label="mica-run\n--profile MICA-2C/2E/2L or --mica2"];
+reference [label="Reference interpreter\nMICA2 operations / traps / wake"];
+fast [label="--fast: selected scalar fast paths\nfallback to reference step"];
+native [label="--native-loops: specialized legacy loop\nfallback for unsupported operations"];
+state [label="Shared registers, memory, PC, CSRs\nretirement trace / modeled instruction steps"];
+cli -> reference [label="default"];
+cli -> fast [label="optional"];
+cli -> native [label="optional"];
+native -> fast [label="fallback"];
+fast -> reference [label="fallback"];
+reference -> state [label="architectural state"];
 }

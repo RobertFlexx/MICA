@@ -58,7 +58,7 @@ class CPU {
   unsigned features() const {
     return unsigned(xreg) | unsigned(multiply) << 1 | unsigned(flow) << 2 |
            unsigned(atomic) << 3 | unsigned(simd) << 4 | unsigned(bitops) << 5 |
-           unsigned(traps) << 6 | 128u;
+           unsigned(traps) << 6 | 128u | unsigned(mica2) << 8;
   }
   void ram_range(U addr, int n, bool store) {
     if (addr > ram.size() || U(n) > ram.size() - addr)
@@ -75,7 +75,7 @@ class CPU {
   std::uint32_t crc_state = 0xffffffffu, crc_count = 0;
   bool halted = false, trace = false, xreg = false, simd = false,
        atomic = false, multiply = false, flow = false, bitops = false,
-       traps = false;
+       traps = false, mica2 = false, sleeping = false;
   int xlen = 32;
   U xmax() {
     return mask(xlen);
@@ -655,7 +655,7 @@ class CPU {
         x[d] = x[d] * x[a] & xmax();
         break;
       case 18:
-        if (d || a)
+        if (d || a || mica2)
           return false;
         halted = true;
         break;
@@ -740,6 +740,25 @@ class CPU {
         else
           write(addr, xr(d), bytes);
         wr(s, addr + U(bytes));
+      } else if (op == 41) {
+        if (!mica2 || d != 0 || s != 0)
+          throw Fault("illegal stop encoding");
+        halted = true;
+      } else if (op == 31 || op == 32) {
+        if (!mica2)
+          throw Fault("MICA2 stack encoding disabled");
+        const U addr = (xr(7) + U(s * (xlen / 8))) & xmax();
+        if (op == 31)
+          wr(d, read(addr, xlen / 8));
+        else
+          write(addr, xr(d), xlen / 8);
+      } else if (op >= 33 && op <= 40) {
+        if (!mica2 || d == 0)
+          throw Fault("illegal compact counter branch");
+        const U result = (xr(d) - 1) & xmax();
+        wr(d, result);
+        if (result)
+          pc = (pc + U(sx(U(((op - 33) << 3) | s), 6) * 2)) & xmax();
       } else if (op == 1)
         wr(d, xr(s));
       else if ((op >= 2 && op <= 12) || op == 17) {
@@ -766,7 +785,9 @@ class CPU {
         if (d || s)
           throw Fault("bad system reserved bits");
         if (op == 20 && traps)
-          enter_trap(11, pc);
+          enter_trap(11, mica2 ? here : pc);
+        else if (op == 18 && mica2)
+          sleeping = true;
         else
           halted = true;
       } else if (op == 19 || op == 22) {
@@ -819,7 +840,7 @@ class CPU {
         write(addr, xr(d), n);
       else {
         U z = read(addr, n);
-        if (op == 2 || op == 4)
+        if (op == 2 || op == 4 || (op == 0 && mica2 && xlen == 64))
           z = U(sx(z, n * 8));
         wr(d, z);
       }
@@ -889,12 +910,14 @@ class CPU {
       } else if (maj == 2) {
         int op = int((p >> 20) & 63), d = int((p >> 16) & 15);
         U imm = p & 65535;
-        if (op > 2)
+        if (op > 3 || (op == 3 && !mica2))
           throw Fault("illegal wide opcode");
         if (op == 0)
           wr(d, imm << 16);
         else if (op == 1)
           wr(d, (xr(d) & ~U(65535)) | imm);
+        else if (op == 3)
+          wr(d, (here + U(sx(imm, 16) * 2)) & xmax());
         else
           wr(d, U(sx(imm, 16)));
       } else if (maj == 3) {
@@ -1030,9 +1053,10 @@ class CPU {
 public:
   U exit_value = 0;
   CPU(int width, size_t memory, bool tr, bool xr, bool ve, bool at, bool mul,
-      bool fl, bool bits, bool trap)
+      bool fl, bool bits, bool trap, bool rev2)
       : ram(memory, 0), trace(tr), xreg(xr), simd(ve), atomic(at),
-        multiply(mul), flow(fl), bitops(bits), traps(trap), xlen(width) {
+        multiply(mul), flow(fl), bitops(bits), traps(trap), mica2(rev2),
+        xlen(width) {
     x[7] = (memory - 16) & ~size_t(15);
     csr[14] = simd;
   }
@@ -1105,7 +1129,19 @@ public:
         csr[6] |= 1;
         irq_at = ~U(0);
       }
-      U pending = traps ? (csr[5] & csr_read(6)) : 0;
+      const U wake_pending =
+          traps ? csr_read(6) : ((mica2 && retired == irq_at) ? 1u : 0u);
+      const U pending = traps ? (csr[5] & wake_pending) : wake_pending;
+      if (!traps && wake_pending)
+        irq_at = ~U(0);
+      if (sleeping) {
+        if (!wake_pending) {
+          ++cycles;
+          ++timer;
+          continue; // WFI ticks the modeled wake timer but retires nothing.
+        }
+        sleeping = false;
+      }
       if (traps && (csr[1] & 1) && pending) {
         U here = pc;
         U cause = (U(1) << U(xlen - 1)) | ((pending & 2) ? 2 : 1);
@@ -1263,7 +1299,7 @@ int main(int argc, char **argv) {
     size_t memory = 1024 * 1024;
     U steps = 200000;
     bool dump = true, tr = false, xr = false, v = false, a = false, m = false,
-         fl = false, bits = false, trap = false, fast = false,
+         fl = false, bits = false, trap = false, mica2 = false, fast = false,
          native_loops = false, debug = false;
     std::string peek_range, retire_path, uart_input;
     U irq_at = ~U(0);
@@ -1310,6 +1346,7 @@ int main(int argc, char **argv) {
             v = f & 16;
             bits = f & 32;
             trap = f & 64;
+            mica2 = f & 256;
             found = true;
           }
         if (!found)
@@ -1324,6 +1361,8 @@ int main(int argc, char **argv) {
         xr = true;
       else if (opt == "--trap")
         trap = true;
+      else if (opt == "--mica2")
+        mica2 = true;
       else if (opt == "--bitops")
         bits = true;
       else if (opt == "--flow")
@@ -1335,11 +1374,11 @@ int main(int argc, char **argv) {
       else if (opt == "--mul")
         m = true;
       else if (opt == "--version") {
-        std::cout << "mica-run 1.0 engineering-r2\n";
+        std::cout << "mica-run 2.0 development\n";
         return 0;
       } else if (opt == "--help") {
         std::cout
-            << "mica-run [--debug] [--profile NAME] [--xlen 32|64] [--steps N] [--memory N] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [--xreg] [--fast] [--native-loops] [--trace] [--retire-trace PATH] [--irq-at RETIRED] [--uart-input HEX] [--quiet] code.bin\n";
+            << "mica-run [--mica2] [--debug] [--profile NAME] [--xlen 32|64] [--steps N] [--memory N] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [--xreg] [--fast] [--native-loops] [--trace] [--retire-trace PATH] [--irq-at RETIRED] [--uart-input HEX] [--quiet] code.bin\n";
         return 0;
       } else if (opt.starts_with('-'))
         throw Fault("unknown flag: " + opt);
@@ -1375,7 +1414,7 @@ int main(int argc, char **argv) {
       if (entry < base || entry - base >= data.size())
         throw Fault("entry outside executable image");
     }
-    CPU cpu(width, memory, tr, xr, v, a, m, fl, bits, trap);
+    CPU cpu(width, memory, tr, xr, v, a, m, fl, bits, trap, mica2);
     cpu.load(data, base, entry);
     cpu.set_uart_input(uart_input);
     if (!retire_path.empty())

@@ -20,9 +20,19 @@ file. It enables UART RX and CRC, runs synthesis, placement and routing, then wr
 checkpoints and utilization/timing/DRC reports under `build/fpga`. Negative setup or
 hold slack stops bitstream creation.
 
+For the 2.0 compact test image, run:
+
+```sh
+vivado -mode batch -source fpga/scripts/build_arty.tcl -tclargs mica2_short32
+```
+
+The script enables MICA2=1 for that image. It ends with x1=28 and the halted
+LED; it does not print the legacy UART banner. The default and peripherals
+images retain MICA2=0 and their original firmware semantics.
+
 Vivado execution and timing closure are pending. The local evidence consists of
 open-source simulation and Yosys mapping. Those stages are recorded separately in
-the [r2 report](../engineering/IMPLEMENTATION_REPORT.md).
+the [2.0 report](../engineering/MICA2_VERIFICATION.md).
 
 ## Console and expected behavior
 

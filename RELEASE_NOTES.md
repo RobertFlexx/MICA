@@ -1,10 +1,27 @@
-# MICA 1.0, engineering revision r2
+# MICA 2.0 release notes
 
-Revision r2 adds a transactional 32/64-bit reference core, ELF assembly and
-linking tools, precise traps and expanded peripheral support. Existing
-instruction encodings and firmware compatibility fixtures are unchanged.
+MICA 2.0 adds compact stack accesses, a two-byte counted branch, PC-relative
+address arithmetic, wakeable WFI and explicit STOP to the preserved 1.0 SDK.
 
-See the [change log](CHANGELOG.md) for the component changes and the
-[implementation report](docs/engineering/IMPLEMENTATION_REPORT.md) for tests,
-measurements and remaining work. [SDK status](SDK_STATUS.md) is the quick guide
-to supported configurations.
+## Current revision
+
+- Execute 2C operations in the assembler, disassembler, emulator and transactional
+  RTL at XLEN32/64; retain all 14 frozen 1.0 firmware fixtures.
+- Verify all three 2.0 profiles with retirement traces under randomized bus stalls,
+  precise faults and reset replays; add timer wake/STOP SoC tests at both widths.
+- Fix masked-IRQ WFI wake and XLEN32 stack-address wrapping in the emulator,
+  and remove 64-bit decode width warnings.
+- Map all three 2.0 and four legacy SoC configurations through Yosys xc7 synthesis.
+- Refresh every existing schematic path, all previews and source/preview hashes.
+- Restore the omitted Vivado script and add an explicit 2.0 image option.
+- Preserve the 1.0 documentation layout, update current guides, archive 2.0
+  evidence separately and add a reproducible RISC-V density comparison.
+
+The MICA F+2C byte-copy body is six bytes versus sixteen for RV32IC and twelve
+for RV32IC + Zcb. Stack save/restore ties compressed RISC-V. See the
+[comparison](docs/research/RISCV_COMPARISON.md) for exact scope.
+
+Physical FPGA boot, routed timing, measured power and clock-speed advantages
+remain pending. Compiler, MPU, pipelined/multicore RTL and vector hardware remain
+future work. See [SDK status](SDK_STATUS.md) and the
+[verification report](docs/engineering/MICA2_VERIFICATION.md).

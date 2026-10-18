@@ -13,8 +13,8 @@
 <g id="node1" class="node">
 <title>core</title>
 <polygon fill="none" stroke="black" points="356,-800.5 139,-800.5 139,-747.5 356,-747.5 356,-800.5"/>
-<text text-anchor="middle" x="247.5" y="-785.3" font-family="monospace" font-size="14.00">mica_core_txn</text>
-<text text-anchor="middle" x="247.5" y="-770.3" font-family="monospace" font-size="14.00">XLEN=32, XREG=0</text>
+<text text-anchor="middle" x="247.5" y="-785.3" font-family="monospace" font-size="14.00">MICA 2.0: mica_core_txn</text>
+<text text-anchor="middle" x="247.5" y="-770.3" font-family="monospace" font-size="14.00">MICA2=1, XLEN=32, XREG=0</text>
 <text text-anchor="middle" x="247.5" y="-755.3" font-family="monospace" font-size="14.00">clk_i rising edge / rst_ni active low</text>
 </g>
 <!-- n3 -->

@@ -1,5 +1,5 @@
 {
-  "isa": "MICA 1.0",
+  "isa": "MICA 2.0",
   "profiles": {
     "MICA-C": {
       "xlen": 32,
@@ -47,6 +47,40 @@
         "T"
       ],
       "status": "proposal; no multicore implementation"
+    },
+    "MICA-2C": {
+      "xlen": 32,
+      "registers": 8,
+      "extensions": [
+        "2C"
+      ],
+      "status": "compact 32-bit scalar reference; no trap hardware unless enabled separately"
+    },
+    "MICA-2E": {
+      "xlen": 32,
+      "registers": 16,
+      "extensions": [
+        "X",
+        "M",
+        "F",
+        "B",
+        "T",
+        "2C"
+      ],
+      "status": "extended 32-bit scalar reference"
+    },
+    "MICA-2L": {
+      "xlen": 64,
+      "registers": 16,
+      "extensions": [
+        "X",
+        "M",
+        "F",
+        "B",
+        "T",
+        "2C"
+      ],
+      "status": "64-bit scalar reference; optional not minimal MCU"
     }
   }
 }

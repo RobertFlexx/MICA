@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Copy measured reports and deterministic gzip logs after a release regression."""
+
 import argparse
 import gzip
 import json
@@ -39,23 +40,52 @@ for directory in ["synthesis", "formal", "alu-research"]:
             copy(path, directory + "/" + path.name)
         elif path.suffix == ".log":
             copy(path, directory + "/" + path.name + ".gz", True)
-for source, name in [("build/hardware-bench/results.json", "fetch-results.json"),
-                     ("build/differential/results.json", "differential-results.json"),
-                     ("build/emulator-r2.json", "emulator-results.json")]:
+for source, name in [
+    ("build/hardware-bench/results.json", "fetch-results.json"),
+    ("build/differential/results.json", "differential-results.json"),
+    ("build/emulator-r2.json", "emulator-results.json"),
+]:
     copy(ROOT / source, name)
 copy(ROOT / "build/peripherals/commands.log", "peripherals.log.gz", True)
-for name in ["crc32", "mica_uart_rx", "mica_sync_fifo", "crc-mmio", "peripherals32", "peripherals64", "arty"]:
-    copy(ROOT / "build/peripherals" / (name + ".vcd"), "waveforms/" + name + ".vcd.gz", True)
+for name in [
+    "crc32",
+    "mica_uart_rx",
+    "mica_sync_fifo",
+    "crc-mmio",
+    "peripherals32",
+    "peripherals64",
+    "arty",
+]:
+    copy(
+        ROOT / "build/peripherals" / (name + ".vcd"),
+        "waveforms/" + name + ".vcd.gz",
+        True,
+    )
 copy(ROOT / "rtl/watchdog.vcd", "waveforms/watchdog.vcd.gz", True)
 copy(ROOT / "build/sram-xilinx.log", "sram-64KiB.log.gz", True)
 versions = {}
-for command in [["g++", "--version"], ["clang++", "--version"], ["cmake", "--version"], ["yosys", "-V"],
-                ["verilator", "--version"], ["ghdl", "--version"], ["iverilog", "-V"], ["sby", "--version"], ["z3", "--version"],
-                ["actionlint", "--version"]]:
+for command in [
+    ["g++", "--version"],
+    ["clang++", "--version"],
+    ["cmake", "--version"],
+    ["yosys", "-V"],
+    ["verilator", "--version"],
+    ["ghdl", "--version"],
+    ["iverilog", "-V"],
+    ["sby", "--version"],
+    ["z3", "--version"],
+    ["actionlint", "--version"],
+]:
     result = subprocess.run(command, capture_output=True, text=True, check=True)
     versions[command[0]] = (result.stdout + result.stderr).splitlines()[0]
-metadata = {"architecture": "MICA 1.0", "engineering_revision": "r2", "date": "2026-10-17",
-            "host": platform.platform(), "tools": versions, "regression_stages_passed": len(stages),
-            "limits": "No Vivado, physical FPGA, vendor timing/power or whole-CPU formal result"}
+metadata = {
+    "architecture": "MICA 1.0",
+    "engineering_revision": "r2",
+    "date": "2026-10-17",
+    "host": platform.platform(),
+    "tools": versions,
+    "regression_stages_passed": len(stages),
+    "limits": "No Vivado, physical FPGA, vendor timing/power or whole-CPU formal result",
+}
 (out / "environment.json").write_text(json.dumps(metadata, indent=2) + "\n")
 print("Archived measured evidence: " + str(out))

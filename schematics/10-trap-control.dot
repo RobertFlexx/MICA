@@ -1,14 +1,18 @@
-digraph mica_trap {
-  graph [label="MICA 1.0 / T machine trap path (implemented prototype)",labelloc=t,rankdir=LR,fontsize=18,fontname="DejaVu Sans",pad=.4];
-  node [shape=box,style="rounded,filled",fillcolor="#f1f5fc",color="#416178",fontname="DejaVu Sans",fontsize=10];
-  edge [color="#44617a",fontsize=9,fontname="DejaVu Sans"];
-  src [label="External irq_i level\nSoC irq_i input\nArty ties low"];
-  soft [label="Software ip.bit0\nCSRW ip"];
-  gate [label="FETCH0 boundary\nstatus.IE & ie.bit0\n& (ip.bit0 | irq_i)\n& !handler-active",fillcolor="#e9f3dd"];
-  entry [label="Save epc=PC\nCause=highbit | 1\nSave IE, clear IE\nHandler active=1"];
-  ecall [label="ECALL EXECUTE\nSave epc=PC+2\nCause=11"];
-  vector [label="PC = tvec\nNonzero, 2-byte aligned",fillcolor="#fff0d6"];
-  handler [label="Handler instructions\nFirmware saves registers\nClear interrupt pending"];
-  eret [label="ERET\nPC = epc\nRestore IE\nClear active"];
-  src->gate;soft->gate;gate->entry [label="taken"];entry->vector;ecall->vector;vector->handler;handler->eret;eret->gate [label="resume fetch"];
+digraph traps {rankdir=LR;label="MICA 2.0: mica_core_txn traps: actual local nets, XLEN32, MICA2=1\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
+external->pending_logic[label="irq_i[1]"];
+software_pending->pending_logic[label="ip_reg[32]"];
+timer->pending_logic[label="timer_count[64]"];
+comparator->pending_logic[label="timer_cmp[64]"];
+pending_logic->priority[label="pending[32]"];
+mask->priority[label="ie_reg[32]"];
+status->priority[label="status_reg[32]"];
+priority->trap_entry[label="state[4]"];
+vector->trap_entry[label="tvec_reg[32]"];
+PC->trap_entry[label="pc[32]"];
+trap_entry->saved_state[label="epc_reg[32]"];
+trap_entry->saved_state[label="cause_reg[32]"];
+trap_entry->saved_state[label="tval_reg[32]"];
+decode->commit[label="csr_value[32]"];
+commit->CSR_write_mux[label="q_csr_value[32]"];
+commit->CSR_write_mux[label="q_csr[8]"];
 }

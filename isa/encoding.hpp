@@ -1,11 +1,11 @@
-// MICA 1.0 structural decoder. Allocation names are generated from mica1.json.
+// MICA 2.0 structural decoder. Reserved 2C compact forms require feature bit 8.
 // SPDX-License-Identifier: MIT
 #pragma once
 #include <cstdint>
 namespace mica {
 // Feature bitmap is identical to the architectural features CSR.
 inline bool legal_encoding(std::uint16_t h, std::uint32_t p, int width,
-                           unsigned features = 255) {
+                           unsigned features = 511) {
   auto reg = [&](unsigned n) { return n < 8 || (features & 1); };
   const unsigned cls = h >> 14, op8 = (h >> 6) & 255;
   if (cls == 0) {
@@ -13,6 +13,12 @@ inline bool legal_encoding(std::uint16_t h, std::uint32_t p, int width,
     if (op8 >= 23 && op8 <= 30)
       return (features & 4) && s && s != d &&
              (width == 64 || ((op8 - 23) & 3) != 3);
+    if (op8 == 41)
+      return (features & 256) && d == 0 && s == 0;
+    if (op8 == 31 || op8 == 32)
+      return (features & 256) != 0;
+    if (op8 >= 33 && op8 <= 40)
+      return (features & 256) && d != 0;
     if (op8 > 22)
       return false;
     if (op8 == 0 || op8 >= 18)
@@ -46,7 +52,7 @@ inline bool legal_encoding(std::uint16_t h, std::uint32_t p, int width,
     return op4 <= 6 && reg(d4) && reg(a4) &&
            (op4 < 4 || (p & 16383) < unsigned(width));
   case 2:
-    return op <= 2 && reg(d);
+    return op <= 3 && (op != 3 || (features & 256)) && reg(d);
   case 3:
     return op4 <= 5 && reg(d4) && reg(a4);
   case 4:

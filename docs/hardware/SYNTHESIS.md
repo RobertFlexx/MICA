@@ -1,9 +1,11 @@
 # Synthesis
 
-`scripts/synthesize.py` maps four SoC configurations through Yosys `synth_xilinx
+`scripts/synthesize.py` maps seven SoC configurations through Yosys `synth_xilinx
 -family xc7`, using 4 KiB initialized SRAM and UART TX/GPIO. The peripheral
 configuration adds UART RX/FIFO and the GHDL-converted VHDL CRC engine. Debug trace
 outputs are unconnected and can be removed by synthesis.
+
+Historical MICA 1.0 r2 results (not current 2.0 measurements):
 
 | Configuration | LUTs | Flip-flops | DSP48 | RAMB36 |
 | --- | ---: | ---: | ---: | ---: |
@@ -38,3 +40,32 @@ Guarding only the final illegal-instruction flag had retained unused multiplier,
 bit-operation and CSR logic. The profile mapping reports make that cost visible.
 Equivalent Ibex, PicoRV32 and CORE-V configurations have not yet been synthesized in
 this flow.
+
+## Current MICA 2.0 run
+
+The current mapped counts are:
+
+| Configuration | Registers | PERF | LUTs | Flip-flops | DSP48 | RAMB36 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: |
+| MICA-C | 8 | off | 4,707 | 980 | 0 | 1 |
+| MICA-E | 8 | on | 6,250 | 1,508 | 6 | 1 |
+| MICA-64 | 16 | on | 14,742 | 2,885 | 23 | 2 |
+| MICA-E-peripherals | 8 | on | 6,617 | 1,823 | 6 | 1 |
+| MICA-2C | 8 | off | 4,758 | 982 | 0 | 1 |
+| MICA-2E | 16 | on | 7,333 | 1,766 | 6 | 1 |
+| MICA-2L | 16 | on | 14,932 | 2,887 | 23 | 2 |
+
+Raw primitive counts are published with the
+[2.0 synthesis evidence](../engineering/results/mica2/synthesis/results.json).
+MICA-C and MICA-2C both disable PERF for the direct minimal-profile comparison.
+MICA-E retains eight slots; MICA-2E has sixteen, so their difference includes
+register-bank expansion as well as the 2.0 decode. MICA-64 and MICA-2L have
+sixteen slots. All mappings include the same 4 KiB RAM and TX/GPIO; only the
+explicit peripherals configuration adds RX/FIFO and CRC.
+
+The flow checks synthesis consistency, not routed timing or electrical power.
+No area, Fmax or energy advantage over another ISA is inferred from these counts.
+
+In this matched minimal-SoC mapping, enabling 2.0 adds **51 LUTs (1.1%) and
+2 flip-flops** over MICA-C. That is the measured cost of compact decode and
+wakeable WFI in this configuration, not a cross-ISA area advantage.

@@ -53,12 +53,30 @@ def main():
                 raise SystemExit(f"{name}: assembly failed: {proc.stderr}")
             if output.read_bytes() != expected.read_bytes():
                 raise SystemExit(f"{name}: byte mismatch")
-            emulator = os.environ.get("MICA_RUN", str(args.assembler.parent / "mica-run"))
-            result = subprocess.run([emulator, *vector["flags"], "--steps", "200000" if vector["kind"] == "halt" else "200", str(expected)], capture_output=True, text=True, timeout=10)
-            registers = {k:int(v,16) for k,v in re.findall(r"\bx(\d+)=0x([0-9a-f]+)",result.stderr)}
+            emulator = os.environ.get(
+                "MICA_RUN", str(args.assembler.parent / "mica-run")
+            )
+            result = subprocess.run(
+                [
+                    emulator,
+                    *vector["flags"],
+                    "--steps",
+                    "200000" if vector["kind"] == "halt" else "200",
+                    str(expected),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            registers = {
+                k: int(v, 16)
+                for k, v in re.findall(r"\bx(\d+)=0x([0-9a-f]+)", result.stderr)
+            }
             if vector["kind"] == "halt" and result.returncode != 0:
                 raise SystemExit(name + ": execution failed: " + result.stderr)
-            if vector["kind"] != "halt" and (result.returncode != 2 or "step limit exceeded" not in result.stderr):
+            if vector["kind"] != "halt" and (
+                result.returncode != 2 or "step limit exceeded" not in result.stderr
+            ):
                 raise SystemExit(name + ": expected bounded infinite loop")
             if result.stdout != vector["stdout"] or registers != vector["registers"]:
                 raise SystemExit(name + ": behavioral compatibility mismatch")

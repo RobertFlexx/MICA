@@ -707,7 +707,7 @@ dst: .quad 0,0
 
     def test_wfi_stops_before_following_instruction(self):
         regs, _ = self.runsource(".arch mica32\nli8 x1,42\nwfi\nli8 x1,0\n")
-        self.assertEqual(regs[1],42)
+        self.assertEqual(regs[1], 42)
 
     def test_old_v01_encodings(self):
         old = Path("/mnt/data/mica32/assembler.py")

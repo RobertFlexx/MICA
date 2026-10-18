@@ -10,10 +10,12 @@ module tb_flow;
   mica_soc #(.XLEN(XLEN),
              .FLOW(1),
              .RAM_BYTES(65536),
-             .INIT_FILE(XLEN==64 ? "program_flow.mem64":"program_flow.mem32"))
+             .INIT_FILE(XLEN == 64 ? "program_flow.mem64"
+                                   : "program_flow.mem32"))
       dut(.clk_i(clk),
           .rst_ni(rst_n),
-          .uart_rx_i(1'b1),.irq_i(1'b0),
+          .uart_rx_i(1'b1),
+          .irq_i(1'b0),
           .uart_tx_o(uart_tx),
           .leds_o(leds),
           .halted_o(halted),

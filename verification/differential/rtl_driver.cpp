@@ -41,6 +41,9 @@ int main(int argc, char **argv) {
     unsigned fetches = 0, loads = 0, stores = 0, events = 0;
     U led = 0;
     const unsigned irq_memory = argc > 5 ? unsigned(std::stoul(argv[5])) : 0;
+    const unsigned irq_retired = argc > 6 ? unsigned(std::stoul(argv[6])) : 0;
+    const unsigned irq_delay = argc > 7 ? unsigned(std::stoul(argv[7])) : 0;
+    unsigned retired = 0, wake_cycle = 0;
     bool irq_line = false, irq_fired = false;
     Request insn, data;
     bool i_stalled = false, d_stalled = false;
@@ -48,6 +51,10 @@ int main(int argc, char **argv) {
     unsigned stalled_size = 0;
     bool stalled_write = false;
     for (unsigned cycle = 0; cycle < 2000000; cycle++) {
+      if (wake_cycle && cycle == wake_cycle) {
+        irq_line = true;
+        irq_fired = true;
+      }
       const bool reset = cycle < 3 || (reset_cycle && cycle == reset_cycle);
       if (reset) {
         insn = {};
@@ -83,6 +90,9 @@ int main(int argc, char **argv) {
       cpu.d_rsp_rdata = data.data;
       cpu.d_rsp_error = data.error;
       cpu.eval();
+      if (wake_cycle && cycle < wake_cycle &&
+          (cpu.i_req_valid || cpu.d_req_valid))
+        throw std::runtime_error("memory request issued while WFI is asleep");
       if (i_stalled && (!cpu.i_req_valid || cpu.i_req_addr != stalled_i))
         throw std::runtime_error(
             "instruction request changed under backpressure");
@@ -164,6 +174,9 @@ int main(int argc, char **argv) {
       if (dr)
         data = {};
       if (cpu.trace_valid) {
+        if (wake_cycle && cycle < wake_cycle)
+          throw std::runtime_error(
+              "instruction retired before the WFI wake event");
         if (cpu.trace_trap && (U(cpu.trace_cause) >> (MICA_XLEN - 1)))
           irq_line = false;
         trace << "{\"order\":" << cpu.trace_order
@@ -189,6 +202,10 @@ int main(int argc, char **argv) {
                 << "}";
         trace << "]}\n";
         ++events;
+        if (cpu.trace_retired)
+          ++retired;
+        if (!irq_fired && !wake_cycle && irq_retired && retired == irq_retired)
+          wake_cycle = cycle + 1 + irq_delay;
       }
       if (cpu.halt_o) {
         trace.close();

@@ -1,4 +1,4 @@
-digraph fetch {rankdir=LR;label="mica_core_txn fetch: actual local nets, XLEN32\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
+digraph fetch {rankdir=LR;label="MICA 2.0: mica_core_txn fetch: actual local nets, XLEN32, MICA2=1\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
 PC->address_mux[label="pc[32]"];
 address_mux->tag_compare[label="fetch_addr[32]"];
 cache_register->tag_compare[label="cache_tag[32]"];

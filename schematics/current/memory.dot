@@ -1,4 +1,4 @@
-digraph memory {rankdir=LR;label="mica_core_txn memory: actual local nets, XLEN32\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
+digraph memory {rankdir=LR;label="MICA 2.0: mica_core_txn memory: actual local nets, XLEN32, MICA2=1\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
 decode->request_registers[label="addr[32]"];
 decode->request_registers[label="store_data[32]"];
 decode->request_registers[label="size_log[3]"];

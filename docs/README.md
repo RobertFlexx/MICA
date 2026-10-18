@@ -1,8 +1,13 @@
-# MICA documentation
+# MICA 2.0 documentation
 
 MICA's documents separate architectural behavior, implementation details and
 measured results. The ISA manual defines what a program observes; the hardware and
 toolchain guides explain how the current implementations provide it.
+
+The guide layout follows the MICA 1.0 SDK. Start with the
+[2.0 scalar specification](architecture/MICA2.md) for the current behavior, the
+[verification report](engineering/MICA2_VERIFICATION.md) for executed checks, and
+the [RISC-V comparison](research/RISCV_COMPARISON.md) for demonstrated advantages.
 
 ## Getting started
 
@@ -18,7 +23,8 @@ toolchain guides explain how the current implementations provide it.
 
 ## Architecture
 
-The [ISA manual](architecture/ISA.md) covers instruction formats, arithmetic,
+The [2.0 delta](architecture/MICA2.md) overrides the
+[1.0 compatibility manual](architecture/ISA.md), which covers instruction formats, arithmetic,
 addressing and execution. [Encoding tables](architecture/ENCODINGS.md) are generated
 from the machine-readable ISA definition. Separate references cover
 [registers](architecture/REGISTERS.md), the [assembly ABI](architecture/ABI.md),
@@ -33,8 +39,9 @@ The [microarchitecture guide](hardware/MICROARCHITECTURE.md) follows an instruct
 through the reference core. [Memory ports](hardware/MEMORY_INTERFACE.md),
 [peripherals](hardware/PERIPHERALS.md) and [clock/reset
 behavior](hardware/CLOCK_RESET.md) define the integration contracts.
-[Drawings](hardware/DATAPATH.md) include RTL signal widths and actual SoC module
-connections.
+[Drawings](hardware/DATAPATH.md) include all refreshed legacy paths, the
+[2.0 implementation set](hardware/MICA2_IMPLEMENTATION.md), RTL signal widths
+and actual SoC module connections. All previews have source/artifact hashes.
 
 [Synthesis](hardware/SYNTHESIS.md) describes resource mapping;
 [timing](hardware/TIMING.md) records the current timing-validation status. The
@@ -51,7 +58,12 @@ and [coverage limits](verification/COVERAGE.md).
 [Prior art](research/PRIOR_ART.md) identifies related designs and comparison
 requirements.
 
-The [repository audit](engineering/AUDIT.md) records the original defects. The [r2
+[Measured RISC-V encoding comparisons](research/RISCV_COMPARISON.md) show the
+compact counted-loop advantage and the cases that tie. They do not establish
+power or clock-speed advantages.
+
+The [2.0 report](engineering/MICA2_VERIFICATION.md) records the current checks.
+The [repository audit](engineering/AUDIT.md) records the original defects. The [historical r2
 report](engineering/IMPLEMENTATION_REPORT.md) brings together the fixes, results and
 remaining work, with [archived evidence](engineering/results/README.md). Older
 top-level document paths remain as navigation links for existing readers.

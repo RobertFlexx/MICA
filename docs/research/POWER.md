@@ -29,3 +29,13 @@ The fetch-reuse benchmark records fewer instruction-memory transactions on the
 reference core. Its [raw runs](../engineering/results/fetch-results.json) show the
 transaction and cycle changes. SRAM energy per access and the buffer's physical
 implementation cost have not yet been measured.
+
+## MICA 2.0 status
+
+RTL simulation and mapped synthesis are now executed locally; the
+[verification report](../engineering/MICA2_VERIFICATION.md) records them.
+Wakeable WFI suppresses new bus requests and retirement while the clock and
+counters continue. Smaller instruction bodies and fewer retired instructions
+are useful activity indicators, but **no measured power or energy advantage
+over RISC-V exists yet**. The [encoding comparison](RISCV_COMPARISON.md) keeps
+those claims separate.

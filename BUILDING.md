@@ -2,8 +2,8 @@
 
 The software builds with CMake 3.20+, Python 3.10+, and GCC or Clang accepting
 C++23. The vector interpreter also uses the compilers' `__int128` extension.
-Local results use Linux; GCC/Clang Linux and Clang macOS builds also pass the
-[recorded CI run](docs/engineering/results/ci.json).
+Current 2.0 results use Linux. The [archived 1.0 CI run](docs/engineering/results/ci.json)
+is historical; it is not evidence of a new 2.0 remote workflow run.
 
 ## Software
 
@@ -50,15 +50,22 @@ Linux x86-64, also pinned in CI. Install the bundle separately and put its `bin`
 directory on `PATH` before running the commands below.
 
 ```sh
-make -C rtl sim32 sim64 sim-flow32 sim-flow64 sim-bits32 sim-bits64 sim-trap sim-trap-irq
+make -C rtl sim32 sim64 sim-mica2-32 sim-mica2-64 sim-mica2-timer32 sim-mica2-timer64
+make -C rtl sim-flow32 sim-flow64 sim-bits32 sim-bits64 sim-trap sim-trap-irq
 make -C rtl sim-sram sim-sram-txn sim-watchdog sim-watchdog-soc sim-firmware sim-scheduler sim-add64 sim-peripherals
 python3 scripts/build_rtl_sim.py --xlen 32
 python3 scripts/build_rtl_sim.py --xlen 64
 python3 verification/differential/run.py --tools build
+python3 scripts/build_rtl_sim.py --profile MICA-2C
+python3 scripts/build_rtl_sim.py --profile MICA-2E
+python3 scripts/build_rtl_sim.py --profile MICA-2L
+python3 verification/differential/mica2.py --tools build
 python3 scripts/run_formal.py
 python3 scripts/synthesize.py --tools build
 python3 scripts/generate_schematics.py --check
 python3 scripts/generate_soc_schematic.py --check
+python3 scripts/generate_mica2_diagrams.py --check
+python3 scripts/generate_overview_schematics.py --check
 ```
 
 The makefiles expect `../build/mica-as`. For another build directory, pass its
@@ -103,3 +110,44 @@ contents. Review the included files before updating the manifest.
 tools, separate compilation, startup library and UART/CRC firmware. Supply
 `--source` as well to verify source checksums and perform a clean build and CTest
 run. See its `--help` for archive arguments. Build outputs stay under `build/`.
+
+## MICA 2.0 comparisons, drawings and evidence
+
+LLVM's `llvm-mc` and `llvm-objcopy` are needed for the RISC-V code-size comparison.
+The full runner executes it when both are available; the 2.0 evidence archiver
+requires that stage. It assembles RV32I, RV32IC and RV32IC + Zcb loop bodies and
+executes the complete MICA copy programs at both widths.
+
+```sh
+python3 benchmarks/riscv_density.py
+python3 scripts/archive_mica2_evidence.py --build build/verify
+```
+
+To regenerate all drawings after RTL or generator changes:
+
+```sh
+python3 scripts/generate_schematics.py
+python3 scripts/generate_soc_schematic.py
+python3 scripts/generate_mica2_diagrams.py
+python3 scripts/generate_overview_schematics.py
+```
+
+The last command refreshes the SHA-256 manifest of sources and every preview.
+See the [drawing index](docs/hardware/DATAPATH.md).
+
+## Format sources
+
+Install clang-format, Black and cmake-format, then run:
+
+```sh
+python3 scripts/format_code.py
+python3 scripts/format_code.py --check
+```
+
+C++/SystemVerilog/Verilog use `.clang-format`; Python uses `pyproject.toml`;
+CMake uses `.cmake-format.yaml`. `--cmake-format PATH` selects a formatter
+installed with a supported Python version (cmakelang currently fails under
+Python 3.15). JSON uses two-space indentation. Assembly,
+VHDL, Tcl, constraints and build metadata retain nesting with whitespace cleanup.
+Generated tables and drawings retain their generator's canonical output.
+Regenerate drawings and rerun verification after formatting RTL.

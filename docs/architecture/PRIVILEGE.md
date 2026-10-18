@@ -1,6 +1,6 @@
 # Execution mode
 
-The r2 implementations execute in one machine mode. All firmware shares CSR and
+The current scalar implementations execute in one machine mode. All firmware shares CSR and
 memory access; user/supervisor modes, an MPU and virtual memory are absent. CSR
 rules still distinguish writable, read-only and reserved addresses, and invalid
 accesses fault. T permits one active trap handler at a time.

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run narrow proofs in space-free temporary paths (required by SBY)."""
+
 import argparse
 from pathlib import Path
 import subprocess
@@ -12,8 +13,13 @@ a = p.parse_args()
 a.output.mkdir(parents=True, exist_ok=True)
 for name in ["add64", "sram", "fifo"]:
     with tempfile.TemporaryDirectory(prefix="mica-proof-") as temp:
-        result = subprocess.run(["sby", "-f", "-d", str(Path(temp) / name), name + ".sby"],
-                                cwd=ROOT / "verification/formal", capture_output=True, text=True, timeout=60)
+        result = subprocess.run(
+            ["sby", "-f", "-d", str(Path(temp) / name), name + ".sby"],
+            cwd=ROOT / "verification/formal",
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
         (a.output / (name + ".log")).write_text(result.stdout + result.stderr)
         if result.returncode:
             raise SystemExit(result.stdout + result.stderr)

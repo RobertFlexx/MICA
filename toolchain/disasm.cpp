@@ -47,6 +47,13 @@ static std::string decode(U pc, U h, U p, int xlen) {
   int cls = int(h >> 14);
   if (cls == 0) {
     int op = int((h >> 6) & 255), d = int((h >> 3) & 7), s = int(h & 7);
+    if (op == 41)
+      return "stop";
+    if (op == 31 || op == 32)
+      return std::string(op == 31 ? "ldsp " : "stsp ") + x(d) + ",[sp+" +
+             std::to_string(s * (xlen / 8)) + "]";
+    if (op >= 33 && op <= 40)
+      return "dbnz.s " + x(d) + "," + target(pc, 2, U(((op - 33) << 3) | s), 6);
     if (op >= 23 && op <= 30)
       return std::string(flow[size_t(op - 23)]) + " " + x(d) + ",[" + x(s) +
              "]";
@@ -112,12 +119,14 @@ static std::string decode(U pc, U h, U p, int xlen) {
   }
   if (maj == 2) {
     int op = int((p >> 20) & 63), d = int((p >> 16) & 15);
-    if (op < 3)
-      return std::string(op == 0   ? "movhi"
+    if (op < 4)
+      return std::string(op == 3   ? "adrpc"
+                         : op == 0 ? "movhi"
                          : op == 1 ? "movlo"
                                    : "li16") +
              " " + x(d) + "," +
-             (op == 2 ? std::to_string(sx(p & 65535, 16)) : hex(p & 65535));
+             ((op == 2 || op == 3) ? std::to_string(sx(p & 65535, 16))
+                                   : hex(p & 65535));
   }
   if (maj == 3) {
     int op = int((p >> 22) & 15), a = int((p >> 18) & 15),
@@ -199,7 +208,7 @@ int main(int argc, char **argv) {
       } else if (a == "--assembly")
         assembly = true;
       else if (a == "--version") {
-        std::cout << "mica-dis 1.0 engineering-r2\n";
+        std::cout << "mica-dis 2.0 development\n";
         return 0;
       } else if (a == "--help") {
         std::cout << "mica-dis [--xlen 32|64] program.bin\n";

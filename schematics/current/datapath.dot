@@ -1,4 +1,4 @@
-digraph datapath {rankdir=LR;label="mica_core_txn datapath: actual local nets, XLEN32\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
+digraph datapath {rankdir=LR;label="MICA 2.0: mica_core_txn datapath: actual local nets, XLEN32, MICA2=1\nAll sequential state uses clk_i; asynchronous active-low rst_ni";node[shape=box];
 PC->fetch[label="pc[32]"];
 fetch->decode[label="lo[16]"];
 fetch->decode[label="hi[16]"];

@@ -1,6 +1,6 @@
-# MICA 1.0 encoding allocation
+# MICA 2.0 encoding allocation
 
-Generated from `isa/encodings/mica1.json`. The first halfword is little endian; for a long instruction its top two bits are 11 and its bits 13:10 contain the major. Payload is `((first & 1023) << 16) | second`. Unallocated encodings are illegal.
+Generated from `isa/encodings/mica2.json`. The first halfword is little endian; for a long instruction its top two bits are 11 and its bits 13:10 contain the major. Payload is `((first & 1023) << 16) | second`. Unallocated encodings are illegal.
 
 ## R
 
@@ -99,6 +99,7 @@ Extended major 2. `op6[25:20] rd4[19:16] imm16[15:0]`
 | 0 | `movhi d,imm16` | base | D=zext(imm16 << 16), including on XLEN64. |
 | 1 | `movlo d,imm16` | base | D=(oldD & ~65535) &#124; imm16. |
 | 2 | `li16 d,imm16` | base | D=sext(imm16). |
+| 3 | `adrpc d,imm16` | 2C | D=instruction_PC+2*sext(imm16), modulo XLEN. Intended for PC-relative literal addresses. |
 ## BR
 
 Extended major 3. `op4[25:22] ra4[21:18] rb4[17:14] rel14[13:0]`
@@ -239,3 +240,16 @@ Extended major 11. `op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]`
 | 19 | `zexth3 d,a` | B | D=zext16(low16(A)). |
 
 Compact F instructions use short R op8 = 23 + the FLOW opcode. Extended majors 12 through 15 and all unallocated subopcodes are reserved.
+
+## MICA-2C additional short R encodings
+
+Only legal in MICA 2.0, with the 2C feature bit enabled. See [MICA2.md](MICA2.md) for full exceptions and writeback rules.
+
+| op8 | Mnemonic | Operand fields | Meaning |
+| ---: | --- | --- | --- |
+| 31 | `ldsp d,[sp+offset]` | d3, unsigned slot3 | Read XLEN bits at SP + slot * XLEN/8. |
+| 32 | `stsp d,[sp+offset]` | d3, unsigned slot3 | Store XLEN bits at SP + slot * XLEN/8. |
+| 33..40 | `dbnz.s` | d3, signed halfword displacement6 | Decrement and branch when nonzero; no x0 counter. |
+| 41 | `stop` | d3=0, s3=0 | Terminal debug halt until reset. |
+
+MICA 2.0 `wfi` retires then sleeps until a wake event. On the minimal profile, it does not require the T trap extension. `stop` is the explicit debug/terminal halt instruction.

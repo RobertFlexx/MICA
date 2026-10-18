@@ -1,28 +1,49 @@
-digraph mica_core {
- graph [rankdir=LR, bgcolor="white", fontname="DejaVu Sans", label="MICA-32/64 v0.2 | implemented scalar hardware datapath (not a transistor schematic)", labelloc=t, fontsize=17, pad=0.35, nodesep=0.38, ranksep=0.65];
- node [shape=box, style="rounded,filled", fillcolor="#eef3f8", color="#58718b", fontname="DejaVu Sans", fontsize=11, margin="0.16,0.09"];
- edge [color="#536c82", arrowsize=0.7, fontname="DejaVu Sans", fontsize=9];
- pc [label="PC register\nXLEN bits"];
- fetch [label="16-bit halfword fetch\nFETCH0 / FETCH1", fillcolor="#e3edf8"];
- decode [label="Decode + control\nEXECUTE (multicycle)", fillcolor="#d6e6f8"];
- rf [label="Register file\n8 (or 16) x XLEN\nx0 hardwired zero"];
- alu [label="Integer ALU\nXLEN-wide arithmetic\noptional multiply"];
- mem [label="Load / store align +\nbyte-lane shifter"];
- branch [label="Branch + next-PC\nadder + compare"];
- bram [label="FPGA SRAM / peripherals\nread combinational", fillcolor="#faf0db"];
- fault [label="Illegal operation + halt\nno privilege/interrupts yet", fillcolor="#fbe4e4"];
- pc -> fetch [label="address"];
- fetch -> decode [label="16/32-bit instruction"];
- decode -> rf [label="register selects"];
- rf -> alu [label="operands"];
- rf -> mem [label="base + data"];
- alu -> rf [label="result"];
- mem -> rf [label="load result"];
- decode -> branch [label="immediates"];
- rf -> branch [label="compare"];
- branch -> pc [label="PC update"];
- mem -> bram [label="byte strobes, data"];
- bram -> fetch [label="halfword"];
- bram -> mem [label="load bus"];
- decode -> fault [label="reserved / unsupported"];
+digraph G {
+  graph [fontname="DejaVu Sans", fontsize=16, labelloc=t, rankdir=LR, bgcolor="white", pad=0.30, nodesep=0.55, ranksep=1.0, splines=polyline, compound=true];
+  node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#475569", fontname="DejaVu Sans", fontsize=11, margin="0.18,0.12"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#334155", arrowsize=0.7];
+ label="MICA 2.0 | transactional scalar datapath with register commit";
+  fetch [label="Fetch cache
+cache_data[31:0]
+i_req_*, i_rsp_*", fillcolor="#dbeafe"];
+  parcel [label="Halfword select
+lo[15:0], hi[15:0]", fillcolor="#dbeafe"];
+  decode [label="Decode
+class, major, op
+8 or 16 GPR IDs", fillcolor="#e2e8f0"];
+  registers [label="Register file
+8 or 16 x XLEN
+x0 always zero, x7 SP", fillcolor="#dcfce7"];
+  alu [label="Shared integer ALU
+XLEN bits
+add, sub, shift, branch", fillcolor="#fef3c7"];
+  address [label="Address generation
+SP + slot * XLEN/8", fillcolor="#fef3c7"];
+  request [label="Transactional LSU
+d_req_addr[XLEN]
+d_req_wstrb[XLEN/8]
+d_rsp_rdata[XLEN]", fillcolor="#fae8ff"];
+  pending [label="Pending result registers
+q_value1, q_value2
+q_w1, q_w2, q_nextpc", fillcolor="#dcfce7"];
+  retire [label="Commit + retirement
+regs write, PC update
+trace_retired", fillcolor="#dcfce7"];
+  trap [label="Trap control
+status_reg, epc_reg
+pending, SLEEP", fillcolor="#fee2e2"];
+  fetch -> parcel [label="i_rsp_rdata[31:0]",style="solid"];
+  parcel -> decode [label="lo,hi [16]",style="solid"];
+  decode -> registers [label="index[4]",style="solid"];
+  registers -> alu [label="av,bv [XLEN]",style="solid"];
+  registers -> address [label="SP/data [XLEN]",style="solid"];
+  alu -> pending [label="value1 [XLEN]",style="solid"];
+  address -> request [label="q_addr [XLEN]",style="solid"];
+  request -> pending [label="response_data [XLEN]",style="solid"];
+  decode -> pending [label="dst1,dst2",style="solid"];
+  pending -> retire [label="q_w1,q_w2,q_value1,q_value2",style="solid"];
+  retire -> registers [label="2 logical writebacks",style="solid"];
+  retire -> fetch [label="next PC [XLEN]",style="solid"];
+  trap -> retire [label="exception controls",style="solid"];
+  request -> trap [label="d_rsp_error",style="solid"];
 }

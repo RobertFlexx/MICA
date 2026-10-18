@@ -1,0 +1,29 @@
+{
+  "method": "same handwritten stack/counter program, v1 vs v2, independently reassembled and executed",
+  "measurements": [
+    {
+      "mode": "MICA-32",
+      "revision": 1,
+      "program_bytes": 18,
+      "expected_result": 28
+    },
+    {
+      "mode": "MICA-32",
+      "revision": 2,
+      "program_bytes": 16,
+      "expected_result": 28
+    },
+    {
+      "mode": "MICA-64",
+      "revision": 1,
+      "program_bytes": 22,
+      "expected_result": 28
+    },
+    {
+      "mode": "MICA-64",
+      "revision": 2,
+      "program_bytes": 16,
+      "expected_result": 28
+    }
+  ]
+}

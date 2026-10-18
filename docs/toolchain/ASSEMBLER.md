@@ -7,7 +7,9 @@ the [dialect reference](DIALECT.md) covers source syntax.
 ## Options and output
 
 `--xlen`, `--profile`, `--xreg`, `--mul`, `--flow`, `--bitops`, `--atomic`, `--simd`
-and `--trap` select the target features. Options are processed in order, so an
+and `--trap` select the target features. `--mica2` enables 2.0, as do the
+`MICA-2C`, `MICA-2E` and `MICA-2L` profiles. See the
+[2.0 instruction guide](../architecture/MICA2.md). Options are processed in order, so an
 option after `--profile` can override part of that configuration.
 
 | Option | Output |
