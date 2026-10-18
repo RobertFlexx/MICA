@@ -1,3 +1,5 @@
-# MICA 1.0 reference
+# Assembly language
 
-The current engineering r2 documentation is maintained in [the reference manual](toolchain/DIALECT.md).
+The [dialect reference](toolchain/DIALECT.md) covers expressions, macros,
+conditionals and data directives. For command-line options, object output and
+diagnostics, see the [assembler guide](toolchain/ASSEMBLER.md).

@@ -1,3 +1,7 @@
-# MICA 1.0 reference
+# Extensions and profiles
 
-The current engineering r2 documentation is maintained in [the reference manual](architecture/ISA.md).
+MICA 1.0 has a scalar base with optional X, M, F, B, T, A and V extensions. The [ISA
+manual](architecture/ISA.md) defines their instructions and profile combinations.
+The [profile manifest](../isa/profiles/profiles.json) records supported
+configurations, while [SDK status](../SDK_STATUS.md) distinguishes RTL support from
+emulator-only implementations and proposed work.

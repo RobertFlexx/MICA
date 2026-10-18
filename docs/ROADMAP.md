@@ -1,3 +1,12 @@
-# MICA 1.0 engineering reference
+# Development priorities
 
-Current results and remaining work are maintained in [the engineering reference](engineering/IMPLEMENTATION_REPORT.md).
+The r2 reference core, toolchain and retirement tests provide a baseline for further
+work. The immediate hardware priorities are the measured area cost, a first
+pipelined implementation and Arty board bring-up. Toolchain work centers on
+independent ELF sections, stronger diagnostics and compiler code generation.
+
+The [implementation report](engineering/IMPLEMENTATION_REPORT.md#remaining-work)
+explains these priorities and their validation needs. The [status
+table](../SDK_STATUS.md) tracks the current support boundary. Multicore and SIMD
+hardware need their own ordering and numerical tests before joining the verified
+configurations.

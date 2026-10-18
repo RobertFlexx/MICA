@@ -1,13 +1,24 @@
 # MICA 1.0
 
-MICA is an experimental 32/64-bit embedded ISA and processor SDK. Engineering
-revision r2 adds a transactional multicycle CPU, synchronous FPGA SRAM, precise
-machine traps, ELF image objects and linking, retirement comparison, firmware
-and measured hardware experiments. The ISA version remains **1.0**.
+MICA is an experimental 32-bit and 64-bit processor architecture for embedded
+software. It uses mixed 16-bit and 32-bit instructions and has a C++23 toolchain,
+a reference emulator, a multicycle SystemVerilog CPU and an Arty A7 SoC target.
+The repository includes assembly libraries, firmware, simulation tests and
+editable hardware drawings.
 
-Design work focuses on compact encoding, useful embedded operations and
-controlling hardware activity. Comparable workload, area and power measurements
-will determine where these choices provide an advantage.
+The design work focuses on compact programs, useful embedded operations and
+reducing unnecessary hardware activity. Workload results and implementation
+costs guide that work. The [published measurements](docs/research/BENCHMARKS.md)
+cover the current implementation; comparisons with other processors are still
+open work.
+
+The ISA remains **MICA 1.0**. Engineering revision **r2** preserves the existing
+instruction encodings and all 14 firmware compatibility fixtures.
+
+## Build and run
+
+The software needs CMake 3.20+, Python 3.10+, and GCC or Clang with C++23 and
+`__int128` support.
 
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -17,36 +28,63 @@ python3 scripts/build_firmware.py --tools build
 build/mica-run build/firmware/linked.elf
 ```
 
-The linked example starts the assembly runtime, clears BSS, computes CRC-32,
-and prints `MICA linked CRC OK` through UART. The SDK contains no C compiler.
+The linked example initializes the assembly runtime, clears BSS, computes
+CRC-32 and prints `MICA linked CRC OK` through the emulated UART. The current
+SDK supports assembly development; a C compiler backend is still needed.
+
+For a smaller first program, save this as `hello.mica`:
 
 ```asm
 .arch mica32
-li8 x1,21
-add x1,x1
+li8 a0,21
+add a0,a0
 wfi
 ```
 
-Save this as `hello.mica`, then run `build/mica-as hello.mica -o hello.bin` and
-`build/mica-run hello.bin`. The result is `x1=0x2a`.
+Assemble with `build/mica-as hello.mica -o hello.bin`, then run
+`build/mica-run hello.bin`. The register dump reports `x1=0x2a`.
+For now, `wfi` halts until reset. It is exceptionally good at waiting.
 
-The seven C++23 tools are `mica-as`, `mica-ld`, `mica-dis`, `mica-run`,
-`mica-objdump`, `mica-nm` and `mica-objcopy`. Use `--help` for their interfaces.
-`mica-run --profile MICA-E` enables the 32-bit embedded extensions. `--debug`
-opens the emulator debugger. The reference interpreter remains the default;
-`--fast` and the specialized `--native-loops` engine are optional.
+## What is here
 
-For hardware, [BUILDING](BUILDING.md) describes the installed dependencies and
-commands. The [ISA manual](docs/architecture/ISA.md) is normative. Start with
-[SDK_STATUS](SDK_STATUS.md), the [audit](docs/engineering/AUDIT.md) and the
-[implementation report](docs/engineering/IMPLEMENTATION_REPORT.md) for evidence
-and remaining work. The [FPGA guide](docs/hardware/FPGA_BUILD.md) covers the
-Arty A7-100 target. [Current drawings](docs/hardware/DATAPATH.md) are generated
-from and checked against RTL names. The [peripheral guide](docs/hardware/PERIPHERALS.md) covers the Verilog UART receiver/FIFO and VHDL CRC engine, including interrupt-driven echo firmware.
+| Component | Current implementation |
+| --- | --- |
+| CPU | 32/64-bit scalar multicycle core, precise traps, timer interrupts and fetch-word reuse |
+| Memory and devices | Synchronous byte-write SRAM, GPIO, UART TX/RX with a FIFO, and an optional VHDL CRC-32 engine |
+| Tools | `mica-as`, `mica-ld`, `mica-dis`, `mica-run`, `mica-objdump`, `mica-nm`, `mica-objcopy` |
+| Firmware | Linked startup and CRC, interrupt-driven UART echo, FIR filtering, self-test and a two-task timer scheduler |
+| Verification | Retirement comparison, randomized memory latency, HDL simulations, small formal checks, sanitizers and fuzzing |
+| Hardware target | Arty A7-100 board top, constraints and a Vivado build script; board-top simulation passes |
 
-This revision does not provide a pipelined performance core, protected user
-mode, coherent multicore, SIMD hardware, a general JIT, timing closure or a
-physical board boot measurement. The single-mode timer scheduler is a working
-context-switch demonstration. It is not an RTOS qualification.
+Each tool has `--help`. `mica-run --profile MICA-E` selects the expanded 32-bit
+configuration; `--debug` opens the emulator debugger. The reference interpreter
+is the default. `--fast` and the specialized `--native-loops` engine are also
+available.
 
-Existing firmware fixtures remain byte-identical. MIT licensed.
+## Hardware and project status
+
+[BUILDING.md](BUILDING.md) covers HDL dependencies and the full regression.
+The [Arty guide](docs/hardware/FPGA_BUILD.md) describes the board image, serial
+console and build flow. The SoC and actual board top have been simulated;
+Vivado implementation, timing closure and physical board boot remain unverified.
+
+The next substantial hardware work is a pipelined core, followed by broader
+protection and extension support. The current scheduler runs trusted machine-mode
+tasks. SIMD and atomic operations have emulator implementations; their RTL and
+multicore support remain open. The [status table](SDK_STATUS.md) records these
+boundaries in detail.
+
+## Documentation
+
+Start at the [documentation index](docs/README.md). The
+[ISA manual](docs/architecture/ISA.md) defines architectural behavior, and the
+[toolchain guide](docs/toolchain/ASSEMBLER.md) covers assembly development.
+[Hardware drawings](docs/hardware/DATAPATH.md) include editable sources and
+connections checked against the RTL.
+
+The [audit](docs/engineering/AUDIT.md) records the original defects. The
+[r2 implementation report](docs/engineering/IMPLEMENTATION_REPORT.md) collects
+repairs, test results, measurements and remaining work. Contribution guidelines
+are in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+MICA is released under the [MIT license](LICENSE).

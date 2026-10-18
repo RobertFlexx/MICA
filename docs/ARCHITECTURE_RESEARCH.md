@@ -1,3 +1,7 @@
-# MICA 1.0 engineering reference
+# Architecture experiments
 
-Current results and remaining work are maintained in [the engineering reference](research/DESIGN_EXPERIMENTS.md).
+The [design experiments](research/DESIGN_EXPERIMENTS.md) cover segmented arithmetic,
+fetch reuse and the software bounds prototype. Each implemented experiment has
+source, a baseline and measured results. The [prior-art
+notes](research/PRIOR_ART.md) explain related mechanisms and the comparisons still
+needed.

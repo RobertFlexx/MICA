@@ -4,7 +4,7 @@ Changes relative to audit baseline 7accf98. A = added, M = modified. Generated
 ISA/drawing sources and archived measurements are included; local build outputs
 are excluded. The initial checkout was clean.
 
-228 files.
+230 files.
 
 | Status | Path |
 | --- | --- |
@@ -36,6 +36,7 @@ are excluded. The initial checkout was clean.
 | M | `docs/HDL_BUILD.md` |
 | M | `docs/ISA.md` |
 | M | `docs/MICROARCH.md` |
+| A | `docs/README.md` |
 | M | `docs/RESEARCH.md` |
 | M | `docs/RESEARCH_PROGRAM.md` |
 | M | `docs/ROADMAP.md` |
@@ -62,6 +63,7 @@ are excluded. The initial checkout was clean.
 | A | `docs/engineering/results/alu-research/mica_add64_segmented.log.gz` |
 | A | `docs/engineering/results/alu-research/results.json` |
 | A | `docs/engineering/results/alu-research/simulation.log.gz` |
+| A | `docs/engineering/results/ci.json` |
 | A | `docs/engineering/results/differential-results.json` |
 | A | `docs/engineering/results/emulator-results.json` |
 | A | `docs/engineering/results/environment.json` |

@@ -1,38 +1,57 @@
 # Arty A7-100 build and bring-up
 
-Build tools and firmware first using BUILDING.md. The board defaults to 4096
-bytes of initialized synchronous SRAM, XLEN32, F, T and PERF. Code boots from
-address0 in this initialized code/data RAM. A distinct write-protected boot ROM
-is not implemented. `examples/selftest32.mica` fits this image and exercises
-RAM, arithmetic, feature discovery, timer interrupt, GPIO and UART TX.
+The target is a Digilent Arty A7-100, part `xc7a100tcsg324-1`. The board wrapper
+uses XLEN32, F, T and PERF with 4 KiB of initialized synchronous SRAM. Code starts
+at address 0 in shared code/data RAM. The image exercises RAM, arithmetic, feature
+discovery, a timer interrupt, GPIO and UART transmit.
+
+## Build an image
+
+Build the SDK as described in [BUILDING.md](../../BUILDING.md), then run:
 
 ```sh
 python3 scripts/build_firmware.py --tools build
 vivado -mode batch -source fpga/scripts/build_arty.tcl
 ```
 
-The Tcl flow chooses xc7a100tcsg324-1, loads the board constraints and generated
-word initialization file, reads SystemVerilog, Verilog and VHDL natively, synthesizes, places and routes, saves checkpoints and writes
-resource/timing/DRC reports under `build/fpga`. It rejects negative setup/hold
-slack before writing a bitstream. Vivado was unavailable locally, so this Tcl
-flow is supplied **pending execution**. Yosys mapping and SoC simulation are
-separate measured results and do not establish Vivado timing closure.
+The Tcl project reads SystemVerilog, Verilog and VHDL, the checked
+[constraints](../../boards/arty_a7/arty_a7.xdc), and a padded word initialization
+file. It enables UART RX and CRC, runs synthesis, placement and routing, then writes
+checkpoints and utilization/timing/DRC reports under `build/fpga`. Negative setup or
+hold slack stops bitstream creation.
 
-Use Vivado Hardware Manager to connect the actual Arty board and program
-`build/fpga/mica_arty.bit` after reviewing reports. No programming action was
-performed in this environment. Open the serial port at 115200 baud,8 data bits,
-no parity,1 stop bit, no flow control. Press button0 to reset. Expected serial
-text is `MICA 1.0 OK` followed by newline; GPIO LEDs0/1 light and halted LED2
-lights. Fault LED3 must stay off. The build enables UART RX and CRC, though the default self-test does not consume RX data. To exercise receive, run the Tcl command with `-tclargs peripherals32` and send `ABC`; the firmware echoes it and halts with x1=42.
+Vivado execution and timing closure are pending. The local evidence consists of
+open-source simulation and Yosys mapping. Those stages are recorded separately in
+the [r2 report](../engineering/IMPLEMENTATION_REPORT.md).
 
-Icarus `make -C rtl sim-firmware` checks real serialized UART bytes, LED value,
-timer entry/eret and successful architectural exit. `sim-scheduler` tests the
-64KiB two-task example; its hardcoded task stacks do not fit the 4KiB board
-configuration. Physical boot, power consumption and board timing remain
-unverified until actual board measurements are recorded.
+## Console and expected behavior
 
-`sim-peripherals` also simulates the actual `mica_arty_a7` top with 100 MHz,
-4 KiB initialized SRAM, RX/CRC enabled and the integer 115200-baud divider.
-It checks two-edge reset release, timer-handler completion, GPIO/halt/fault LEDs
-and the serialized self-test text. This board-top simulation is distinct from
-Vivado implementation, timing closure and physical-board validation.
+After a successful implementation and report review, program
+`build/fpga/mica_arty.bit` through Vivado Hardware Manager. Use the board's onboard
+programming/UART USB connection with 115200 baud, 8 data bits, no parity, one stop
+bit and no flow control. Press button 0 to reset.
+
+The self-test prints `MICA 1.0 OK` and a newline. GPIO LEDs 0/1 and halted LED 2
+light; fault LED 3 stays off. For receive testing, select the other board image:
+
+```sh
+vivado -mode batch -source fpga/scripts/build_arty.tcl -tclargs peripherals32
+```
+
+Send `ABC`. That program checks CRC-32, receives three bytes through interrupts,
+echoes them and halts with x1=42. The [peripheral guide](PERIPHERALS.md) defines the
+register map and receive-error behavior.
+
+## Simulation coverage
+
+`make -C rtl sim-firmware` checks UART bytes, GPIO, timer entry/return and the
+successful result. `sim-peripherals` also runs the actual `mica_arty_a7` top with a
+100 MHz input, 4 KiB SRAM, RX/CRC enabled and the integer UART divider. It checks
+two-clock reset release, the timer handler, all four LEDs and serialized self-test
+text.
+
+`sim-scheduler` uses the separate 64 KiB two-task configuration; its stacks do not
+fit the board's 4 KiB image. A separate write-protected boot ROM is also outside the
+current design. Physical boot, board timing and power remain to be verified on
+hardware. [Board connections](BOARD_CONNECTIONS.md) records the package pins and
+electrical references needed for that work.

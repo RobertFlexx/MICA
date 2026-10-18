@@ -1,12 +1,11 @@
 # Execution mode
 
-MICA r2 implements one machine execution mode. There is no user/supervisor
-mode, MPU, virtual memory, process isolation or security boundary between
-firmware tasks. All implemented CSR access rights still apply: reserved and
-read-only writes fault. T prevents nested trap entry until eret.
+The r2 implementations execute in one machine mode. All firmware shares CSR and
+memory access; user/supervisor modes, an MPU and virtual memory are absent. CSR
+rules still distinguish writable, read-only and reserved addresses, and invalid
+accesses fault. T permits one active trap handler at a time.
 
-The demonstration scheduler preserves registers but runs trusted machine
-code. Do not use its existence as evidence of protected multitasking or
-RTOS readiness. Adding user mode requires an architectural state bit, CSR
-permission checks in both engines, memory access checks and new differential
-fault tests before the capability can be advertised.
+The demonstration scheduler preserves task registers and switches trusted
+machine-code tasks. It provides a context-switch example without a protection
+boundary between those tasks. Protected execution would add privilege state, CSR and
+memory checks to both implementations, together with fault tests.

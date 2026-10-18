@@ -1,3 +1,5 @@
-# MICA 1.0 reference
+# Calling convention
 
-The current engineering r2 documentation is maintained in [the reference manual](architecture/ABI.md).
+The [assembly ABI](architecture/ABI.md) defines arguments, results, register
+preservation, stack alignment and startup. Routine-specific clobbers and special
+interfaces are listed in the [runtime guide](RUNTIME.md) and library sources.

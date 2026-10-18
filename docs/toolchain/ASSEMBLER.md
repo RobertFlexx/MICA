@@ -1,25 +1,47 @@
 # Assembler
 
-`mica-as` is a dependency-free C++23 two-pass assembler. Raw binary is the
-default; `-c` writes ELF image objects. `--xlen`, `--profile`, `--xreg`, `--mul`,
-`--flow`, `--bitops`, `--atomic`, `--simd` and `--trap` select features. Flags are
-processed in order, so flags after a profile can override it. `--map` writes a
-stable address/name map, `--listing` writes bytes with source file/line, and
-`--hex` writes Intel HEX for a flat image. HEX is not a readmemh file.
+`mica-as` is a C++23 two-pass assembler. It writes raw binary by default and ELF
+image objects with `-c`. The [linker guide](LINKER.md) shows separate compilation;
+the [dialect reference](DIALECT.md) covers source syntax.
 
-The parser supports labels, constants, expressions, macros, includes, repeats,
-conditional blocks, data/alignment/reserve directives, aliases and explicit
-pseudos. See DIALECT.md. Most encoding errors identify file/line/source text.
-Column spans, machine-readable diagnostics, independent lexing/parser phases,
-branch relaxation and a general optimizer remain unfinished. This is a working
-assembler, not a production-qualified compiler frontend.
+## Options and output
 
-Limits:8MiB input source,65536 characters per line,16384 characters per
-expression,128 recursive expression levels,200000 processed expansion lines,
-32MiB processed source,12 include-read depth and 24 expansion depth. Circular
-includes and recursion beyond these limits fail. Expressions use wrapping
-unsigned64 arithmetic, with checked literal conversion, shifts and division by
-zero. Emitted instruction immediates and branches must fit their specified
-range. .set redefinition uses final two-pass symbol values; prefer .const/.equ
-for immutable constants. Object relocation expressions are deliberately narrower
-than absolute assembly expressions, as specified in OBJECT_FORMAT.md.
+`--xlen`, `--profile`, `--xreg`, `--mul`, `--flow`, `--bitops`, `--atomic`, `--simd`
+and `--trap` select the target features. Options are processed in order, so an
+option after `--profile` can override part of that configuration.
+
+| Option | Output |
+| --- | --- |
+| `-o PATH` | Binary image, or ELF object with `-c` |
+| `--map PATH` | Stable address/name map |
+| `--listing PATH` | Encoded bytes with source file and line |
+| `--hex PATH` | Intel HEX for a flat image |
+
+Intel HEX has record syntax; SRAM initialization uses the separate word-file
+converter. See the [memory guide](../hardware/MEMORY_INTERFACE.md).
+
+The assembler supports labels, constants, expressions, macros, includes, repeats,
+conditionals, data directives, aliases and pseudoinstructions. Encoding diagnostics
+identify the file, line and source text. Column spans, machine-readable diagnostics,
+branch relaxation and an optimizer remain open frontend work.
+
+## Input limits
+
+| Resource | Limit |
+| --- | ---: |
+| Input source | 8 MiB |
+| Line | 65,536 characters |
+| Expression | 16,384 characters; 128 recursive levels |
+| Processed expansion | 200,000 lines; 32 MiB |
+| Include-read depth | 12 |
+| Expansion depth | 24 |
+
+Circular includes and excessive recursion fail with diagnostics. Expressions use
+wrapping unsigned 64-bit arithmetic, with checked literal conversion, shift counts
+and division by zero. Encoded immediates and branches still have to fit their
+instruction fields.
+
+`.set` redefinition uses final two-pass symbol values. `.const` and `.equ` are
+better suited to immutable values. Object relocation expressions accept a smaller
+set of symbolic forms than flat-image expressions; the [object-format
+reference](OBJECT_FORMAT.md) lists those forms.

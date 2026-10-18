@@ -1,23 +1,22 @@
 # Interrupt delivery
 
 T supports source 0 (software pending OR external level) and source 1 (timer).
-Delivery is eligible when status.IE and the corresponding IE/IP bits are set.
-Timer takes priority when both are pending. Cause has bit XLEN-1 set and low
-code 2 for timer or1 for source 0. EPC is the next instruction that has not
-executed. Interrupt entry does not retire an instruction.
+Delivery is eligible when status.IE and the corresponding IE/IP bits are set. Timer
+takes priority when both are pending. Cause has bit XLEN-1 set and low code 2 for
+timer or 1 for source 0. EPC is the next instruction that has not executed.
+Interrupt entry does not retire an instruction.
 
-The core samples eligibility at START, with no outstanding memory transaction.
-An interrupt arriving during a stalled access waits for that instruction to
-complete or fault. Entry therefore remains precise; external bus latency
-bounds the worst-case response time. There is no fixed cycle-latency guarantee
-under unbounded backpressure. The SoC synchronizes its external IRQ through
-two flip-flops before passing it to the core. The core port itself assumes
-synchronous input.
+The core samples eligibility at START, with no outstanding memory transaction. An
+interrupt arriving during a stalled access waits for that instruction to complete or
+fault. Entry therefore remains precise; external bus latency bounds the worst-case
+response time. There is no fixed cycle-latency guarantee under unbounded
+backpressure. The SoC synchronizes its external IRQ through two flip-flops before
+passing it to the core. The core port itself assumes synchronous input.
 
-Handlers must acknowledge their source before eret, or delivery repeats.
-They save every register they modify, including LR if calling a subroutine.
+Handlers must acknowledge their source before eret, or delivery repeats. They save
+every register they modify, including LR if calling a subroutine.
 `examples/scheduler32.mica` saves x1..x7 and EPC in 32-byte frames and alternates
 two trusted tasks for six timer ticks. Each task checks sentinel registers.
 `examples/selftest32.mica` tests a timer handler plus UART/GPIO. The simulator
-harness also injects external IRQ during a delayed store and a delayed load.
-WFI retains its historical halt behavior and does not implement wake-on-IRQ.
+harness also injects external IRQ during a delayed store and a delayed load. WFI
+retains its historical halt behavior and does not implement wake-on-IRQ.

@@ -1,12 +1,15 @@
-# Timing status
+# Timing analysis
 
-The only board clock constraint is sys_clk with a 10ns period. No local Vivado
-place-and-route or timing closure was executed. Yosys mapping success is not
-an Fmax measurement. Simulation cycle counts are not a physical clock rate.
+The Arty constraint requests `sys_clk` at a 10 ns period. The board top passes
+functional simulation with a 100 MHz input, but Vivado placement, routing and timing
+closure are still pending. Yosys reports mapped resources; the simulated cycle
+counts describe execution under the selected memory model.
 
-Potential long paths include variable shifts, population counts, operand muxes,
-32/64-bit ALU carry, address formation and commit muxes. The split-add experiment
-compares mapped resource count and RTL activity; no post-route delay comparison
-exists. The Vivado Tcl flow saves setup/hold reports and stops before bitstream
-creation on negative slack. Inspect unconstrained paths and DRC as well as
-worst slack before a physical demonstration.
+Paths worth inspecting in the first routed design include variable shifts,
+population counts, operand selection, ALU carry propagation, address formation and
+commit selection. The standalone segmented adder experiment has area and RTL
+activity results; its post-route delay comparison is also open.
+
+The supplied Vivado flow saves setup and hold reports and rejects negative slack
+before writing a bitstream. Review unconstrained paths and DRC findings along with
+worst slack when bringing up the physical board.

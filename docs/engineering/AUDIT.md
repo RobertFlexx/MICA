@@ -1,31 +1,30 @@
 # MICA 1.0 engineering audit
 
-Baseline: commit `7accf98a162fabb03ae1afcf8cf0f2e95ea9fb5a`, 2026-10-17.
-ISA version remains 1.0. Engineering revisions do not reassign instructions.
+Baseline: commit `7accf98a162fabb03ae1afcf8cf0f2e95ea9fb5a`, 2026-10-17. ISA version
+remains 1.0. Engineering revisions do not reassign instructions.
 
 ## Baseline inspection and execution
 
 Inspected `toolchain`, `sim`, `rtl` (SystemVerilog, Verilog, VHDL), `stdlib`,
-`include`, `tests`, `examples`, `benchmarks`, `boards`, `schematics`, CMake,
-GitHub Actions and the architectural documentation. The initial working tree
-was clean. GCC 15.2.1 Release built all three tools. All three original CTest
-targets passed (integration, ten frozen binary fixtures, fast differential).
-The integration suite conditionally skips a comparison to an unavailable old
-SDK. Compiler diagnostics include GNU `__int128` extension warnings and a
-disassembler precedence warning. See `baseline-software.txt` for raw results.
+`include`, `tests`, `examples`, `benchmarks`, `boards`, `schematics`, CMake, GitHub
+Actions and the architectural documentation. The initial working tree was clean. GCC
+15.2.1 Release built all three tools. All three original CTest targets passed
+(integration, ten frozen binary fixtures, fast differential). The integration suite
+conditionally skips a comparison to an unavailable old SDK. Compiler diagnostics
+include GNU `__int128` extension warnings and a disassembler precedence warning. See
+`baseline-software.txt` for raw results.
 
-Initially installed: CMake, Ninja, GCC, Clang, Python, Graphviz. No HDL
-simulator, Yosys, SBY or Vivado was on PATH. HDL tools must be obtained and
-the baseline tested before hardware results are claimed. The obtained Icarus
-compiler built the original sim32 test, but its execution timed out after90
-seconds. r2 replaces that core logic; all corresponding revised smoke tests
-now complete. See baseline-hdl.txt.
+Initially installed: CMake, Ninja, GCC, Clang, Python, Graphviz. No HDL simulator,
+Yosys, SBY or Vivado was on PATH. HDL tools must be obtained and the baseline tested
+before hardware results are claimed. The obtained Icarus compiler built the original
+sim32 test, but its execution timed out after90 seconds. r2 replaces that core
+logic; all corresponding revised smoke tests now complete. See baseline-hdl.txt.
 
 ## Findings
 
-Severity: critical = incorrect architectural results or host memory safety;
-high = reproducible incorrect behavior; medium = incomplete contract/tooling.
-The implementation report records which findings have been corrected.
+Severity: critical = incorrect architectural results or host memory safety; high =
+reproducible incorrect behavior; medium = incomplete contract/tooling. The
+implementation report records which findings have been corrected.
 
 | ID / category | Severity | Cause and affected components | Correction | Validation |
 | --- | --- | --- | --- | --- |
@@ -48,12 +47,12 @@ The implementation report records which findings have been corrected.
 
 ## Compatibility policy
 
-`examples/firmware/*.bin` are retained unchanged. Their SHA-256 values and
-expected behavior are recorded in the compatibility ledger. Corrections to
-reserved encodings, invalid CSR accesses, overflowing address calculations
-and fault side effects are deliberate tightening of erroneous or undefined
-behavior. Existing nonfaulting supported programs keep their encodings and
-results. The historical T `ecall` convention (EPC = next PC) is retained.
+`examples/firmware/*.bin` are retained unchanged. Their SHA-256 values and expected
+behavior are recorded in the compatibility ledger. Corrections to reserved
+encodings, invalid CSR accesses, overflowing address calculations and fault side
+effects are deliberate tightening of erroneous or undefined behavior. Existing
+nonfaulting supported programs keep their encodings and results. The historical T
+`ecall` convention (EPC = next PC) is retained.
 
 ## Dependency order
 
@@ -65,16 +64,16 @@ results. The historical T `ecall` convention (EPC = next PC) is retained.
 6. Add real object/link tools and reproducible examples.
 7. Measure bounded research experiments and complete release documentation.
 
-Later performance pipelines, protected multitasking, multicore and vector
-hardware require their own implementation and validation milestones.
+Later performance pipelines, protected multitasking, multicore and vector hardware
+require their own implementation and validation milestones.
 
 ## Disposition in r2
 
 A01/A02/R01..R04/T01/S01/S02 are corrected for the advertised scalar reference
 scope, with regression tests. T01 also included a left-justified hexadecimal
 byte-comment display defect, now checked. T02 has a working constrained ELF
-image-object/linker implementation; independent sections and a mature parser
-remain open. P01/P02 have actual implementations and measurements. M01 remains
-explicitly incomplete. D01 and V01/V02 now have normative references, executable
-HDL/differential/formal paths and recorded evidence. Remaining coverage and
-physical validation limits appear in the implementation report.
+image-object/linker implementation; independent sections and a mature parser remain
+open. P01/P02 have actual implementations and measurements. M01 remains explicitly
+incomplete. D01 and V01/V02 now have normative references, executable
+HDL/differential/formal paths and recorded evidence. Remaining coverage and physical
+validation limits appear in the implementation report.

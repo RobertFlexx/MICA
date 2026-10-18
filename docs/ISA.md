@@ -1,3 +1,6 @@
-# MICA 1.0 reference
+# Instruction set
 
-The current engineering r2 documentation is maintained in [the reference manual](architecture/ISA.md).
+The [ISA manual](architecture/ISA.md) defines MICA 1.0 execution, instruction
+formats and fault behavior. Use the [encoding tables](architecture/ENCODINGS.md) for
+individual operations and the [register reference](architecture/REGISTERS.md) for
+register names and aliases.

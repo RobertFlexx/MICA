@@ -1,3 +1,7 @@
-# MICA 1.0 engineering reference
+# Research notes
 
-Current results and remaining work are maintained in [the engineering reference](research/PRIOR_ART.md).
+MICA's current experiments concern fetch traffic, arithmetic activity and buffer
+processing. Start with the [experiment report](research/DESIGN_EXPERIMENTS.md), then
+the [benchmark methods](research/BENCHMARKS.md) and [activity
+measurements](research/POWER.md). [Prior art](research/PRIOR_ART.md) provides
+context for evaluating the designs.

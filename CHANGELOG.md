@@ -22,6 +22,9 @@ transactional SystemVerilog CRC adapter, and portable Verilog-2005 UART receive
 and FIFO logic. Both XLEN SoCs execute CRC/RX interrupt/serial echo firmware.
 Arty RX uses the vendor's A9 pin and the Vivado project reads native VHDL.
 
+The guides now have a documentation index, topic-specific navigation and
+updated Linux/macOS CI results.
+
 ## MICA 1.0, engineering r1
 
 Historical software baseline: flat assembler/disassembler, reference and short

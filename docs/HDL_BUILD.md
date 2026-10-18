@@ -1,3 +1,7 @@
-# MICA 1.0 reference
+# HDL builds
 
-The current engineering r2 documentation is maintained in [the reference manual](../BUILDING.md).
+[BUILDING.md](../BUILDING.md#hdl-simulation-and-synthesis) lists the simulator,
+formal and synthesis dependencies and commands. The [testing
+guide](verification/TESTING.md) explains what each flow checks. Native VHDL
+simulation and the GHDL-to-Verilog SoC integration path are covered in the
+[peripheral guide](hardware/PERIPHERALS.md).

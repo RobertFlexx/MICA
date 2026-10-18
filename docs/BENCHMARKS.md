@@ -1,3 +1,6 @@
-# MICA 1.0 reference
+# Benchmark results and methods
 
-The current engineering r2 documentation is maintained in [the reference manual](research/BENCHMARKS.md).
+The [benchmark guide](research/BENCHMARKS.md) explains the workloads, validated
+outputs and measurement commands. The [r2
+report](engineering/IMPLEMENTATION_REPORT.md) collects the measured results; raw
+runs are kept with the [release evidence](engineering/results/README.md).

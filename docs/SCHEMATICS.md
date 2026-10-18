@@ -1,3 +1,6 @@
-# MICA 1.0 reference
+# Hardware drawings
 
-The current engineering r2 documentation is maintained in [the reference manual](hardware/DATAPATH.md).
+The [drawing index](hardware/DATAPATH.md) links editable DOT sources and SVG/PDF
+previews for the core and SoC. Generators check RTL signal names, widths and module
+connections. [Board connections](hardware/BOARD_CONNECTIONS.md) records the Arty A7
+package pins and vendor references.

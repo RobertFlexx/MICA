@@ -22,5 +22,6 @@
     "python3 scripts/package_source.py --update-checksums",
     "python3 scripts/check_release.py --binary build/releases/mica-sdk-1.0-r2-Linux-x86_64.tar.gz --source build/releases/mica-sdk-1.0-r2-source.tar.gz"
   ],
-  "limits": "Linux x86-64 binary SDK locally tested; macOS and actual CI matrix execution pending. Artifacts stay in build/releases, source is committed."
+  "limits": "Linux x86-64 archives tested locally. Linux and macOS SDK builds and extraction checks passed in the recorded GitHub CI run; other hosts remain untested.",
+  "ci_record": "ci.json"
 }

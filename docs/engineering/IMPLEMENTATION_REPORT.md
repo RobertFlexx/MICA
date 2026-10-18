@@ -1,158 +1,172 @@
-# MICA 1.0 engineering r2 implementation report
+# MICA 1.0 engineering r2 report
 
-## Scope delivered
+Engineering r2 replaces the immediate-memory CPU prototype with a transactional
+32/64-bit multicycle reference core. It also adds ELF assembly and linking, precise
+faults, timer firmware, peripheral blocks and retirement comparison. The ISA version
+remains 1.0, with the existing encodings and all 14 firmware compatibility fixtures
+preserved.
 
-The repository now has a transactional scalar multicycle reference CPU and a
-matching 32/64-bit reference emulator, an executable normative ISA, real separate
-assembly compilation/linking, synchronous FPGA memory, timer/context firmware,
-retirement verification, measured experiments and release/CI flows. The release
-remains MICA 1.0. This is a substantial implementation milestone; it does not
-finish every long-term acceptance criterion in the project brief.
+The [file inventory](CHANGED_FILES.md) lists changes from the original audit
+baseline. [Archived results](results/README.md) contain commands, tool versions, raw
+logs, benchmark runs and waveforms.
 
-Implemented source includes `rtl/mica_core_txn.sv`, the legacy adapter in
-`rtl/mica_core.sv`, `rtl/mica_soc.sv`, portable `rtl/verilog/mica_sram_txn.v`,
-`sim/emulator.cpp`, `toolchain/common/elf.hpp`, assembler/disassembler/linker and
-ELF utilities, shared ISA/profile descriptions and generated consumers. The
-[source inventory](CHANGED_FILES.md) records all changed files. The specification lives under
-`docs/architecture`; toolchain, hardware and verification guides have one
-current authoritative location, with legacy entry-point redirects.
+## Core and correctness repairs
 
-## Correctness repairs
+The old short-opcode decoder truncated eight bits into six, allowing reserved
+opcodes to alias valid operations. The new decoder retains the full field and
+rejects reserved values. Decode stages pending effects; commit applies them only
+after successful completion. Illegal encodings, odd jump targets and bus errors
+therefore leave destination registers, link registers and F pointers unchanged.
 
-The eight-bit short opcode no longer truncates into six bits. Illegal encodings,
-odd jumps and bus errors cannot leak register or link writes. F commits pointer
-updates only after successful completion. Signed offsets and XLEN32 address wrap
-are explicit. Fetch/data ports hold accepted state through latency and backpressure.
-Reset cancels ownership with the fabric. Synchronous RAM is actually connected;
-its registered read structure maps to BRAM rather than relying on combinational
-read timing. Unused multiplier/B/CSR expressions are explicitly gated at constant
-profile boundaries, because illegal flags alone retained unwanted hardware.
+Instruction and data requests remain stable through stalls and retain response
+ownership until completion. CPU and fabric reset share a cancellation contract. The
+synchronous word SRAM registers reads before fetch-word selection and maps to FPGA
+block RAM. Constant profile guards remove disabled multiplier, bit and CSR
+datapaths; setting an illegal flag alone had retained unwanted hardware.
 
-CSR permissions and reserved IDs agree, cycle/retirement counters work, a real
-timer/comparator delivers interrupts, and exceptions save a defined PC/value.
-SC requires both reservation address and width; vector transfers validate the
-whole range before effects. Assembler depth/file/expansion bounds prevent stack
-and allocation abuse. ELF offsets, strings, symbols, section sizes, relocation
-arithmetic/templates and input totals are checked. Disassembly preserves reserved
-bytes and prints byte comments correctly. The benchmark parser reads retirement
-counts instead of an obsolete cycles label.
+Emulator and RTL agree on CSR permissions, reserved IDs, trap PC/value, timer
+comparison and retirement. Address arithmetic wraps explicitly at XLEN. Emulator SC
+checks both reservation address and width, and vector transfers validate the full
+range before modifying state. Assembler recursion and allocation limits, ELF offset
+and relocation checks, and lossless reserved-byte disassembly address the toolchain
+findings in the [audit](AUDIT.md).
 
-## Working tools and firmware
+## Tools and firmware
 
-`mica-as`, `mica-ld`, `mica-dis`, `mica-run`, `mica-objdump`, `mica-nm`,
-`mica-objcopy` provide help/version and real functions. The ELF64 subset uses an
-experimental unassigned machine ID and a single image section; no generic Unix
-ELF claim is made. It links all nine advertised relocation types with local,
-global and weak symbols. The three-file startup/application/runtime example
-clears BSS, computes CRC32 and prints through MMIO UART. Round trips preserve
-all halfwords and random long envelopes. CLI debugging supports step, break,
-watch, register/CSR/memory inspection and explicit state modification.
+The SDK builds seven C++23 tools: `mica-as`, `mica-ld`, `mica-dis`, `mica-run`,
+`mica-objdump`, `mica-nm` and `mica-objcopy`. They support separate assembly
+compilation, nine relocation types, local/global/weak symbols, executable loading,
+inspection and binary/HEX conversion. The [ELF
+format](../toolchain/OBJECT_FORMAT.md) uses one image section and an experimental,
+unassigned machine identifier. The CLI debugger provides stepping, breakpoints,
+watchpoints and state inspection.
 
-UART/GPIO/RAM/arithmetic/timer self-test and two-task preemption execute in both
-reference emulation and SoC simulation. The HDL UART test samples the actual 8N1
-pin and checks the message. The scalar signed16-bit FIR is checked against an
-independent Python convolution. A software bounded-copy helper rejects range
-and addition overflow before writing buffers. The VHDL watchdog runs under
-GHDL and, through converted Verilog, delivers a real SoC interrupt. The new VHDL CRC-32 engine has a transactional SystemVerilog adapter; Verilog-2005 UART RX and a 16-byte FIFO provide buffered serial input and level interrupts. CRC, three receive interrupts and physical-pin echo pass on both XLENs, using the GHDL conversion flow.
+The three-file startup/application/library example clears BSS, computes CRC-32 and
+prints through UART. Other checked programs cover RAM and arithmetic, GPIO and timer
+interrupts, two-task preemption, signed 16-bit FIR filtering and a bounds-checked
+software copy helper. Independent Python calculations check FIR outputs and the
+emulator CRC device.
 
-## Evidence and measurements
+The HDL additions include synchronous Verilog SRAM, a Verilog-2005 UART receiver and
+FIFO, a VHDL CRC-32 engine and a transactional SystemVerilog CRC adapter. GHDL tests
+the VHDL natively and converts it to Verilog for SoC simulation. Both word-size SoCs
+pass CRC, three receive interrupts and serial-pin echo. The existing VHDL watchdog
+also delivers an interrupt through this integration flow.
 
-Final commands/results are archived under [results](results/README.md) and summarized below. All 14 original binary fixtures retain their SHA256 and
-match the shipped r1 emulator's registers/output; the ledger is
-`isa/compatibility.json`. The infinite blink fixture is compared under a bounded
-execution budget. Earlier baseline logs are retained next to AUDIT.md.
+## Regression results
 
-Fetch experiment: identical checked programs, five deterministic memory-delay
-seeds, reuse disabled/enabled. CRC32 median cycles fell from 6837 to 5276 and
-fetch transactions/retirement from 1.012 to 0.596. The copy example fell from 757
-to 595 median cycles. These are multicycle RTL simulation results, without a
-physical clock, energy measurement or external ISA baseline.
+| Check | Recorded result |
+| --- | --- |
+| Complete local runner | 20 stages passed |
+| GCC Release CTest | 7 of 7 groups passed |
+| Clang Debug ASan/UBSan CTest | 9 of 9 groups passed |
+| ELF libFuzzer | 10,000 seeded executions passed |
+| RTL/reference comparison | 1,485 runs: 250 MICA32 and 245 MICA64 programs, three memory-delay seeds |
+| Additional control tests | Six reset replays, four IRQs during memory waits and 12 profile programs passed |
+| Published assembly examples | 27 assemble; 24 execute under the reference emulator |
+| Separate compilation | Startup, application and library link and execute |
+| Compatibility | All 14 fixture hashes, register results and outputs match the recorded r1 baseline |
 
-Standalone add/sub experiment: 10000 vectors, 90% narrow, formal equivalence for
-all inputs. Generic 6-LUT mapping used 243 cells for conventional and 244 for
-segmented arithmetic. Upper internal adder-result transitions were 160682 and 30104 respectively.
-These are stable-value RTL transitions, not capacitance-weighted power or energy.
-The segmented unit is not integrated into the main 64-bit core.
+The macros fragment, endless LED blinker and external-watchdog wait image have
+special execution requirements. The watchdog has its own SoC test. The original
+comparison against an external v0.1 SDK is skipped because that SDK is absent. The
+final local regression has no failing test groups. Implementation commit `4e57212`
+also passed all seven [GitHub CI jobs](results/ci.json), including Linux GCC/Clang,
+macOS Clang, sanitizers and the hardware flow.
 
-Mapped 4KiB SoCs with Yosys/7-series primitives: MICA-C uses 4499 LUTs, 983 FFs,
-zero DSP48 and one RAMB36; MICA-E uses 6198 LUTs, 1508 FFs, six DSP48 and one
-RAMB36; MICA-64 uses 14782 LUTs, 2885 FFs, 23 DSP48 and two RAMB36. UART TX/GPIO are included. With UART RX/FIFO and the converted VHDL CRC engine enabled, MICA-E maps to 6580 LUTs, 1823 FFs, six DSP48 and one RAMB36. C omits PERF/T/M/F/B; E/64 include PERF and their manifest
-extensions. These totals expose substantial remaining area cost. No claim of
-competitive minimum area is justified yet. Standalone 64KiB RAM maps to 16
-RAMB36. No post-route Fmax, vendor power result or physical measurement exists.
+The engineering suite includes 14 test cases, every possible short halfword in
+disassembly round trips, and randomized long encodings. Verilog tests cover all UART
+byte values, adjacent frames, false starts, framing/break recovery and reset; FIFO
+simulation checks 8,000 operations. Native VHDL CRC tests use the standard check
+vector and an independent 256-byte reference, then exercise busy, clear and reset.
+The CRC adapter tests held responses, stalls and invalid accesses.
 
-Host counted-loop measurement on Intel Core i7-9700, Linux, GCC15.2.1 Release,
-five million iterations and median of three: 32-bit reference 29.9 MIPS, fast 54.5,
-specialized loop 1012.4; 64-bit reference 30.2, fast 56.2, specialized loop 974.6.
-Short native-loop runs include process-launch overhead and visible variation.
-These are host emulation throughputs for one loop, not general JIT throughput
-or physical processor performance. The earlier EPYC measurement is historical.
+Formal checks cover all-input combinational ALU equivalence, response ownership and
+stability for a small SRAM, and FIFO ordering/occupancy through 16 sampled clocks.
+The FIFO check is bounded; induction has not closed with the current
+observable-state assertions. The [formal guide](../verification/FORMAL.md) records
+assumptions and scope. LeakSanitizer ran with process inspection available; sandbox
+startup restrictions were resolved without disabling checks.
 
-## Incomplete criteria and next work
+## Fetch and ALU experiments
 
-A second pipelined core, general JIT/LLVM backend, arbitrary independent ELF
-sections/debug metadata, full lexer/column diagnostics, protected user mode/MPU,
-multicore memory ordering/inter-core interrupts, atomics and SIMD RTL, general RTOS runtime, full C library, hardware loop/bank/event mechanisms
-and physical power data remain incomplete. The memory model explicitly limits
-current hardware to one uncached hart; MICA-MP is rejected by profile selection.
+With identical firmware and five deterministic memory-delay seeds, fetch-word reuse
+reduced CRC-32 median cycles from 6,837 to 5,276. Instruction transactions per
+retirement fell from 1.012 to 0.596. The copy example fell from 757 to 595 median
+cycles. [Raw runs](results/fetch-results.json) retain both configurations.
 
-Current schematics validate actual RTL nets/ports and provide editable DOT,
-SVG/PDF previews and vendor board connections. They are architectural wiring
-references, not custom PCB schematics or tapeout data. Vivado Tcl, bitstream
-creation and physical programming are pending because those tools/hardware
-were unavailable. Yosys mapping and simulation do not establish timing closure.
+The standalone segmented adder used 244 generic six-input LUTs, compared with 243
+for the conventional unit. For 10,000 vectors, 90% narrow, upper adder-result
+transitions were 30,104 and 160,682 respectively. The [activity
+report](../research/POWER.md) explains the stable-value RTL measurement. Routed
+timing and energy remain to be measured, and the main 64-bit core still uses its
+conventional arithmetic path.
 
-Next milestones: reduce the measured reference area with shared execution units
-and narrower counters; extend long-encoding/CSR/fault/interrupt coverage; build
-the performance pipeline against this retirement oracle; run the supplied
-Vivado flow and board bring-up; then compare independent embedded cores under
-the same physical memory/clock/energy methodology. Do not add multicore or DSP
-hardware claims until their ordering/numerical tests exist.
+## Mapped resources
 
-## Final validation
+Yosys mapped the following 4 KiB SoCs to Xilinx 7-series primitives:
 
-`python3 scripts/verify.py --all --build-dir build/baseline` passed all 20
-logged stages: GCC Release build, seven CTest groups, 16 make targets including
-the peripheral suite, Verilator lint, six configured RTL drivers, differential
-retirement, profile faults, formal checks, four mapped SoCs, two diagram checks,
-two measured hardware experiments and actionlint. The retirement suite compared
-250 XLEN32 and 245 XLEN64 programs under three memory-delay seeds: 1485 runs,
-plus six reset replays and four interrupts during outstanding memory requests.
-Twelve additional profile programs check disabled operations and exact faults.
+| Configuration | LUTs | Flip-flops | DSP48 | RAMB36 |
+| --- | ---: | ---: | ---: | ---: |
+| MICA-C | 4,499 | 983 | 0 | 1 |
+| MICA-E | 6,198 | 1,508 | 6 | 1 |
+| MICA-64 | 14,782 | 2,885 | 23 | 2 |
+| MICA-E with RX/FIFO and VHDL CRC | 6,580 | 1,823 | 6 | 1 |
 
-The Clang Debug ASan/UBSan configuration passed nine CTest groups, including
-10,000 seeded ELF libFuzzer executions. LeakSanitizer ran with host process
-inspection available; its sandbox failure was not suppressed. Engineering tests
-include 14 cases and disassembly covers all 65536 halfwords plus randomized
-long encodings. All 27 published source examples assemble; 24 execute under the
-reference emulator, with the UART example supplied explicit input bytes. The
-macros fragment, endless LED blinker and external-watchdog wait image have
-different execution requirements. The watchdog has its own SoC test; the
-three-object startup/application/library program also links and executes.
+All include UART TX and GPIO. C disables PERF/T/M/F/B; E and 64 enable PERF and
+their manifest extensions. Standalone 64 KiB, 32-bit SRAM maps to 16 RAMB36.
+[Complete counts and logs](results/synthesis/results.json) preserve the mapping
+configuration. The reference core's area is a clear target for further work.
+Post-route frequency, vendor power analysis and external-core comparisons are still
+pending.
 
-Native VHDL CRC tests check the standard vector, an independent MSB-polynomial
-256-byte reference, busy input rejection, clear and reset. Verilog-2005 tests
-check all UART byte values, adjacent frames, false starts, framing/break and
-reset; FIFO simulation checks 8000 deterministic operations. Both XLEN SoCs
-check CRC, three receive interrupts, state restoration and actual serial echo.
-The actual Arty A7 top also passes with 100 MHz input, 4 KiB SRAM, RX/CRC enabled, synchronized reset release, timer IRQ, LEDs and serialized self-test text. This is simulation, not a measured board boot. The CRC adapter test checks held responses, busy stalls, invalid accesses and
-reset ownership. Verilator lint includes RX and the converted CRC engine.
+## Host emulator throughput
 
-Formal results are deliberately narrow: all-input combinational ALU equivalence,
-small SRAM response ownership/stability/reset proof, and a 16-cycle FIFO
-ordering/occupancy bounded check against an independent queue. A FIFO induction
-attempt did not close with head-only observable assertions; no inductive FIFO
-claim is made. New-error/clear overlap and all peripheral reset races remain
-coverage work. The final regression has zero failing test groups. One original
-integration comparison is skipped because the external v0.1 SDK is unavailable.
+The counted-loop benchmark ran five million iterations, three repetitions, on an
+Intel Core i7-9700 with Linux and a GCC 15.2.1 Release build:
 
-Vivado execution, post-route timing, actual board programming/boot, physical
-power, GitHub-hosted matrix execution and macOS execution were not performed
-locally. These are pending validation, not passing results. No ISA comparison
-or energy-superiority claim is justified by this revision.
+| Guest width | Reference MIPS | Fast interpreter MIPS | Specialized loop MIPS |
+| --- | ---: | ---: | ---: |
+| 32 | 29.9 | 54.5 | 1,012.4 |
+| 64 | 30.2 | 56.2 | 974.6 |
 
-Release artifacts are generated under `build/releases`: a CPack Linux binary
-SDK and a deterministic source archive with `SHA256SUMS`. Packaging and clean
-archive smoke-test results are recorded in [release validation](results/release.json).
-The source archive keeps historical Linux convenience binaries as fixtures;
-current tools are built from source or supplied in the CPack SDK.
+These medians describe one guest loop. The short specialized runs include
+process-launch overhead and visible variation; that engine handles a specific
+counted-loop shape. [Raw repetitions](results/emulator-results.json) include host
+identity and elapsed time. They measure host emulation throughput rather than a
+physical MICA clock. The earlier EPYC report belongs to r1.
+
+## FPGA and release validation
+
+The actual `mica_arty_a7` top passes simulation with a 100 MHz input, 4 KiB SRAM,
+RX/CRC enabled and synchronized reset release. The test checks timer handling,
+GPIO/halt/fault LEDs and the serialized self-test message. Vivado implementation,
+post-route timing, physical programming/boot and power measurements remain pending.
+The [board guide](../hardware/FPGA_BUILD.md) separates these stages.
+
+Drawings provide editable DOT sources, SVG/PDF previews and checked RTL nets and
+module connections. Arty package pins come from the vendor documentation. They
+describe the CPU and board integration; the project has no custom PCB or ASIC
+physical implementation.
+
+The binary SDK and repeatable source archive are written under `build/releases`.
+[Release checks](results/release.json) cover installed tools, both word sizes,
+linked startup/library firmware, peripheral input, source checksums and a clean
+extracted-source build. The source archive retains historical binaries as
+compatibility fixtures; the binary SDK contains the current tools.
+
+## Remaining work
+
+The performance pipeline, general JIT/compiler backend, independent ELF
+sections/debug metadata and richer parser diagnostics are still open. Hardware
+currently supports one uncached hart in machine mode. User protection, multicore
+synchronization, atomic/SIMD RTL, a general RTOS runtime and a C library need
+further implementation. MICA-MP remains unavailable in profile selection; MICA-DSP
+is an emulator configuration.
+
+The next priorities are to reduce reference-core area, extend long-encoding and
+CSR/interrupt coverage, build the pipeline against the retirement oracle, and
+complete Vivado/board bring-up. Shared execution units and narrower counters are
+candidates for area experiments. Register banking, event queues and hardware loops
+need their own cost and context-state measurements. Equivalent external cores can
+then be compared with matched memory, clock and implementation flows.

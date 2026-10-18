@@ -1,0 +1,37 @@
+{
+  "commit": "4e5721228d23ab0858cd34690e70e02bf933d3fb",
+  "workflow": "MICA verification",
+  "run_id": 39095730795,
+  "url": "https://github.com/RobertFlexx/MICA/actions/runs/39095730795",
+  "observed": "2026-10-17",
+  "jobs": [
+    {
+      "name": "hardware",
+      "conclusion": "success"
+    },
+    {
+      "name": "ubuntu-24.04 / clang++ / Debug",
+      "conclusion": "success"
+    },
+    {
+      "name": "workflow-lint",
+      "conclusion": "success"
+    },
+    {
+      "name": "throughput",
+      "conclusion": "success"
+    },
+    {
+      "name": "ubuntu-24.04 / g++ / Release",
+      "conclusion": "success"
+    },
+    {
+      "name": "macos-14 / clang++ / Release",
+      "conclusion": "success"
+    },
+    {
+      "name": "sanitizers",
+      "conclusion": "success"
+    }
+  ]
+}

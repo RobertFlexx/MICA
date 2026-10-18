@@ -1,8 +1,13 @@
-# Building and verifying MICA 1.0
+# Building MICA
 
-CMake 3.20+, a GCC or Clang compiler accepting C++23, and Python 3.10+ are
-required. The vector reference uses the compilers' `__int128` extension. Linux
-is tested locally; macOS is configured in CI and remains pending execution there.
+The software builds with CMake 3.20+, Python 3.10+, and GCC or Clang accepting
+C++23. The vector interpreter also uses the compilers' `__int128` extension.
+Local results use Linux; GCC/Clang Linux and Clang macOS builds also pass the
+[recorded CI run](docs/engineering/results/ci.json).
+
+## Software
+
+From the repository root:
 
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -11,24 +16,38 @@ ctest --test-dir build --output-on-failure
 cmake --install build --prefix "$PWD/build/install"
 ```
 
-Use the executables from this build. `bin/linux-x86_64` contains historical
-convenience binaries and is not updated by a source build.
+The seven tools are written to `build/`. The install tree also contains the
+assembly libraries, startup code, examples, headers and documentation.
+`bin/linux-x86_64` holds the historical binaries used for compatibility work;
+source builds leave those files alone.
+
+### Sanitizers and fuzzing
 
 ```sh
-cmake -S . -B build-san -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Debug   -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer'   -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined' -DMICA_FUZZ=ON
+cmake -S . -B build-san \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DMICA_FUZZ=ON \
+  -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' \
+  -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined'
 cmake --build build-san --parallel 4
 ctest --test-dir build-san --output-on-failure
 ```
 
-On Solus with Homebrew Clang, Clang may need `--gcc-install-dir` pointing at
-the directory containing `gcc -print-file-name=crtbeginS.o`. This is a host
-compiler installation issue. LeakSanitizer needs process-inspection access;
-run in an environment permitting it. ASan/UBSan failures are not suppressed.
+`MICA_FUZZ` enables the Clang libFuzzer target and a seeded 10,000-run test.
+LeakSanitizer needs permission to inspect processes. A restricted container can
+prevent it from starting; use an environment that permits that access.
 
-HDL validation uses Icarus/vvp, Verilator, Yosys, GHDL, SBY, Z3 and Graphviz.
-The locally tested bundle is OSS CAD Suite **2026-10-17**, Linux x86-64. CI
-pins that release; no script downloads dependencies during verification.
-Put the bundle's `bin` directory on PATH. GNU make is also needed.
+On Solus, Homebrew Clang may need `--gcc-install-dir` pointing to the directory
+that contains `gcc -print-file-name=crtbeginS.o`. This selects the installed GCC
+runtime and is specific to that host setup.
+
+## HDL simulation and synthesis
+
+The open-source flow uses Icarus Verilog/vvp, Verilator, GHDL, Yosys, SBY, Z3,
+Graphviz and GNU make. The recorded r2 runs use OSS CAD Suite **2026-10-17** on
+Linux x86-64, also pinned in CI. Install the bundle separately and put its `bin`
+directory on `PATH` before running the commands below.
 
 ```sh
 make -C rtl sim32 sim64 sim-flow32 sim-flow64 sim-bits32 sim-bits64 sim-trap sim-trap-irq
@@ -39,27 +58,48 @@ python3 verification/differential/run.py --tools build
 python3 scripts/run_formal.py
 python3 scripts/synthesize.py --tools build
 python3 scripts/generate_schematics.py --check
+python3 scripts/generate_soc_schematic.py --check
 ```
 
-The makefiles expect `../build/mica-as`; override `ASM` for another build.
-Verilator and SBY invoke shell/make commands that do not support spaces in
-build paths. Their Python runners stage builds in temporary directories and
-copy results into `build`. Source paths containing spaces are supported.
+The makefiles expect `../build/mica-as`. For another build directory, pass its
+assembler path as a quoted `ASM` argument. `sim-peripherals` runs the native
+Verilog/VHDL blocks, the converted CRC engine, both word-size SoCs and the actual
+Arty board top. Logs and waveforms are written under `build/peripherals`.
 
-For fetch experiments also build with `--reuse 0` for each XLEN, then run
-`python3 benchmarks/hardware.py --tools build`. Run
-`python3 benchmarks/alu_activity.py` for ALU synthesis and switching activity.
-All generated simulation files are build artifacts. Vivado and a physical
-board are separate requirements described in the FPGA guide.
+Spaces in directory names are legal. Some HDL build tools need reminding.
+The Verilator and SBY runners stage their generated builds in temporary paths
+without spaces, then copy the results back into `build`.
 
-Create a binary SDK archive with `cpack --config build/CPackConfig.cmake -B
-build/releases -G TGZ`. The source archive is separate:
-`python3 scripts/package_source.py --update-checksums`. Review the source file
-list before updating checksums. Its tar metadata and gzip header are fixed so
-identical source contents produce an identical archive. Neither archive includes
-local build junk. Existing prebuilt Linux executables in the source tree remain
-historical fixtures; build current tools or use the binary SDK archive.
+For the fetch experiment, also build both word sizes with `--reuse 0`, then run
+`python3 benchmarks/hardware.py --tools build`. The separate ALU experiment is
+`python3 benchmarks/alu_activity.py`. See the [benchmark guide](docs/research/BENCHMARKS.md)
+for the measured quantities and the [FPGA guide](docs/hardware/FPGA_BUILD.md) for
+Vivado and board requirements.
 
-For a single logged regression command, run `python3 scripts/verify.py --all`.
-Without --all it builds and runs the software suite. Missing HDL tools fail
-explicitly when --all is requested.
+## Run the complete local regression
+
+```sh
+python3 scripts/verify.py --all
+```
+
+This command builds the tools, runs the software and hardware suites, and saves
+stage commands, logs and exit status under `build/verify/validation`. `--all`
+requires every listed HDL tool. Without that option the runner executes the
+software build and CTest suite only. `--build-dir` selects another output tree.
+
+## SDK archives
+
+```sh
+cpack --config build/CPackConfig.cmake -B build/releases -G TGZ
+python3 scripts/package_source.py --update-checksums
+```
+
+The first command packages the installed tools and support files. The second
+updates the source checksum manifest and writes a source archive. Its fixed tar
+metadata and gzip header make the archive repeatable for identical source
+contents. Review the included files before updating the manifest.
+
+`scripts/check_release.py` extracts the binary SDK and tests the installed
+tools, separate compilation, startup library and UART/CRC firmware. Supply
+`--source` as well to verify source checksums and perform a clean build and CTest
+run. See its `--help` for archive arguments. Build outputs stay under `build/`.

@@ -1,13 +1,15 @@
-# Pipeline status
+# Pipeline work
 
-There is one verified CPU microarchitecture in r2: the multicycle reference.
-Its pending-effect/commit separation supplies precise retirement but does not
-execute multiple instructions concurrently. The legacy core is an interface
-adapter around this core, not a second performance implementation.
+The verified r2 CPU is the multicycle reference core. It separates pending effects
+from commit to provide precise retirement, but executes one instruction at a time.
+The legacy core module adapts its external interface to this implementation.
 
-A three-stage performance implementation remains unfinished. Required work is
-fetch/decode/retirement validity, same-register hazards, two-write F forwarding,
-load-use stalls, branch/trap flushing, response ownership and a common trace.
-Any future IPC claim must come from the checked workload harness. Current
-`benchmarks/hardware.py` reports measured reference-core cycles and IPC under
-specified memory delays. It does not approximate one-instruction-per-clock.
+A three-stage pipeline is the next microarchitecture candidate. The main design
+questions are dependency handling, forwarding both F writes, load-use stalls,
+branch/trap redirects and memory-response ownership. Its retirement stream can use
+the existing differential harness, so timing changes can be checked against the
+reference before performance comparisons.
+
+Current [hardware benchmarks](../../benchmarks/hardware.py) report cycles and IPC
+for the multicycle core under specified memory delays. A pipelined implementation
+and its throughput measurements are still open work.
