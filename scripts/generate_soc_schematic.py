@@ -20,6 +20,7 @@ with tempfile.TemporaryDirectory(prefix="mica-soc-draw-") as temp:
         "rtl/mica_core_txn.sv",
         "rtl/mica_soc.sv",
         "rtl/mica_uart_tx.sv",
+        "rtl/verilog/mica_uart_tx_portable.v",
         "rtl/mica_crc_mmio.sv",
         "rtl/verilog/mica_sram_txn.v",
         "rtl/verilog/mica_uart_rx.v",
@@ -43,7 +44,7 @@ with tempfile.TemporaryDirectory(prefix="mica-soc-draw-") as temp:
     )
     (stage / "mica_crc32.v").write_text(netlist.stdout)
     (stage / "program.mem32").write_text("00000000\n" * (65536 // 4))
-    command = "read_verilog -sv -I. mica_core_txn.sv mica_soc.sv mica_uart_tx.sv mica_crc_mmio.sv mica_sram_txn.v mica_uart_rx.v mica_sync_fifo.v mica_crc32.v; chparam -set MICA2 1 -set UART_RX 1 -set CRC_ENABLE 1 mica_soc; hierarchy -top mica_soc; proc; write_json soc.json"
+    command = "read_verilog -sv -I. mica_core_txn.sv mica_soc.sv mica_uart_tx.sv mica_uart_tx_portable.v mica_crc_mmio.sv mica_sram_txn.v mica_uart_rx.v mica_sync_fifo.v mica_crc32.v; chparam -set MICA2 1 -set UART_RX 1 -set CRC_ENABLE 1 mica_soc; hierarchy -top mica_soc; proc; write_json soc.json"
     result = subprocess.run(
         ["yosys", "-Q", "-p", command],
         cwd=stage,

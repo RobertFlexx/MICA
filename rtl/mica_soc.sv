@@ -4,7 +4,7 @@ module mica_soc
                         TRAP = 0, PERF = 0,
       parameter integer XREG = 0, MUL = 0, MICA2 = 0, CLOCK_HZ = 12000000,
                         BAUD = 115200,
-      parameter integer UART_RX = 0, CRC_ENABLE = 0,
+      parameter integer UART_RX = 0, CRC_ENABLE = 0, WATCHDOG_ENABLE = 0,
       parameter INIT_FILE = "program.mem32")
     (input logic clk_i, rst_ni, irq_i, uart_rx_i,
      output logic uart_tx_o,
@@ -27,6 +27,9 @@ module mica_soc
   logic [7 : 0] crc_byte;
   logic [31 : 0] crc_data, crc_result, crc_count;
   logic [2 : 0] crc_lane;
+  logic [1 : 0] watchdog_control;
+  logic [31 : 0] watchdog_min, watchdog_max, watchdog_count;
+  logic watchdog_expired, watchdog_early;
   logic [63 : 0] cycles;
   (* ASYNC_REG = "TRUE" *) logic [1 : 0] irq_sync;
   wire ram_select = da < XLEN'(RAM_BYTES);
@@ -36,6 +39,8 @@ module mica_soc
   wire mmio_ready = (!mmio_valid || dsr) && (!uart_select || !uart_busy);
   wire mmio_accept = dv && !ram_select && !crc_select && mmio_ready;
   wire [XLEN - 1 : 0] unshifted = wd >> (8 * int'(da & XLEN'(XLEN / 8 - 1)));
+  wire [31 : 0] word_write = unshifted[31 : 0] &
+      (size == 0 ? 32'hff : size == 1 ? 32'hffff : 32'hffffffff);
   wire [31 : 0] rx_status = {
                     19'b0,      rx_level,   4'b0,        1'(UART_RX != 0),
                     rx_overrun, rx_framing, rx_available};
@@ -64,6 +69,9 @@ module mica_soc
       rx_framing <= 0;
       rx_irq_enable <= 0;
       crc_lane <= 0;
+      watchdog_control <= 0;
+      watchdog_min <= 0;
+      watchdog_max <= '1;
     end else begin
       irq_sync <= {irq_sync[0], irq_i};
       cycles <= cycles + 64'd1;
@@ -104,7 +112,29 @@ module mica_soc
                          << (8 * int'(da & XLEN'(XLEN / 8 - 1)));
         end else if (da == XLEN'('hffff0020) && !dw)
           mmio_data <=
-              XLEN'((UART_RX != 0 ? 1 : 0) | (CRC_ENABLE != 0 ? 2 : 0));
+              XLEN'((UART_RX != 0 ? 1 : 0) | (CRC_ENABLE != 0 ? 2 : 0) |
+                    (WATCHDOG_ENABLE != 0 ? 4 : 0));
+        else if (WATCHDOG_ENABLE != 0 && da == XLEN'('hffff0060)) begin
+          if (dw)
+            watchdog_control <= unshifted[1 : 0];
+          else
+            mmio_data <= XLEN'(watchdog_control);
+        end else if (WATCHDOG_ENABLE != 0 && da == XLEN'('hffff0064)) begin
+          if (dw)
+            watchdog_min <= word_write;
+          else
+            mmio_data <= XLEN'(watchdog_min) << (8 * int'(da & XLEN'(XLEN / 8 - 1)));
+        end else if (WATCHDOG_ENABLE != 0 && da == XLEN'('hffff0068)) begin
+          if (dw)
+            watchdog_max <= word_write;
+          else
+            mmio_data <= XLEN'(watchdog_max);
+        end else if (WATCHDOG_ENABLE != 0 && dw &&
+                     (da == XLEN'('hffff006c) || da == XLEN'('hffff0078))) begin
+        end else if (WATCHDOG_ENABLE != 0 && !dw && da == XLEN'('hffff0070))
+          mmio_data <= XLEN'({watchdog_early, watchdog_expired});
+        else if (WATCHDOG_ENABLE != 0 && !dw && da == XLEN'('hffff0074))
+          mmio_data <= XLEN'(watchdog_count) << (8 * int'(da & XLEN'(XLEN / 8 - 1)));
         else
           mmio_error <= 1;
       end
@@ -126,7 +156,8 @@ module mica_soc
                   .RAM_BYTES(RAM_BYTES))
       core(.clk_i(clk_i),
            .rst_ni(rst_ni),
-           .irq_i(irq_sync[1] || (rx_irq_enable && rx_available)),
+           .irq_i(irq_sync[1] || (rx_irq_enable && rx_available) ||
+                  (watchdog_control[1] && (watchdog_expired || watchdog_early))),
            .i_req_valid(iv),
            .i_req_ready(ir),
            .i_req_addr(ia),
@@ -197,6 +228,21 @@ module mica_soc
            .busy_o(uart_busy),
            .uart_tx_o(uart_tx_o));
   generate
+    if (WATCHDOG_ENABLE != 0) begin : safety
+      wire watchdog_write = mmio_accept && dw && size <= 2;
+      wire watchdog_kick = watchdog_write && da == XLEN'('hffff006c);
+      wire watchdog_clear = watchdog_write && da == XLEN'('hffff0078) && unshifted[0];
+      // GHDL converts the VHDL counter and watchdog for mixed-language builds.
+      mica_watchdog watchdog(.clk_i(clk_i), .rst_ni(rst_ni),
+          .enable_i(watchdog_control[0]), .kick_i(watchdog_kick),
+          .clear_i(watchdog_clear), .min_ticks_i(watchdog_min),
+          .max_ticks_i(watchdog_max), .expired_o(watchdog_expired),
+          .early_o(watchdog_early), .count_o(watchdog_count));
+    end else begin : no_safety
+      assign watchdog_expired = 0;
+      assign watchdog_early = 0;
+      assign watchdog_count = 0;
+    end
     if (UART_RX != 0) begin : receive
       mica_uart_rx #(.CLOCK_HZ(CLOCK_HZ),
                      .BAUD(BAUD))

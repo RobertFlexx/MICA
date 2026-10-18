@@ -111,7 +111,7 @@ jobs:
           make -C rtl sim-sram sim-sram-txn sim-watchdog sim-watchdog-soc sim-firmware sim-scheduler sim-add64 sim-peripherals >> build/hdl.log 2>&1
       - name: Verilator lint and retirement comparison
         run: |
-          verilator --lint-only -Wall -Wno-UNUSEDPARAM -Wno-PINCONNECTEMPTY -Iisa/generated --top-module mica_arty_a7 rtl/mica_core_txn.sv rtl/mica_soc.sv rtl/mica_uart_tx.sv rtl/mica_crc_mmio.sv rtl/verilog/mica_sram_txn.v rtl/verilog/mica_sync_fifo.v rtl/verilog/mica_uart_rx.v boards/arty_a7/mica_arty_a7.sv
+          verilator --lint-only -Wall -Wno-UNUSEDPARAM -Wno-PINCONNECTEMPTY -Iisa/generated --top-module mica_arty_a7 rtl/mica_core_txn.sv rtl/mica_soc.sv rtl/mica_uart_tx.sv rtl/verilog/mica_uart_tx_portable.v rtl/mica_crc_mmio.sv rtl/verilog/mica_sram_txn.v rtl/verilog/mica_sync_fifo.v rtl/verilog/mica_uart_rx.v boards/arty_a7/mica_arty_a7.sv
           for width in 32 64; do
             python3 scripts/build_rtl_sim.py --xlen "$width"
             python3 scripts/build_rtl_sim.py --xlen "$width" --reuse 0
@@ -124,6 +124,8 @@ jobs:
           python3 verification/differential/run.py --tools build
           python3 verification/differential/mica2.py --tools build
           python3 verification/differential/profiles.py --tools build
+          python3 verification/instructions/run.py --tools build --rtl build/rtl --output build/instruction-matrix-rtl
+          python3 compiler/tests/run.py --tools build --rtl build/rtl
       - name: Formal, synthesis, diagrams and measured experiments
         run: |
           python3 scripts/generate_mica2_diagrams.py --check
@@ -145,6 +147,8 @@ jobs:
             build/differential/results.json
             build/differential-mica2/results.json
             build/profile-tests/results.json
+            build/instruction-matrix-rtl/results.json
+            build/compiler/results.json
             build/rtl/*/build.log
             build/formal/*.log
             build/synthesis/*.json

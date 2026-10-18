@@ -26,10 +26,13 @@ module mica_sram_txn
   (* ram_style = "block" *) reg [DATA_W - 1 : 0] mem[0 : WORDS - 1];
   integer j;
   reg [DATA_W - 1 : 0] i_word;
-  localparam INDEX_W = $clog2(WORDS);
+  localparam INDEX_W = WORDS > 1 ? $clog2(WORDS) : 1;
   localparam [2 : 0] SIZE_LIMIT = SHIFT[2 : 0];
   // INIT_FILE contains DATA_W-bit little-endian words, not individual bytes.
   initial begin
+    if ((DATA_W != 32 && DATA_W != 64) || ADDR_W < 32 ||
+        RAM_BYTES < BYTES || (RAM_BYTES & (RAM_BYTES - 1)) != 0)
+      $fatal(1, "invalid transactional SRAM parameters");
     if (INIT_FILE != "")
       $readmemh(INIT_FILE, mem);
   end

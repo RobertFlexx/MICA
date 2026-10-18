@@ -3,7 +3,7 @@ IVERILOG ?= iverilog
 VVP ?= vvp
 PYTHON ?= python3
 ASM ?= ../build/mica-as
-SV = mica_core_txn.sv mica_soc.sv mica_uart_tx.sv mica_crc_mmio.sv verilog/mica_sram_txn.v verilog/mica_sync_fifo.v verilog/mica_uart_rx.v
+SV = mica_core_txn.sv mica_soc.sv mica_uart_tx.sv mica_crc_mmio.sv verilog/mica_sram_txn.v verilog/mica_sync_fifo.v verilog/mica_uart_rx.v verilog/mica_uart_tx_portable.v
 .PHONY: sim sim32 sim64 sim-flow32 sim-flow64 sim-bits32 sim-bits64 sim-trap sim-trap-irq clean
 sim: sim32
 sim32:

@@ -127,6 +127,7 @@ if a.all:
             "rtl/mica_core_txn.sv",
             "rtl/mica_soc.sv",
             "rtl/mica_uart_tx.sv",
+            "rtl/verilog/mica_uart_tx_portable.v",
             "rtl/mica_crc_mmio.sv",
             "rtl/verilog/mica_sync_fifo.v",
             "rtl/verilog/mica_uart_rx.v",
@@ -163,6 +164,12 @@ if a.all:
         "profiles",
         [sys.executable, "verification/differential/profiles.py", "--tools", out],
     )
+    run("instruction-matrix", [sys.executable, "verification/instructions/run.py",
+        "--tools", out, "--rtl", ROOT / "build/rtl",
+        "--output", out / "instruction-matrix-rtl"])
+    if shutil.which("clang"):
+        run("compiler-rtl", [sys.executable, "compiler/tests/run.py", "--tools", out,
+            "--rtl", ROOT / "build/rtl", "--output", out / "compiler-rtl"])
     run("formal", [sys.executable, "scripts/run_formal.py"])
     run("synthesis", [sys.executable, "scripts/synthesize.py", "--tools", out])
     run("diagrams", [sys.executable, "scripts/generate_schematics.py", "--check"])

@@ -1,0 +1,22 @@
+; Optional windowed watchdog: wake from WFI, handle one level interrupt, resume.
+.arch mica32v2
+    li32 x5,handler
+    csrw tvec,x5
+    li8 x1,1
+    csrw ie,x1
+    csrw status,x1
+    li32 x6,0xffff0060
+    stw x0,[x6+4]
+    li32 x1,128
+    stw x1,[x6+8]
+    li8 x1,3
+    stw x1,[x6]
+    wfi
+    li8 x1,42
+    stop
+handler:
+    ldw x3,[x6+16]
+    stw x0,[x6]
+    li8 x2,1
+    stw x2,[x6+24]
+    eret

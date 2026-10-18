@@ -135,6 +135,9 @@ static const std::map<std::string, int> FLOW = {
   {"stpi.h", 5},
   {"stpi.w", 6},
   {"stpi.q", 7},
+  {"ldpi.sb", 8},
+  {"ldpi.sh", 9},
+  {"ldpi.sw", 10},
 };
 static const std::map<std::string, int> MX = {
   {"ldq", 0},

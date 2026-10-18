@@ -11,7 +11,7 @@ p = argparse.ArgumentParser()
 p.add_argument("--output", type=Path, default=ROOT / "build/formal")
 a = p.parse_args()
 a.output.mkdir(parents=True, exist_ok=True)
-for name in ["add64", "sram", "fifo"]:
+for name in ["add64", "sram", "fifo", "spi"]:
     with tempfile.TemporaryDirectory(prefix="mica-proof-") as temp:
         result = subprocess.run(
             ["sby", "-f", "-d", str(Path(temp) / name), name + ".sby"],

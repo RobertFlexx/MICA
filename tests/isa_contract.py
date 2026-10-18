@@ -296,6 +296,69 @@ class IsaContract(unittest.TestCase):
                 ".half 0xa40", self.command("mica-dis", "--mica1", raw).stdout
             )
 
+    def test_signed_flow_values_strides_and_encoding(self):
+        for width in (32, 64):
+            for suffix, size in (("sb", 1), ("sh", 2), ("sw", 4)):
+                for value in (0, (1 << (size * 8 - 1)) - 1,
+                              1 << (size * 8 - 1), (1 << (size * 8)) - 1):
+                    for stride in (-8192, -size, 0, size, 8191):
+                        with self.subTest(width=width, suffix=suffix, value=value, stride=stride):
+                            directive = {1: "byte", 2: "half", 4: "word"}[size]
+                            image = self.assemble(
+                                "signed", "li32 x8,32768\n"
+                                f"ldpi.{suffix} x9,[x8],{stride}\nstop\n"
+                                f".org 32768\n.{directive} {value}\n",
+                                width, False, False, "--flow", "--xreg")
+                            expected = value - (1 << (size * 8)) if value >> (size * 8 - 1) else value
+                            for engine in ((), ("--fast",), ("--native-loops",)):
+                                result = self.command(
+                                    "mica-run", "--mica2", "--flow", "--xreg",
+                                    "--xlen", width, *engine, image)
+                                self.assertIn(f"x8=0x{32768 + stride:x}", result.stderr)
+                                self.assertIn(f"x9=0x{expected & ((1 << width) - 1):x}", result.stderr)
+                            listing = self.command("mica-dis", "--mica2", "--xlen", width, image).stdout
+                            self.assertIn(f"ldpi.{suffix} x9", listing)
+
+    def test_signed_flow_faults_preserve_base_and_destination(self):
+        for width in (32, 64):
+            for suffix, size in (("sb", 1), ("sh", 2), ("sw", 4)):
+                for base, cause in [(65536, 5)] + ([(32769, 4)] if size > 1 else []):
+                    for dest in (0, 9):
+                        with self.subTest(width=width, suffix=suffix, base=base, dest=dest):
+                            image = self.assemble(
+                                "fault", "li32 x5,handler\ncsrw tvec,x5\nli32 x9,55\n"
+                                f"li32 x8,{base}\nldpi.{suffix} x{dest},[x8],-7\n"
+                                "stop\nhandler: csrr x1,cause\ncsrr x2,tval\nstop\n",
+                                width, False, False, "--flow", "--xreg", "--trap")
+                            trace = self.root / "fault.jsonl"
+                            self.command("mica-run", "--mica2", "--flow", "--xreg",
+                                         "--trap", "--xlen", width, "--memory", 65536,
+                                         "--retire-trace", trace, image)
+                            events = list(map(json.loads, trace.read_text().splitlines()))
+                            fault = next(e for e in events if e["trap"])
+                            self.assertFalse(fault["retired"])
+                            self.assertEqual(fault["cause"], cause)
+                            self.assertEqual(fault["regs"][8:10], [base, 55])
+                            self.assertEqual(fault["memory"], [])
+                            self.assertEqual(events[-1]["regs"][1:3], [cause, base])
+
+    def test_signed_flow_rejects_aliases_and_missing_features(self):
+        source, target = self.root / "invalid.mica", self.root / "invalid.bin"
+        for code, flags in (
+            ("ldpi.sb x1,[x1]", ["--mica2", "--flow"]),
+            ("ldpi.sh x1,[x0]", ["--mica2", "--flow"]),
+            ("ldpi.sw x1,[x2],8192", ["--mica2", "--flow"]),
+            ("ldpi.sw x1,[x2],-8193", ["--mica2", "--flow"]),
+            ("ldpi.sb x1,[x2]", ["--flow"]),
+            ("ldpi.sb x1,[x2]", ["--mica2"]),
+        ):
+            source.write_text(code + "\n")
+            self.command("mica-as", *flags, source, "-o", target, ok=False)
+        image = self.assemble("features", "ldpi.sb x1,[x2]\nstop\n",
+                              32, False, False, "--flow")
+        for flags in (["--flow"], ["--mica2"]):
+            self.command("mica-run", *flags, image, ok=False)
+
 
 if __name__ == "__main__":
     unittest.main(argv=[__file__, *EXTRA], verbosity=2)

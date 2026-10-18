@@ -44,6 +44,43 @@ def cases(width, trap):
         ), None
     if not trap:
         return
+    for suffix, size in [("sb", 1), ("sh", 2), ("sw", 4)]:
+        directive = {1: "byte", 2: "half", 4: "word"}[size]
+        top = 1 << (size * 8 - 1)
+        yield "signed-flow-" + suffix, (
+            f".arch mica{width}v2\nli32 x8,40000\n"
+            f"ldpi.{suffix} x9,[x8]\nldpi.{suffix} x10,[x8],-{size}\n"
+            f"ldpi.{suffix} x0,[x8],8191\nli32 x8,40000\nldpi.{suffix} x15,[x8],-8192\nstop\n"
+            f".org 40000\n.{directive} {top},{top - 1}\n"
+        ), None
+        for base in [65536] + ([32769] if size > 1 else []):
+            yield f"signed-flow-{suffix}-fault-{base}", (
+                f".arch mica{width}v2\nli32 x5,handler\ncsrw tvec,x5\n"
+                f"li32 x9,55\nli32 x8,{base}\nldpi.{suffix} x9,[x8],-7\nstop\n"
+                "handler: csrr x1,cause\ncsrr x2,tval\nstop\n"
+            ), None
+    # A store changes the unexecuted parcel already held in the fetch buffer.
+    yield "self-modifying-byte", (
+        f".arch mica{width}v2\nli8 x1,42\nli32 x2,writer+2\n.align 4\n"
+        "writer: stb x1,[x2]\nli8 x3,0\nmov x1,x3\nstop\n"
+    ), None
+    if width == 64:
+        for upper in (False, True):
+            patch = 0x432A000000000000 if upper else 0x00000000432A0000
+            yield f"self-modifying-qword-{'upper' if upper else 'lower'}", (
+                f".arch mica64v2\nli64 x1,{patch}\nli32 x2,block\n.align 8\nblock:\n"
+                + ("nop\nnop\n" if upper else "")
+                + "stpi.q x1,[x2]\nli8 x3,0\n"
+                + ("" if upper else "nop\nnop\n")
+                + "mov x1,x3\nstop\n"
+            ), None
+    for op, dest, base in [(8, 1, 1), (9, 1, 0), (10, 15, 15), (11, 1, 2)]:
+        payload = (op << 22) | (dest << 18) | (base << 14) | 1
+        yield f"reserved-flow-{op}-{dest}-{base}", (
+            f".arch mica{width}v2\nli32 x5,handler\ncsrw tvec,x5\n"
+            f".half {0xe800 | (payload >> 16)},{payload & 65535}\nstop\n"
+            "handler: csrr x1,cause\ncsrr x2,tval\nstop\n"
+        ), None
     yield "upper-registers", f".arch mica{width}v2\nadrpc x15,-1\nadd3 x8,x15,x15\nstop\n", None
     for unit, stride in [("b", 1), ("w", 4)]:
         yield f"flow-{unit}-copy", (

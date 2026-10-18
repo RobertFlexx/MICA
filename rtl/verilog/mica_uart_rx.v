@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: MIT
 module mica_uart_rx
     #(parameter CLOCK_HZ = 12000000, BAUD = 115200,
-      parameter DIVISOR = CLOCK_HZ / BAUD,
+      parameter DIVISOR = (BAUD > 0 ? (CLOCK_HZ + BAUD / 2) / BAUD : 1),
       parameter COUNT_W = (DIVISOR > 1 ? $clog2(DIVISOR) : 1))
     (input wire clk_i, rst_ni, uart_rx_i,
      output reg byte_valid_o,
@@ -18,6 +18,11 @@ module mica_uart_rx
   reg [2 : 0] state, bit_index;
   reg [COUNT_W - 1 : 0] ticks;
   reg [7 : 0] shift;
+  initial begin
+    if (CLOCK_HZ <= 0 || BAUD <= 0 || DIVISOR < 4 ||
+        COUNT_W < $clog2(DIVISOR))
+      $fatal(1, "invalid UART RX parameters");
+  end
   always @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
       rx_sync <= 2'b11;

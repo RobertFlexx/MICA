@@ -23,6 +23,7 @@ p.add_argument(
         "MICA-2C",
         "MICA-2E",
         "MICA-2L",
+        "MICA-2E-peripherals",
     ],
 )
 a = p.parse_args()
@@ -31,13 +32,14 @@ profiles = json.loads((ROOT / "isa/profiles/profiles.json").read_text())["profil
 report = {}
 for name in a.profiles:
     devices = name.endswith("peripherals")
-    profile = profiles["MICA-E" if devices else name]
+    profile = profiles[name.removesuffix("-peripherals") if devices else name]
     with tempfile.TemporaryDirectory(prefix="mica-synth-") as temp:
         stage = Path(temp)
         for source in [
             ROOT / "rtl/mica_core_txn.sv",
             ROOT / "rtl/mica_soc.sv",
             ROOT / "rtl/mica_uart_tx.sv",
+            ROOT / "rtl/verilog/mica_uart_tx_portable.v",
             ROOT / "rtl/verilog/mica_sram_txn.v",
             ROOT / "rtl/verilog/mica_sync_fifo.v",
             ROOT / "rtl/verilog/mica_uart_rx.v",
@@ -61,6 +63,10 @@ for name in a.profiles:
                 check=True,
             )
             (stage / "mica_crc32.v").write_text(generated.stdout)
+            generated = subprocess.run(["ghdl", "--synth", "--std=08", "--out=verilog",
+                ROOT / "rtl/vhdl/mica_event_counter.vhd", ROOT / "rtl/vhdl/mica_watchdog.vhd",
+                "-e", "mica_watchdog"], capture_output=True, text=True, check=True)
+            (stage / "mica_watchdog.v").write_text(generated.stdout)
         width, ext = profile["xlen"], profile["extensions"]
         code = (
             ROOT
@@ -82,7 +88,7 @@ for name in a.profiles:
         )
         perf = name not in ["MICA-C", "MICA-2C"]
         params = f'.XLEN({width}),.XREG({int(profile["registers"] == 16)}),.RAM_BYTES(4096),.PERF({int(perf)}),.INIT_FILE("program.mem{width}")'
-        params += f",.UART_RX({int(devices)}),.CRC_ENABLE({int(devices)})"
+        params += f",.UART_RX({int(devices)}),.CRC_ENABLE({int(devices)}),.WATCHDOG_ENABLE({int(devices)})"
         params += f",.MICA2({int('2C' in ext)})"
         params += "".join(
             f",.{key}({int(feature in ext)})"
@@ -97,9 +103,9 @@ for name in a.profiles:
             "module mica_synth_top(input clk_i,rst_ni,irq_i,uart_rx_i,output uart_tx_o,output [7:0] leds_o,output halted_o,fault_o);\n"
             + f"mica_soc #({params}) soc(.*);\nendmodule\n"
         )
-        extra_source = "mica_crc32.v " if devices else ""
+        extra_source = "mica_crc32.v mica_watchdog.v " if devices else ""
         script = (
-            "read_verilog -sv -I. mica_core_txn.sv mica_soc.sv mica_uart_tx.sv mica_sram_txn.v mica_sync_fifo.v mica_uart_rx.v mica_crc_mmio.sv "
+            "read_verilog -sv -I. mica_core_txn.sv mica_soc.sv mica_uart_tx.sv mica_uart_tx_portable.v mica_sram_txn.v mica_sync_fifo.v mica_uart_rx.v mica_crc_mmio.sv "
             + extra_source
             + "top.sv; hierarchy -top mica_synth_top; synth_xilinx -top mica_synth_top -family xc7; check -assert; tee -o stats.json stat -json"
         )
@@ -124,6 +130,7 @@ for name in a.profiles:
             "extensions": ext,
             "uart_rx": devices,
             "crc_vhdl": devices,
+            "watchdog_vhdl": devices,
             "cells": data["design"]["num_cells_by_type"],
         }
         print("PASS mapped synthesis", name)

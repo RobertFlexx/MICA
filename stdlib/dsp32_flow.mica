@@ -1,0 +1,19 @@
+; Signed 16-bit dot product, MICA32 2.0 + M + F.
+; x1=A, x2=B, x3=count -> x1=sum modulo 2^32.
+; Clobbers x2..x4; preserves x5, x6 and SP. Zero count reads no data.
+mica_dot_s16_flow:
+    push x5
+    push x6
+    li8 x4,0
+    bz x3,dot_s16_flow_done
+dot_s16_flow_loop:
+    ldpi.sh x5,[x1]
+    ldpi.sh x6,[x2]
+    mul x5,x6
+    add x4,x5
+    dbnz.s x3,dot_s16_flow_loop
+dot_s16_flow_done:
+    mov x1,x4
+    pop x6
+    pop x5
+    ret

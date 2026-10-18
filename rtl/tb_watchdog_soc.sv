@@ -10,6 +10,7 @@ module tb_watchdog_soc;
                          .rst_ni(rst_n),
                          .enable_i(1'b1),
                          .kick_i(1'b0),
+                         .clear_i(1'b0),
                          .min_ticks_i(32'd2),
                          .max_ticks_i(32'd500),
                          .expired_o(expired),

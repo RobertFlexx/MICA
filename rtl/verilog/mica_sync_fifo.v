@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 module mica_sync_fifo
     #(parameter WIDTH = 8, DEPTH = 16,
-      parameter COUNT_W = $clog2(DEPTH + 1),
+      parameter COUNT_W = (DEPTH > 0 ? $clog2(DEPTH + 1) : 1),
                 PTR_W = (DEPTH > 1 ? $clog2(DEPTH) : 1))
     (input wire clk_i, rst_ni,
      input wire push_valid_i,
@@ -19,6 +19,11 @@ module mica_sync_fifo
   reg [WIDTH - 1 : 0] storage[0 : DEPTH - 1];
   reg [PTR_W - 1 : 0] head, tail;
   reg [COUNT_W - 1 : 0] count;
+  initial begin
+    if (WIDTH < 1 || DEPTH < 1 || COUNT_W < $clog2(DEPTH + 1) ||
+        PTR_W < 1 || PTR_W < $clog2(DEPTH))
+      $fatal(1, "invalid FIFO parameters");
+  end
   wire pop = pop_valid_o && pop_ready_i;
   wire push = push_valid_i && push_ready_o;
   assign pop_valid_o = rst_ni && (count != 0);

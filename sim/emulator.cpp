@@ -73,6 +73,23 @@ class CPU {
   std::vector<std::uint8_t> uart_input;
   size_t uart_head = 0;
   bool uart_irq_enable = false;
+  bool watchdog_present = false, watchdog_expired = false, watchdog_early = false;
+  std::uint32_t watchdog_control = 0, watchdog_min = 0, watchdog_max = 0xffffffffu,
+                watchdog_count = 0;
+  bool external_pending() const {
+    return (uart_irq_enable && uart_head < uart_input.size()) ||
+           ((watchdog_control & 2) && (watchdog_expired || watchdog_early));
+  }
+  void watchdog_tick() {
+    if (!(watchdog_control & 1)) {
+      watchdog_count = 0;
+    } else if (!watchdog_expired && !watchdog_early) {
+      if (!watchdog_max || watchdog_min >= watchdog_max || watchdog_count >= watchdog_max - 1)
+        watchdog_expired = true;
+      if (watchdog_count != 0xffffffffu)
+        ++watchdog_count;
+    }
+  }
   std::uint32_t crc_state = 0xffffffffu, crc_count = 0;
   bool halted = false, trace = false, xreg = false, simd = false,
        atomic = false, multiply = false, flow = false, bitops = false,
@@ -112,13 +129,23 @@ class CPU {
     else if (addr == 0xffff001cULL && n <= 4)
       r = uart_irq_enable;
     else if (addr == 0xffff0020ULL && n <= 4)
-      r = 3; // Platform devices, separate from ISA extension discovery.
+      r = 3 | (watchdog_present ? 4 : 0); // Platform devices, separate from ISA extensions.
     else if (addr == 0xffff0040ULL && n <= 4)
       r = 0; // Functional device model completes each byte immediately.
     else if (addr == 0xffff0048ULL && n <= 4)
       r = crc_state ^ 0xffffffffu;
     else if (addr == 0xffff004cULL && n <= 4)
       r = crc_count;
+    else if (watchdog_present && n <= 4 && addr == 0xffff0060ULL)
+      r = watchdog_control;
+    else if (watchdog_present && n <= 4 && addr == 0xffff0064ULL)
+      r = watchdog_min;
+    else if (watchdog_present && n <= 4 && addr == 0xffff0068ULL)
+      r = watchdog_max;
+    else if (watchdog_present && n <= 4 && addr == 0xffff0070ULL)
+      r = U(watchdog_expired) | (U(watchdog_early) << 1);
+    else if (watchdog_present && n <= 4 && addr == 0xffff0074ULL)
+      r = watchdog_count;
     else {
       ram_range(addr, n, false);
       for (int i = 0; i < n; i++)
@@ -152,6 +179,28 @@ class CPU {
       for (int i = 0; i < 8; ++i)
         crc_state = (crc_state >> 1) ^ ((crc_state & 1) ? 0xedb88320u : 0u);
       ++crc_count;
+    } else if (watchdog_present && n <= 4 && addr == 0xffff0060ULL) {
+      watchdog_control = std::uint32_t(value & 3);
+      if (!(watchdog_control & 1))
+        watchdog_count = 0;
+    } else if (watchdog_present && n <= 4 && addr == 0xffff0064ULL) {
+      watchdog_min = std::uint32_t(value);
+    } else if (watchdog_present && n <= 4 && addr == 0xffff0068ULL) {
+      watchdog_max = std::uint32_t(value);
+    } else if (watchdog_present && n <= 4 && addr == 0xffff006cULL) {
+      if ((watchdog_control & 1) && !watchdog_expired && !watchdog_early) {
+        if (!watchdog_max || watchdog_min >= watchdog_max || watchdog_count >= watchdog_max)
+          watchdog_expired = true;
+        else if (watchdog_count < watchdog_min)
+          watchdog_early = true;
+        else
+          watchdog_count = 0;
+      }
+    } else if (watchdog_present && n <= 4 && addr == 0xffff0078ULL) {
+      if (value & 1) {
+        watchdog_expired = watchdog_early = false;
+        watchdog_count = 0;
+      }
     } else {
       ram_range(addr, n, true);
       for (int i = 0; i < n; i++)
@@ -186,7 +235,7 @@ class CPU {
     if (!traps || id > 19)
       throw Fault("unimplemented CSR");
     if (id == 6)
-      return ((csr[6] | U(uart_irq_enable && uart_head < uart_input.size())) &
+      return ((csr[6] | U(external_pending())) &
               1) |
              (timer >= timer_cmp ? 2 : 0);
     if (id == 9)
@@ -501,7 +550,7 @@ class CPU {
   // still use the reference engine. Volatile state forces actual iteration,
   // instead of replacing a benchmark with a multiplication and calling it fast.
   U native_counted_loop(U step_budget) {
-    if (traps || trace || retirement.is_open() || !flow || pc > ram.size() ||
+    if (traps || watchdog_present || trace || retirement.is_open() || !flow || pc > ram.size() ||
         ram.size() - size_t(pc) < 6 || (pc & 1))
       return 0;
     const size_t ip = size_t(pc);
@@ -1011,15 +1060,16 @@ class CPU {
           throw Fault("flow disabled");
         int op = int((p >> 22) & 15), d = int((p >> 18) & 15),
             b = int((p >> 14) & 15);
-        if (op > 7 || b == 0 || b == d)
+        if (op > 10 || (op >= 8 && !mica2) || b == 0 || b == d)
           throw Fault("illegal flow memory operand");
-        int bytes = 1 << (op & 3);
+        int bytes = 1 << (op < 8 ? op & 3 : op - 8);
         if (bytes == 8 && xlen != 64)
           throw Fault("64-bit flow access in XLEN32");
         U addr = xr(b);
-        if (op < 4)
-          wr(d, read(addr, bytes));
-        else
+        if (op < 4 || op >= 8) {
+          const U loaded = read(addr, bytes);
+          wr(d, op >= 8 ? U(sx(loaded, bytes * 8)) : loaded);
+        } else
           write(addr, xr(d), bytes);
         wr(b, addr + U(sx(p & 16383, 14)));
       } else if (maj == 6) {
@@ -1093,6 +1143,9 @@ public:
   void set_irq(U when) {
     irq_at = when;
   }
+  void set_watchdog(bool present) {
+    watchdog_present = present;
+  }
   void emit_event(U here, U instruction, int length, bool completed,
                   bool trapped, U cause, const std::array<U, 16> &before) {
     if (!retirement.is_open())
@@ -1126,14 +1179,15 @@ public:
         return;
       recording = false;
       memory_events.clear();
+      watchdog_tick();
       if (traps && retired == irq_at) {
         csr[6] |= 1;
         irq_at = ~U(0);
       }
       const U wake_pending =
-          traps ? csr_read(6) : ((mica2 && retired == irq_at) ? 1u : 0u);
+          traps ? csr_read(6) : ((mica2 && (retired == irq_at || external_pending())) ? 1u : 0u);
       const U pending = traps ? (csr[5] & wake_pending) : wake_pending;
-      if (!traps && wake_pending)
+      if (!traps && retired == irq_at)
         irq_at = ~U(0);
       if (sleeping) {
         if (!wake_pending) {
@@ -1303,7 +1357,7 @@ int main(int argc, char **argv) {
     U steps = 200000;
     bool dump = true, tr = false, xr = false, v = false, a = false, m = false,
          fl = false, bits = false, trap = false, mica2 = false, fast = false,
-         native_loops = false, debug = false;
+         native_loops = false, debug = false, watchdog = false;
     std::string peek_range, retire_path, uart_input;
     U irq_at = ~U(0);
     for (int i = 1; i < argc; i++) {
@@ -1323,6 +1377,8 @@ int main(int argc, char **argv) {
         uart_input = next();
       else if (opt == "--irq-at")
         irq_at = std::stoull(next(), nullptr, 0);
+      else if (opt == "--watchdog")
+        watchdog = true;
       else if (opt == "--memory")
         memory = std::stoull(next());
       else if (opt == "--steps")
@@ -1381,7 +1437,7 @@ int main(int argc, char **argv) {
         return 0;
       } else if (opt == "--help") {
         std::cout
-            << "mica-run [--mica2] [--debug] [--profile NAME] [--xlen 32|64] [--steps N] [--memory N] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [--xreg] [--fast] [--native-loops] [--trace] [--retire-trace PATH] [--irq-at RETIRED] [--uart-input HEX] [--quiet] code.bin\n";
+            << "mica-run [--mica2] [--debug] [--profile NAME] [--xlen 32|64] [--steps N] [--memory N] [--mul] [--simd] [--atomic] [--flow] [--bitops] [--trap] [--xreg] [--fast] [--native-loops] [--trace] [--retire-trace PATH] [--irq-at RETIRED] [--uart-input HEX] [--watchdog] [--quiet] code.bin\n";
         return 0;
       } else if (opt.starts_with('-'))
         throw Fault("unknown flag: " + opt);
@@ -1423,6 +1479,7 @@ int main(int argc, char **argv) {
         throw Fault("entry outside executable image");
     }
     CPU cpu(width, memory, tr, xr, v, a, m, fl, bits, trap, mica2);
+    cpu.set_watchdog(watchdog);
     cpu.load(data, base, entry);
     cpu.set_uart_input(uart_input);
     if (!retire_path.empty())

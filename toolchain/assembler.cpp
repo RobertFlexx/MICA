@@ -1069,7 +1069,10 @@ class Assembler {
       if (a.size() != 2 && a.size() != 3)
         throw Error(op + " data,[base][,stride]");
       int opcode = it->second;
-      if ((opcode & 3) == 3 && xlen != 64)
+      if (opcode >= 8 && !mica2)
+        throw Error(op + " requires --mica2");
+      const int unit = opcode < 8 ? opcode & 3 : opcode - 8;
+      if (unit == 3 && xlen != 64)
         throw Error(op + " requires --xlen 64");
       int data = reg(a[0], xreg);
       auto [base, offset] = mem(a[1], sy, sizing, xreg);
@@ -1078,8 +1081,8 @@ class Assembler {
       if (base == 0 || base == data)
         throw Error(
             "post-increment base must be writable and distinct from data register");
-      U stride = a.size() == 3 ? num(a[2], sizing) : U(1 << (opcode & 3));
-      if (a.size() == 2 && data < 8 && base < 8)
+      U stride = a.size() == 3 ? num(a[2], sizing) : U(1 << unit);
+      if (opcode < 8 && a.size() == 2 && data < 8 && base < 8)
         return r16(23 + opcode, data, base);
       if (!sizing)
         range(stride, 14, true, "post-increment stride");

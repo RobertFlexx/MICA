@@ -212,6 +212,9 @@ Extended major 10. `op4[25:22] data4[21:18] base4[17:14] stride14[13:0]`
 | 5 | `stpi.h d,[base],stride` | F | Use old base as aligned address; store16(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data. |
 | 6 | `stpi.w d,[base],stride` | F | Use old base as aligned address; store32(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data. |
 | 7 | `stpi.q d,[base],stride` | F | Use old base as aligned address; store64(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data. |
+| 8 | `ldpi.sb d,[base],stride` | F | Load8 at old base and sign-extend to XLEN. On success update destination and base += sext(stride14). Base must be nonzero and distinct from destination; faults preserve both registers. |
+| 9 | `ldpi.sh d,[base],stride` | F | Load16 at naturally aligned old base and sign-extend to XLEN. On success update destination and base += sext(stride14). Base must be nonzero and distinct from destination; faults preserve both registers. |
+| 10 | `ldpi.sw d,[base],stride` | F | Load32 at naturally aligned old base and sign-extend to XLEN. On success update destination and base += sext(stride14). Base must be nonzero and distinct from destination; faults preserve both registers. |
 ## BITOPS
 
 Extended major 11. `op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]`
@@ -239,7 +242,7 @@ Extended major 11. `op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]`
 | 18 | `sexth3 d,a` | B | D=sext16(low16(A)). |
 | 19 | `zexth3 d,a` | B | D=zext16(low16(A)). |
 
-Compact F instructions use short R op8 = 23 + the FLOW opcode. Extended majors 12 through 15 and all unallocated subopcodes are reserved.
+FLOW opcodes 0..7 have compact forms at short R op8 = 23 + the FLOW opcode. Signed post-increment loads (8..10) require MICA 2.0 and use only the long encoding. Extended majors 12 through 15 and all unallocated subopcodes are reserved.
 
 ## MICA-2C additional short R encodings
 

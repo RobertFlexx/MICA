@@ -3,7 +3,7 @@
 module mica_core_txn
     #(parameter integer XLEN = 32, XREG = 0, MUL = 0, FLOW = 0, BITOPS = 0,
       parameter integer TRAP = 0, PERF = 1, MICA2 = 0, RAM_BYTES = 65536,
-                        FETCH_REUSE = 1)
+                        FETCH_REUSE = 1, FETCH_SELECTIVE = 1, FAST_FETCH = 1)
     (input logic clk_i, irq_i,
      // Assertions sample reset to disable checks; architectural reset is asynchronous.
      /* verilator lint_off SYNCASYNCNET */
@@ -569,10 +569,12 @@ module mica_core_txn
             mem = 1;
             illegal = !valid_reg(d) || !valid_reg(a);
             if (major == MICA_MAJOR_FLOW) begin
-              illegal = illegal || FLOW == 0 || op > 7 || a == 0 || a == d ||
-                        ((op & 3) == 3 && XLEN != 64);
-              size_log = 3'(op & 3);
-              memwrite = op >= 4;
+              illegal = illegal || FLOW == 0 || op > 10 || a == 0 || a == d ||
+                        (op >= 8 && MICA2 == 0) ||
+                        (op < 8 && (op & 3) == 3 && XLEN != 64);
+              size_log = op >= 8 ? 3'(op - 8) : 3'(op & 3);
+              memwrite = op >= 4 && op < 8;
+              memsign = op >= 8;
               w2 = 1;
               dst2 = a;
               value2 = rr(a) + sext(XLEN'(p[13 : 0]), 14);
@@ -844,9 +846,14 @@ module mica_core_txn
             hi <= 0;
             if ((fetch_addr[1] ? parcel_word[31 : 30] : parcel_word[15 : 14]) ==
                 2'b11) begin
-              second <= 1;
-              fetch_addr <= pc + XLEN'(2);
-              state <= LOOKUP;
+              if (FAST_FETCH != 0 && !fetch_addr[1]) begin
+                hi <= parcel_word[31 : 16];
+                state <= DECODE;
+              end else begin
+                second <= 1;
+                fetch_addr <= pc + XLEN'(2);
+                state <= LOOKUP;
+              end
             end else
               state <= DECODE;
           end
@@ -942,8 +949,14 @@ module mica_core_txn
             if (q_eret)
               status_reg <= (status_reg & ~XLEN'(7)) |
                             (status_reg[1] ? XLEN'(1) : XLEN'(0));
-            if (q_invalidate || (q_mem && q_memwrite) ||
-                q_nextpc != pc + XLEN'(ilen))
+            // Tag comparison handles redirects. Only overlapping stores can
+            // change the buffered word; an eight-byte store covers two words.
+            if (q_invalidate ||
+                (q_mem && q_memwrite &&
+                 (FETCH_SELECTIVE == 0 ||
+                  (cache_tag[XLEN-1:3] == q_addr[XLEN-1:3] &&
+                   (q_size == 3 || cache_tag[2] == q_addr[2])))) ||
+                (FETCH_SELECTIVE == 0 && q_nextpc != pc + XLEN'(ilen)))
               cache_valid <= 0;
             pc <= q_nextpc;
             if (PERF != 0)

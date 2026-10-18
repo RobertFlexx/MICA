@@ -1,0 +1,13 @@
+[options]
+mode bmc
+depth 40
+[engines]
+smtbmc z3
+[script]
+read -formal -sv mica_spi_master.v spi_formal.sv
+prep -top spi_formal
+async2sync
+dffunmap
+[files]
+../../rtl/verilog/mica_spi_master.v
+spi_formal.sv

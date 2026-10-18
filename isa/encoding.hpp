@@ -81,8 +81,9 @@ inline bool legal_encoding(std::uint16_t h, std::uint32_t p, int width,
     return (features & 4) && !(p >> 24) && ((p >> 20) & 15) &&
            reg((p >> 20) & 15);
   case 10:
-    return (features & 4) && op4 <= 7 && reg(d4) && reg(a4) && a4 && a4 != d4 &&
-           (width == 64 || (op4 & 3) != 3);
+    return (features & 4) && op4 <= 10 && (op4 < 8 || (features & 256)) &&
+           reg(d4) && reg(a4) && a4 && a4 != d4 &&
+           (op4 >= 8 || width == 64 || (op4 & 3) != 3);
   default:
     return false;
   }

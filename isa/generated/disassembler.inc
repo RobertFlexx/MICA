@@ -106,7 +106,7 @@ static const std::array<const char *, 6> qmem = {
   "ldbs",
   "ldhs"
 };
-static const std::array<const char *, 8> flow = {
+static const std::array<const char *, 11> flow = {
   "ldpi.b",
   "ldpi.h",
   "ldpi.w",
@@ -114,7 +114,10 @@ static const std::array<const char *, 8> flow = {
   "stpi.b",
   "stpi.h",
   "stpi.w",
-  "stpi.q"
+  "stpi.q",
+  "ldpi.sb",
+  "ldpi.sh",
+  "ldpi.sw"
 };
 static const std::array<const char *, 10> sys = {
   "csrr",

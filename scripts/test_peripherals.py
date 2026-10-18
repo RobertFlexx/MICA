@@ -32,7 +32,8 @@ def run(command, cwd=ROOT):
 
 
 (out / "commands.log").write_text("")
-for name in ["mica_sync_fifo", "mica_uart_rx"]:
+print(run(["python3", ROOT / "scripts/test_hdl_parameters.py"], cwd=out).strip())
+for name in ["mica_sync_fifo", "mica_uart_rx", "mica_uart_tx_portable", "mica_spi_master"]:
     binary = out / name
     run(
         [
@@ -48,6 +49,15 @@ for name in ["mica_sync_fifo", "mica_uart_rx"]:
     )
     print(run(["vvp", binary], cwd=out).strip())
 with tempfile.TemporaryDirectory(prefix="mica-vhdl-") as temp:
+    run(["ghdl", "-a", "--std=08",
+         ROOT / "rtl/vhdl/mica_event_counter.vhd",
+         ROOT / "rtl/vhdl/mica_watchdog.vhd",
+         ROOT / "rtl/vhdl/tb_mica_event_counter.vhd",
+         ROOT / "rtl/vhdl/tb_mica_watchdog.vhd"], cwd=temp)
+    for name in ["mica_event_counter", "mica_watchdog"]:
+        run(["ghdl", "-e", "--std=08", "tb_" + name], cwd=temp)
+        print(run(["ghdl", "-r", "--std=08", "tb_" + name,
+                   "--assert-level=error", "--vcd=" + str(out / (name + ".vcd"))], cwd=temp).strip())
     run(
         [
             "ghdl",
@@ -86,18 +96,23 @@ netlist.write_text(
         ]
     )
 )
+watchdog = out / "mica_watchdog.v"
+watchdog.write_text("// GHDL emits the entity hierarchy and open ports in one file.\n/* verilator lint_off DECLFILENAME */\n/* verilator lint_off UNUSEDSIGNAL */\n" + run(["ghdl", "--synth", "--std=08", "--out=verilog",
+    ROOT / "rtl/vhdl/mica_event_counter.vhd", ROOT / "rtl/vhdl/mica_watchdog.vhd",
+    "-e", "mica_watchdog"]) + "\n/* verilator lint_on DECLFILENAME */\n/* verilator lint_on UNUSEDSIGNAL */\n")
 sources = [
     ROOT / ("rtl/" + name)
     for name in [
         "mica_core_txn.sv",
         "mica_soc.sv",
         "mica_uart_tx.sv",
+        "verilog/mica_uart_tx_portable.v",
         "mica_crc_mmio.sv",
         "verilog/mica_sram_txn.v",
         "verilog/mica_sync_fifo.v",
         "verilog/mica_uart_rx.v",
     ]
-] + [netlist]
+] + [netlist, watchdog]
 for width in [32, 64]:
     source = ROOT / "examples/peripherals32.mica"
     if width == 64:
@@ -150,6 +165,16 @@ for width in [32, 64]:
             ]
         )
         print(run(["vvp", binary], cwd=out).strip())
+    source = out / f"watchdog{width}.mica"
+    source.write_text((ROOT / "examples/mica2_watchdog32.mica").read_text().replace("mica32v2", f"mica{width}v2"))
+    run([a.assembler.resolve() if a.assembler else a.tools.resolve() / "mica-as",
+         "--mica2", "--trap", "--xlen", width, source, "-o", out / f"watchdog{width}.bin"])
+    run(["python3", ROOT / "toolchain/bin2mem8.py", out / f"watchdog{width}.bin",
+         out / f"program_watchdog_mmio.mem{width}", "--width", width, "--pad-bytes", 65536])
+    binary = out / f"watchdog-mmio{width}"
+    run(["iverilog", "-g2012", "-I" + str(ROOT / "isa/generated"), "-s", "tb_watchdog_mmio",
+         f"-Ptb_watchdog_mmio.XLEN={width}", "-o", binary, *sources, ROOT / "rtl/tb_watchdog_mmio.sv"])
+    print(run(["vvp", binary], cwd=out).strip())
 run(
     [
         a.assembler.resolve() if a.assembler else a.tools.resolve() / "mica-as",
@@ -202,3 +227,7 @@ run(
     ]
 )
 print("PASS full SoC lint with CRC/RX enabled; logs and waveforms: " + str(out))
+run(["verilator", "--lint-only", "-Wall", "-Wno-UNUSEDPARAM", "-Wno-PINCONNECTEMPTY",
+     "-I" + str(ROOT / "isa/generated"), "--top-module", "mica_soc",
+     "-GWATCHDOG_ENABLE=1", "-GUART_RX=1", "-GCRC_ENABLE=1", "-GTRAP=1", "-GMICA2=1", *sources])
+print("PASS SoC lint with the VHDL watchdog enabled")
