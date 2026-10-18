@@ -1,0 +1,9 @@
+.arch mica32v2
+.global _start
+.extern mica2_value
+_start:
+  adrpc x1,mica2_value
+  ldw x2,[x1]
+  addi x2,1
+  mov x1,x2
+  stop

@@ -1,0 +1,5 @@
+.arch mica64v2
+.global mica2_value
+.align 8
+mica2_value:
+  .quad 41

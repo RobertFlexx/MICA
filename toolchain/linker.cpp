@@ -98,6 +98,12 @@ int main(int argc, char **argv) {
         e::fail("linker expects relocatable objects");
       if (!inputs.empty() && o.width != inputs.front().width)
         e::fail("cannot mix MICA32 and MICA64 objects");
+      // MICA 2.0 changes the meaning of a few existing encodings, including
+      // XLEN64 word loads and exception PCs. Mixing versions cannot be fixed
+      // by taking the union of their required extension bits.
+      if (!inputs.empty() &&
+          ((o.features ^ inputs.front().features) & e::mica2_feature))
+        e::fail("cannot mix MICA 1.0 and 2.0 objects");
       linked.width = o.width;
       linked.features |= o.features;
       while (linked.image.size() % 16)

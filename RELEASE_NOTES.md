@@ -5,6 +5,15 @@ address arithmetic, wakeable WFI and explicit STOP to the preserved 1.0 SDK.
 
 ## Current revision
 
+- Repair MICA 2.0 ELF feature parsing, linking and runtime revision checks, and
+  reject objects with incompatible ISA semantics.
+- Add `ADRPC16` relocation support for existing PC-relative instructions,
+  including cross-object symbol references in MICA-32 and MICA-64.
+- Harden PC-relative displacement arithmetic, signed relocation addends,
+  operand parsing and source formatting against partial edits.
+- Add published 32/64-bit ELF firmware examples, regression suites and an
+  updated emulator/ELF workflow diagram. No RTL instruction encoding changes.
+
 - Execute 2C operations in the assembler, disassembler, emulator and transactional
   RTL at XLEN32/64; retain all 14 frozen 1.0 firmware fixtures.
 - Verify all three 2.0 profiles with retirement traces under randomized bus stalls,

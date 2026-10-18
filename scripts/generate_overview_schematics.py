@@ -199,13 +199,16 @@ def pages():
         "SDK emulator execution paths",
         {
             "cli": "mica-run\n--profile MICA-2C/2E/2L or --mica2",
+            "elf": "ET_EXEC ELF input: verify XLEN and extension flags\nMICA2 feature requires matching runtime revision\nraw binaries skip ELF metadata",
             "reference": "Reference interpreter\nMICA2 operations / traps / wake",
             "fast": "--fast: selected scalar fast paths\nfallback to reference step",
             "native": "--native-loops: specialized legacy loop\nfallback for unsupported operations",
             "state": "Shared registers, memory, PC, CSRs\nretirement trace / modeled instruction steps",
         },
         [
-            ("cli", "reference", "default"),
+            ("cli", "elf", "ELF executable"),
+            ("elf", "reference", "validated input"),
+            ("cli", "reference", "raw binary"),
             ("cli", "fast", "optional"),
             ("cli", "native", "optional"),
             ("native", "fast", "fallback"),

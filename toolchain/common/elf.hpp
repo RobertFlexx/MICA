@@ -21,6 +21,23 @@ using S = std::int64_t;
 using Bytes = std::vector<std::uint8_t>;
 constexpr U max_file = 64 * 1024 * 1024;
 constexpr unsigned machine = 0xff4d;
+// e_flags bit 0 is XLEN64. Extension bits occupy e_flags[16:8].
+// Bit 8 of the feature field denotes the MICA 2.0 instruction semantics.
+constexpr unsigned mica2_feature = 1u << 8;
+constexpr unsigned feature_mask = (mica2_feature << 1) - 1;
+constexpr U elf_flag_mask = 1u | (U(feature_mask) << 8);
+inline std::string feature_names(unsigned features) {
+  constexpr const char *names[]{"X", "M", "F", "A", "V", "B", "T",
+                                "PERF", "MICA2"};
+  std::string result;
+  for (unsigned bit = 0; bit < 9; ++bit)
+    if (features & (1u << bit)) {
+      if (!result.empty())
+        result += ',';
+      result += names[bit];
+    }
+  return result.empty() ? "base" : result;
+}
 enum RelocType : unsigned {
   ABS32 = 1,
   ABS64 = 2,
@@ -30,7 +47,8 @@ enum RelocType : unsigned {
   PCREL11 = 6,
   PCREL14 = 7,
   PCREL20 = 8,
-  PCREL24 = 9
+  PCREL24 = 9,
+  ADRPC16 = 10
 };
 struct Symbol {
   std::string name;
@@ -129,7 +147,7 @@ inline Object parse(const Bytes &b) {
   if (get(b, 52, 2) != 64 || get(b, 58, 2) != 64 || get(b, 56, 2) != 0)
     fail("unsupported ELF header layout");
   U flags = get(b, 48, 4);
-  if (flags & ~U(0xff01))
+  if (flags & ~elf_flag_mask)
     fail("unknown MICA ELF flags");
   o.width = (flags & 1) ? 64 : 32;
   o.features = unsigned(flags >> 8);
@@ -231,7 +249,7 @@ inline Object parse(const Bytes &b) {
     if (!index || index >= ns)
       fail("invalid relocation symbol index");
     unsigned type = unsigned(info & 0xffffffff);
-    if (type < ABS32 || type > PCREL24)
+    if (type < ABS32 || type > ADRPC16)
       fail("unsupported MICA relocation type");
     relocation_text += symbol_names[size_t(index)].size();
     if (relocation_text > 16 * 1024 * 1024)
@@ -242,6 +260,9 @@ inline Object parse(const Bytes &b) {
   return o;
 }
 inline Bytes encode(Object o) {
+  if ((o.type != 1 && o.type != 2) ||
+      (o.width != 32 && o.width != 64) || (o.features & ~feature_mask))
+    fail("invalid MICA object type, XLEN or feature flags");
   std::stable_sort(
       o.symbols.begin(), o.symbols.end(), [](const auto &a, const auto &b) {
         return (a.bind == 0) != (b.bind == 0) ? a.bind == 0 : a.name < b.name;
@@ -395,13 +416,29 @@ inline void relocate(Bytes &image, const Reloc &r, U target, U location) {
                         : r.type == PCREL11 ? 11
                         : r.type == PCREL14 ? 14
                         : r.type == PCREL20 ? 20
+                        : r.type == ADRPC16 ? 16
                                             : 24;
-  S delta = std::bit_cast<S>(target - (location + size));
-  if ((delta & 1) || delta / 2 < -(S(1) << (bits - 1)) ||
-      delta / 2 > ((S(1) << (bits - 1)) - 1))
+  // Compare address distances directly. Casting a wrapped 64-bit subtraction
+  // to signed could silently accept an impossible branch near address wrap.
+  if (location > ~U(0) - size)
+    fail("PC-relative relocation address overflow");
+  // Ordinary branches are based at the next instruction. ADRPC instead
+  // computes its address from the instruction's own PC.
+  const U base_pc = r.type == ADRPC16 ? location : location + size;
+  const bool forward = target >= base_pc;
+  const U distance = forward ? target - base_pc : base_pc - target;
+  if ((distance & 1) ||
+      distance > ((U(1) << bits) - (forward ? 2u : 0u)))
     fail("PC-relative relocation out of range/alignment");
-  const U value = std::bit_cast<U>(delta / 2) & ((U(1) << bits) - 1),
+  const U displacement = forward ? distance / 2 : U(0) - distance / 2;
+  const U value = displacement & ((U(1) << bits) - 1),
           h = get(image, r.offset, 2);
+  if (r.type == ADRPC16) {
+    if (((h >> 10) & 15) != 2 || ((payload(r.offset) >> 20) & 63) != 3)
+      fail("ADRPC16 relocation instruction template mismatch");
+    set_payload(r.offset, (payload(r.offset) & ~U(65535)) | value);
+    return;
+  }
   if (bits <= 11) {
     unsigned op = unsigned((h >> 11) & 7);
     if ((h >> 14) != 1 || (bits == 8 ? (op != 5 && op != 6) : op != 7))
@@ -417,9 +454,9 @@ inline void relocate(Bytes &image, const Reloc &r, U target, U location) {
   }
 }
 inline const char *relocation_name(unsigned type) {
-  constexpr const char *names[] = {"NONE",    "ABS32",  "ABS64",   "LI32",
-                                   "LI64",    "PCREL8", "PCREL11", "PCREL14",
-                                   "PCREL20", "PCREL24"};
-  return type <= PCREL24 ? names[type] : "INVALID";
+  constexpr const char *names[] = {"NONE",    "ABS32",   "ABS64",   "LI32",
+                                   "LI64",    "PCREL8",  "PCREL11", "PCREL14",
+                                   "PCREL20", "PCREL24", "ADRPC16"};
+  return type <= ADRPC16 ? names[type] : "INVALID";
 }
 } // namespace mica::elf

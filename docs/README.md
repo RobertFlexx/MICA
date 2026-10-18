@@ -62,7 +62,9 @@ requirements.
 compact counted-loop advantage and the cases that tie. They do not establish
 power or clock-speed advantages.
 
-The [2.0 report](engineering/MICA2_VERIFICATION.md) records the current checks.
+The [2026-10-18 ELF/toolchain audit](engineering/AUDIT_2026-10-18.md) records
+current source changes, executed software tests and outstanding hardware gaps.
+The [2.0 report](engineering/MICA2_VERIFICATION.md) records earlier checks.
 The [repository audit](engineering/AUDIT.md) records the original defects. The [historical r2
 report](engineering/IMPLEMENTATION_REPORT.md) brings together the fixes, results and
 remaining work, with [archived evidence](engineering/results/README.md). Older

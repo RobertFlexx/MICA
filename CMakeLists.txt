@@ -65,6 +65,13 @@ add_test(NAME engineering
 add_test(NAME mica2
          COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/mica2.py
                  --tools $<TARGET_FILE_DIR:mica-as>)
+add_test(NAME elf_revision
+         COMMAND ${Python3_EXECUTABLE}
+                 ${CMAKE_SOURCE_DIR}/tests/elf_revision.py
+                 --tools $<TARGET_FILE_DIR:mica-as>)
+add_test(NAME format_safety
+         COMMAND ${Python3_EXECUTABLE}
+                 ${CMAKE_SOURCE_DIR}/tests/format_safety.py)
 add_test(
   NAME mica2_density
   COMMAND

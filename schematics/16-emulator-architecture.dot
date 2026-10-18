@@ -4,11 +4,14 @@ node [shape=box,style="rounded,filled",fillcolor="#f1f5f9",color="#475569",fontn
 edge [fontname="DejaVu Sans",fontsize=9,color="#334155"];
 label="MICA 2.0 | SDK emulator execution paths";
 cli [label="mica-run\n--profile MICA-2C/2E/2L or --mica2"];
+elf [label="ET_EXEC ELF input: verify XLEN and extension flags\nMICA2 feature requires matching runtime revision\nraw binaries skip ELF metadata"];
 reference [label="Reference interpreter\nMICA2 operations / traps / wake"];
 fast [label="--fast: selected scalar fast paths\nfallback to reference step"];
 native [label="--native-loops: specialized legacy loop\nfallback for unsupported operations"];
 state [label="Shared registers, memory, PC, CSRs\nretirement trace / modeled instruction steps"];
-cli -> reference [label="default"];
+cli -> elf [label="ELF executable"];
+elf -> reference [label="validated input"];
+cli -> reference [label="raw binary"];
 cli -> fast [label="optional"];
 cli -> native [label="optional"];
 native -> fast [label="fallback"];

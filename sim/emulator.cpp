@@ -58,7 +58,8 @@ class CPU {
   unsigned features() const {
     return unsigned(xreg) | unsigned(multiply) << 1 | unsigned(flow) << 2 |
            unsigned(atomic) << 3 | unsigned(simd) << 4 | unsigned(bitops) << 5 |
-           unsigned(traps) << 6 | 128u | unsigned(mica2) << 8;
+           unsigned(traps) << 6 | 128u |
+           (mica2 ? mica::elf::mica2_feature : 0u);
   }
   void ram_range(U addr, int n, bool store) {
     if (addr > ram.size() || U(n) > ram.size() - addr)
@@ -1405,9 +1406,14 @@ int main(int argc, char **argv) {
         throw Fault("ELF XLEN differs from --xlen");
       unsigned enabled = unsigned(xr) | unsigned(m) << 1 | unsigned(fl) << 2 |
                          unsigned(a) << 3 | unsigned(v) << 4 |
-                         unsigned(bits) << 5 | unsigned(trap) << 6 | 128u;
-      if (object.features & ~enabled)
-        throw Fault("ELF requires disabled extensions");
+                         unsigned(bits) << 5 | unsigned(trap) << 6 | 128u |
+                         (mica2 ? mica::elf::mica2_feature : 0u);
+      if (bool(object.features & mica::elf::mica2_feature) != mica2)
+        throw Fault("ELF ISA revision differs from selected runtime (use "
+                    "--mica2 for MICA 2.0)");
+      if (unsigned missing = object.features & ~enabled)
+        throw Fault("ELF requires disabled extensions: " +
+                    mica::elf::feature_names(missing));
       base = object.base;
       entry = object.entry;
       data = std::move(object.image);

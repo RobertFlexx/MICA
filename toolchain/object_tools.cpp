@@ -52,7 +52,10 @@ int main(int argc, char **argv) {
     } else if (tool == "mica-objdump") {
       std::cout << "experimental MICA ELF64 type=" << o.type
                 << " XLEN=" << o.width << " entry=0x" << std::hex << o.entry
-                << "\n"
+                << " ISA="
+                << ((o.features & e::mica2_feature) ? "2.0" : "1.0")
+                << " required="
+                << e::feature_names(o.features & ~e::mica2_feature) << "\n"
                 << "section .mica.image address=0x" << o.base << " size=0x"
                 << o.image.size() << " flags=WAX\n"
                 << "symbols " << std::dec << o.symbols.size() << "\n";

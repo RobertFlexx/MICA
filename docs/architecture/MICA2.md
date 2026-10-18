@@ -59,9 +59,11 @@ d = (instruction_PC + 2 * sign_extend(imm16)) mod 2^XLEN
 
 The assembler argument is a **halfword displacement**, not a byte displacement.
 `adrpc x3,2` at address zero writes 4. It does not dereference memory.
-`adrpc` is a PC-relative primitive, not yet a complete ELF PC-relative
-relocation facility. The linker needs a dedicated relocation before compiler
-literal pools or position-independent code can be considered complete.
+`adrpc` supports the `ADRPC16` ELF relocation for `adrpc d,symbol[+/-addend]`
+in relocatable assembly objects. It computes the signed halfword displacement
+relative to the **instruction PC**, not the next instruction. The linker rejects
+unaligned or out-of-range targets. This enables references to nearby literals
+and symbols, but is not a complete position-independent or compiler backend.
 
 ## Full-width and word behavior
 

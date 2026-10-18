@@ -61,10 +61,10 @@
     "schematics/15-board-electrical-topology.pdf": "0fb772df429b0b2bd09b291819292c3f079761fd91da09c64a3f887f6fad8141",
     "schematics/15-board-electrical-topology.png": "127b4ab66a8af0a1e217cb7a58ee3612964632f540fd6461fdf1b6cd5e0314a7",
     "schematics/15-board-electrical-topology.svg": "ad4ecac6146f5bb9e55d06e9f61c443cc0404bc83d830177f598fb191b5ae4bd",
-    "schematics/16-emulator-architecture.dot": "aed25c516b191a545a16178b20c9848bad5739a801d461cad5bd6aeb0fb723a3",
-    "schematics/16-emulator-architecture.pdf": "40cc88fb079a5525b08cef1fa073e6b4947b3ffa2279b4a2f1a495b28da33a0a",
-    "schematics/16-emulator-architecture.png": "5e3bf08c260d0c99716561286533797f54f39c4b832c0da76a9b79727a59663e",
-    "schematics/16-emulator-architecture.svg": "8b1b3408ade6e01ec6e725e02e7f7f038908a000b6a28bb8ff5fb132afd3c318",
+    "schematics/16-emulator-architecture.dot": "c0a30ac6a1bebd7d92c99d05ce95f4a7b6ee2ec70302fd85d0886dbfdec4a73e",
+    "schematics/16-emulator-architecture.pdf": "7b24f0cacf14b486cc21678857939c73ca18cb894152ef74645ae15f5a391a59",
+    "schematics/16-emulator-architecture.png": "1684c63441a98979b7568bd279f191eadf38d27ab54dbc651d4e33fbd2e242c4",
+    "schematics/16-emulator-architecture.svg": "c4b5ab77d152641226d23712a026e23464d3e2b6694affe836d9bcfaff638a17",
     "schematics/board.dot": "0debee03af41c425952d671622be40f5c79beaf263cb1f9545409f0497e5df77",
     "schematics/board.pdf": "0fb772df429b0b2bd09b291819292c3f079761fd91da09c64a3f887f6fad8141",
     "schematics/board.png": "127b4ab66a8af0a1e217cb7a58ee3612964632f540fd6461fdf1b6cd5e0314a7",
@@ -167,9 +167,9 @@
     "rtl/vhdl/tb_mica_crc32.vhd": "a461de6c6178b50e1a9cf92b863c37d122e4560922468b750dff80090e9a01bd",
     "rtl/vhdl/tb_mica_watchdog.vhd": "c546f2568fd6db239a8136f693d21a16f113e1258a59858587b1004b808099fe",
     "scripts/generate_mica2_diagrams.py": "3d793caf5703313944678eabebbb3163f076d7266132b8a9230e6a3302190550",
-    "scripts/generate_overview_schematics.py": "cc46de99d3696e947aa533d1d7258a86360f1dcc203b4d22f79974e3414b22a6",
+    "scripts/generate_overview_schematics.py": "4c200b1bb54ee06a415946899a17db042410104ceb44a04914384ea4301dc48a",
     "scripts/generate_schematics.py": "8abd9aaf6067aacbfd567b034c349eaa5fcc0cc06a8da098b2c8ab6321a1ac3a",
     "scripts/generate_soc_schematic.py": "22d326dc804abbe92849bdd7eeed4124df83a23cefc28e411817740ce0b83c3c",
-    "sim/emulator.cpp": "a97806d48742605b4ed9362124822ead3b2165e0c49e2e5da445ef2bc485af7a"
+    "sim/emulator.cpp": "5147304a9eacd3fa7d3f36e3d45bc77366f294ac23b1f6c22e514f5efd38204d"
   }
 }

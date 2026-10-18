@@ -2,6 +2,14 @@
 
 ## MICA 2.0
 
+Repair the 2.0 ELF feature flag mismatch, require compatible revisions when
+linking or loading, report ISA requirements in `mica-objdump`, and implement
+`ADRPC16` relocations for cross-object PC-relative addresses. Harden signed
+relocation addends, branch displacement arithmetic and operand parsing. Add
+32/64-bit firmware integration tests and transactional source formatting.
+No machine instruction encoding was altered.
+
+
 Add compact full-width stack accesses, short counted branches, ADRPC, wakeable
 WFI, explicit STOP, signed XLEN64 word loads and 8/16-register profiles.
 Preserve the 1.0 decode and all frozen firmware fixtures. Verify the new RTL

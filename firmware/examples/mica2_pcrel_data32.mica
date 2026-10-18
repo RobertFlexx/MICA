@@ -1,0 +1,5 @@
+.arch mica32v2
+.global mica2_value
+.align 4
+mica2_value:
+  .word 41

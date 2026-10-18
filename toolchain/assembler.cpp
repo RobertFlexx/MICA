@@ -97,6 +97,8 @@ static std::vector<std::string> split(const std::string &s) {
     throw Error("unclosed string or bracket");
   if (!trim(cur).empty())
     out.push_back(trim(cur));
+  else if (!out.empty())
+    throw Error("empty trailing operand");
   for (auto &a : out)
     if (a.empty())
       throw Error("empty operand");
@@ -589,7 +591,7 @@ class Assembler {
            i != std::sregex_iterator(); ++i)
         if (label_names.contains(i->str()) || external_names.contains(i->str()))
           throw Error(
-              "unsupported relocation expression; use symbol +/- constant with li32/li64, a branch, .word or .quad");
+              "unsupported relocation expression; use symbol +/- constant with li32/li64, adrpc, a branch, .word or .quad");
     }
     return val(s, sy, sizing);
   }
@@ -628,7 +630,24 @@ class Assembler {
         std::string name = m[1];
         if (sy.contains(name) && !label_names.contains(name))
           return std::nullopt;
-        U addend = m[3].matched ? val(m[3], sy, false) : 0;
+        U addend = 0;
+        if (m[3].matched) {
+          const std::string offset = m[3];
+          // The preceding boundary prevents the 'x123' of 0x123 from
+          // masquerading as a second symbol in the addend.
+          const std::regex identifier(
+              R"((^|[^A-Za-z0-9_.$])([A-Za-z_.$][A-Za-z0-9_.$]*))");
+          for (auto i = std::sregex_iterator(offset.begin(), offset.end(),
+                                             identifier);
+               i != std::sregex_iterator(); ++i)
+            if (label_names.contains((*i)[2].str()) ||
+                external_names.contains((*i)[2].str()))
+              throw Error("relocation addend must be absolute, not a symbol");
+          addend = val(offset, sy, false);
+          const U max_positive = U(std::numeric_limits<S>::max());
+          if (addend > max_positive + (m[2] == "-" ? 1u : 0u))
+            throw Error("relocation addend exceeds signed 64-bit range");
+        }
         if (m[2] == "-")
           addend = U(0) - addend;
         return std::pair{name, std::bit_cast<S>(addend)};
@@ -667,6 +686,9 @@ class Assembler {
       if (op == "li32" || op == "li64") {
         kind = op == "li32" ? mica::elf::LI32 : mica::elf::LI64;
         operand = 1;
+      } else if (op == "adrpc" && mica2) {
+        kind = mica::elf::ADRPC16;
+        operand = 1;
       } else if (op == "j" || op == "call")
         kind = mica::elf::PCREL24;
       else if (op == "b")
@@ -684,7 +706,8 @@ class Assembler {
       if (kind && operand < a.size() && add_reloc(a[operand], kind, pc)) {
         Line placeholder = l;
         placeholder.a[operand] =
-            std::to_string(kind <= mica::elf::LI64
+            std::to_string(kind <= mica::elf::LI64 ||
+                                   kind == mica::elf::ADRPC16
                                ? 0
                                : pc + (kind <= mica::elf::PCREL11 ? 2 : 4));
         return enc(placeholder, false);
@@ -1227,7 +1250,8 @@ public:
     o.features = unsigned(xreg) | unsigned(multiply) << 1 |
                  unsigned(flow) << 2 | unsigned(atomic) << 3 |
                  unsigned(simd) << 4 | unsigned(bitops) << 5 |
-                 unsigned(traps) << 6 | unsigned(mica2) << 8;
+                 unsigned(traps) << 6 |
+                 (mica2 ? mica::elf::mica2_feature : 0u);
     for (const auto &[name, value] : sy) {
       unsigned bind = weak_names.contains(name)     ? 2u
                       : global_names.contains(name) ? 1u

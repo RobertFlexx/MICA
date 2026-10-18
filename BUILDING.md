@@ -142,12 +142,16 @@ Install clang-format, Black and cmake-format, then run:
 ```sh
 python3 scripts/format_code.py
 python3 scripts/format_code.py --check
+# To touch only reviewed files:
+python3 scripts/format_code.py --path toolchain/assembler.cpp --path tests/elf_revision.py
 ```
 
 C++/SystemVerilog/Verilog use `.clang-format`; Python uses `pyproject.toml`;
 CMake uses `.cmake-format.yaml`. `--cmake-format PATH` selects a formatter
-installed with a supported Python version (cmakelang currently fails under
-Python 3.15). JSON uses two-space indentation. Assembly,
-VHDL, Tcl, constraints and build metadata retain nesting with whitespace cleanup.
+installed with a supported Python version. JSON uses two-space indentation.
+The formatter stages every changed file in memory and does not write any
+source if a format tool fails. It deliberately leaves assembly, VHDL, shell,
+Tcl, constraints and other data-sensitive inputs untouched; trimming spaces
+inside a shell here-document or YAML scalar can change behavior.
 Generated tables and drawings retain their generator's canonical output.
 Regenerate drawings and rerun verification after formatting RTL.

@@ -31,6 +31,12 @@ build/mica-run --profile MICA-2C short.bin
 
 The example runs a counted loop and leaves `x1=28`.
 
+For separately assembled MICA 2.0 firmware, the `ADRPC16` relocation lets
+`adrpc` refer to symbols in another object without new machine-code encodings.
+The [linker guide](docs/toolchain/LINKER.md) includes reproducible MICA-32 and
+MICA-64 examples. ELF files retain the ISA revision: `mica-run --mica2` executes
+2.0 ELF, while mismatched 1.0/2.0 objects or runtime modes are rejected.
+
 For a first program, save this as `hello.mica`:
 
 ```asm
