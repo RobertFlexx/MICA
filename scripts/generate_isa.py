@@ -120,7 +120,9 @@ def generate():
         doc += f"`{fmt['fields']}`\n\n| Opcode | Canonical syntax and disassembly | Extension | Execution |\n| ---: | --- | --- | --- |\n"
         for r in groups[group]:
             doc += f"| {r['op']} | `{syntax(group, r)}` | {r['extension']} | {r['semantics'].replace('|', '&#124;')} |\n"
-    doc += "\nFLOW opcodes 0..7 have compact forms at short R op8 = 23 + the FLOW opcode. "
+    doc += (
+        "\nFLOW opcodes 0..7 have compact forms at short R op8 = 23 + the FLOW opcode. "
+    )
     doc += "Signed post-increment loads (8..10) require MICA 2.0 and use only the long encoding. "
     doc += (
         "Extended majors 12 through 15 and all unallocated subopcodes are reserved.\n"

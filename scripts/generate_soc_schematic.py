@@ -43,8 +43,24 @@ with tempfile.TemporaryDirectory(prefix="mica-soc-draw-") as temp:
         check=True,
     )
     (stage / "mica_crc32.v").write_text(netlist.stdout)
+    netlist = subprocess.run(
+        [
+            "ghdl",
+            "--synth",
+            "--std=08",
+            "--out=verilog",
+            ROOT / "rtl/vhdl/mica_event_counter.vhd",
+            ROOT / "rtl/vhdl/mica_watchdog.vhd",
+            "-e",
+            "mica_watchdog",
+        ],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    (stage / "mica_watchdog.v").write_text(netlist.stdout)
     (stage / "program.mem32").write_text("00000000\n" * (65536 // 4))
-    command = "read_verilog -sv -I. mica_core_txn.sv mica_soc.sv mica_uart_tx.sv mica_uart_tx_portable.v mica_crc_mmio.sv mica_sram_txn.v mica_uart_rx.v mica_sync_fifo.v mica_crc32.v; chparam -set MICA2 1 -set UART_RX 1 -set CRC_ENABLE 1 mica_soc; hierarchy -top mica_soc; proc; write_json soc.json"
+    command = "read_verilog -sv -I. mica_core_txn.sv mica_soc.sv mica_uart_tx.sv mica_uart_tx_portable.v mica_crc_mmio.sv mica_sram_txn.v mica_uart_rx.v mica_sync_fifo.v mica_crc32.v mica_watchdog.v; chparam -set MICA2 1 -set UART_RX 1 -set CRC_ENABLE 1 -set WATCHDOG_ENABLE 1 -set REG_PARITY 1 -set TRAP 1 mica_soc; hierarchy -top mica_soc; proc; write_json soc.json"
     result = subprocess.run(
         ["yosys", "-Q", "-p", command],
         cwd=stage,
@@ -63,6 +79,7 @@ with tempfile.TemporaryDirectory(prefix="mica-soc-draw-") as temp:
         "receive.fifo",
         "checksum.bridge",
         "checksum.engine",
+        "safety.watchdog",
     ]
     names = {}
     for name, net in sorted(
@@ -72,7 +89,7 @@ with tempfile.TemporaryDirectory(prefix="mica-soc-draw-") as temp:
         names.setdefault(tuple(net["bits"]), name)
     dot = [
         'digraph soc {rankdir=LR;node[shape=box,fontname="monospace"];',
-        'label="MICA 2.0: mica_soc: MICA2=1, XLEN32, UART_RX=1, CRC_ENABLE=1, RAM_BYTES=65536\\nAll modules clk_i rising edge, rst_ni active low. SRAM reset sampled on clk_i.\\nNet boxes are actual Yosys nets; $ names identify SoC combinational expressions.";',
+        'label="MICA 2.0: mica_soc: MICA2=1, XLEN32, UART_RX=1, CRC_ENABLE=1, WATCHDOG_ENABLE=1, REG_PARITY=1, TRAP=1\\nRAM_BYTES=65536. All modules clk_i rising edge, rst_ni active low. SRAM reset sampled on clk_i.\\nNet boxes are actual Yosys nets; $ names identify SoC combinational expressions.";',
     ]
     net_nodes = {}
     inventory = {}
@@ -88,6 +105,7 @@ with tempfile.TemporaryDirectory(prefix="mica-soc-draw-") as temp:
             "receive.fifo": "mica_sync_fifo",
             "checksum.bridge": "mica_crc_mmio",
             "checksum.engine": "mica_crc32",
+            "safety.watchdog": "mica_watchdog",
         }[name]
         dot.append(f'{node}[label="{name}\\n{module}"];')
         inventory[name] = {"module": module, "ports": {}}

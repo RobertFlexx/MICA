@@ -69,7 +69,9 @@ module tb_mica_sync_fifo;
         $fatal(1, "FIFO reset");
       rst_n = 1;
     end
-    $display("mica_sync_fifo PASS: DEPTH=%0d, 8000 deterministic queue operations", DEPTH);
+    $display(
+        "mica_sync_fifo PASS: DEPTH=%0d, 8000 deterministic queue operations",
+        DEPTH);
     $finish;
   end
 endmodule

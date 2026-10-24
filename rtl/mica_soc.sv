@@ -1,7 +1,7 @@
 // MICA transactional on-chip SoC. Single clk_i domain. SPDX-License-Identifier: MIT
 module mica_soc
     #(parameter integer XLEN = 32, RAM_BYTES = 65536, FLOW = 0, BITOPS = 0,
-                        TRAP = 0, PERF = 0,
+                        TRAP = 0, PERF = 0, REG_PARITY = 0,
       parameter integer XREG = 0, MUL = 0, MICA2 = 0, CLOCK_HZ = 12000000,
                         BAUD = 115200,
       parameter integer UART_RX = 0, CRC_ENABLE = 0, WATCHDOG_ENABLE = 0,
@@ -39,8 +39,9 @@ module mica_soc
   wire mmio_ready = (!mmio_valid || dsr) && (!uart_select || !uart_busy);
   wire mmio_accept = dv && !ram_select && !crc_select && mmio_ready;
   wire [XLEN - 1 : 0] unshifted = wd >> (8 * int'(da & XLEN'(XLEN / 8 - 1)));
-  wire [31 : 0] word_write = unshifted[31 : 0] &
-      (size == 0 ? 32'hff : size == 1 ? 32'hffff : 32'hffffffff);
+  wire [31 : 0] word_write = unshifted[31 : 0] & (size == 0   ? 32'hff
+                                                  : size == 1 ? 32'hffff
+                                                              : 32'hffffffff);
   wire [31 : 0] rx_status = {
                     19'b0,      rx_level,   4'b0,        1'(UART_RX != 0),
                     rx_overrun, rx_framing, rx_available};
@@ -123,7 +124,8 @@ module mica_soc
           if (dw)
             watchdog_min <= word_write;
           else
-            mmio_data <= XLEN'(watchdog_min) << (8 * int'(da & XLEN'(XLEN / 8 - 1)));
+            mmio_data <= XLEN'(watchdog_min)
+                         << (8 * int'(da & XLEN'(XLEN / 8 - 1)));
         end else if (WATCHDOG_ENABLE != 0 && da == XLEN'('hffff0068)) begin
           if (dw)
             watchdog_max <= word_write;
@@ -134,7 +136,8 @@ module mica_soc
         end else if (WATCHDOG_ENABLE != 0 && !dw && da == XLEN'('hffff0070))
           mmio_data <= XLEN'({watchdog_early, watchdog_expired});
         else if (WATCHDOG_ENABLE != 0 && !dw && da == XLEN'('hffff0074))
-          mmio_data <= XLEN'(watchdog_count) << (8 * int'(da & XLEN'(XLEN / 8 - 1)));
+          mmio_data <= XLEN'(watchdog_count)
+                       << (8 * int'(da & XLEN'(XLEN / 8 - 1)));
         else
           mmio_error <= 1;
       end
@@ -153,11 +156,13 @@ module mica_soc
                   .TRAP(TRAP),
                   .PERF(PERF),
                   .MICA2(MICA2),
+                  .REG_PARITY(REG_PARITY),
                   .RAM_BYTES(RAM_BYTES))
       core(.clk_i(clk_i),
            .rst_ni(rst_ni),
-           .irq_i(irq_sync[1] || (rx_irq_enable && rx_available) ||
-                  (watchdog_control[1] && (watchdog_expired || watchdog_early))),
+           .irq_i(
+               irq_sync[1] || (rx_irq_enable && rx_available) ||
+               (watchdog_control[1] && (watchdog_expired || watchdog_early))),
            .i_req_valid(iv),
            .i_req_ready(ir),
            .i_req_addr(ia),
@@ -231,13 +236,19 @@ module mica_soc
     if (WATCHDOG_ENABLE != 0) begin : safety
       wire watchdog_write = mmio_accept && dw && size <= 2;
       wire watchdog_kick = watchdog_write && da == XLEN'('hffff006c);
-      wire watchdog_clear = watchdog_write && da == XLEN'('hffff0078) && unshifted[0];
+      wire watchdog_clear =
+               watchdog_write && da == XLEN'('hffff0078) && unshifted[0];
       // GHDL converts the VHDL counter and watchdog for mixed-language builds.
-      mica_watchdog watchdog(.clk_i(clk_i), .rst_ni(rst_ni),
-          .enable_i(watchdog_control[0]), .kick_i(watchdog_kick),
-          .clear_i(watchdog_clear), .min_ticks_i(watchdog_min),
-          .max_ticks_i(watchdog_max), .expired_o(watchdog_expired),
-          .early_o(watchdog_early), .count_o(watchdog_count));
+      mica_watchdog watchdog(.clk_i(clk_i),
+                             .rst_ni(rst_ni),
+                             .enable_i(watchdog_control[0]),
+                             .kick_i(watchdog_kick),
+                             .clear_i(watchdog_clear),
+                             .min_ticks_i(watchdog_min),
+                             .max_ticks_i(watchdog_max),
+                             .expired_o(watchdog_expired),
+                             .early_o(watchdog_early),
+                             .count_o(watchdog_count));
     end else begin : no_safety
       assign watchdog_expired = 0;
       assign watchdog_early = 0;

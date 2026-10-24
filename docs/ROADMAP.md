@@ -12,7 +12,7 @@ preserves the frozen 1.0 firmware contract.
 | --- | --- | --- | --- |
 | 1 | Reliable assembly SDK | Local checks pass; remote CI pending | GCC/Clang builds, CTest, sanitizers/fuzzing, frozen fixtures, installed binary and extracted source checks |
 | 2 | Compiler-ready object and ABI contract | In progress: revision flags, PC-relative addresses, compact branch relocations and object alignment implemented | Independent text/rodata/data/BSS sections, NOBITS, section alignment/relocations, ROM-to-RAM startup, specified C calling convention and reproducible negative tests |
-| 3 | Minimum C toolchain | Open | One maintained compiler backend targeting MICA-2C/2E/2L, instruction selection, stack frames, register allocation, calls/returns and a tested freestanding runtime |
+| 3 | Minimum C toolchain | Experimental Clang IR subset works for MICA-2C/2E; compiled sensor firmware simulated | Maintained optimizing backend, unsupported C constructs, XLEN64, complete ABI and freestanding runtime |
 | 4 | Smaller reference implementation | Synthesis baseline available | Matched bare-core and SoC synthesis, separate RAM/peripheral/counter costs, retirement equivalence and area/CPI results |
 | 5 | FPGA platform validation | Board simulation complete; physical tests pending | Vivado implementation, routed timing, Arty A7 reset/boot and UART/RAM/timer/interrupt tests, archived constraints and logs |
 | 6 | First pipelined core | Open | An implementation tested against the multicycle retirement reference, including hazards, stalls, branches, precise faults, interrupt boundaries and reset cancellation |
@@ -38,9 +38,9 @@ alignment, trap diagnostics and package validation.
    widths, arguments/returns, aggregates, varargs, stack frames and callee saves.
    Select a compiler backend and test leaf calls, recursion, spills and interrupts
    before growing the runtime.
-3. Use generated code and matched synthesis to decide whether stack forms,
-   signed post-increment loads or additional multiply operations justify an ISA
-   addition. Keep unallocated opcodes reserved until all implementations agree.
+3. Improve compiler register allocation and control-flow lowering before adding
+   more instructions. Signed F loads are optional development additions; their
+   DSP results do not establish general compiler benefits.
 4. Reduce reference-core resources with measured experiments, then validate the
    board and a pipeline against the existing retirement interface. Every new
    implementation must retain precise faults and compatibility regressions.
@@ -50,3 +50,8 @@ alignment, trap diagnostics and package validation.
 Physical validation requires Vivado and an Arty A7 board. The
 [status table](../SDK_STATUS.md) tracks support; the
 [research priorities](research/MICA2_PRIORITIES.md) describe planned experiments.
+
+The [embedded report](engineering/EMBEDDED_REFINEMENT.md) tracks current C,
+sensor, wakeup and optional integrity work. MICA-2D/2R/2S remain proposed.
+Security isolation, ECC, a pipeline and qualification need separate implementation
+and verification gates.

@@ -33,23 +33,39 @@ install(
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY stdlib/ DESTINATION ${CMAKE_INSTALL_DATADIR}/mica/stdlib)
 install(DIRECTORY isa/ DESTINATION ${CMAKE_INSTALL_DATADIR}/mica/isa)
-install(PROGRAMS compiler/mica_cc.py DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME mica-cc)
+install(
+  PROGRAMS compiler/mica_cc.py
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  RENAME mica-cc)
 install(FILES compiler/mica_ir.py DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY compiler/examples/
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/mica/compiler/examples)
 enable_testing()
 add_test(NAME generated_isa
          COMMAND ${Python3_EXECUTABLE}
                  ${CMAKE_SOURCE_DIR}/scripts/generate_isa.py --check)
 add_test(NAME isa_schema COMMAND ${Python3_EXECUTABLE}
-                                ${CMAKE_SOURCE_DIR}/tests/isa_schema.py)
-add_test(NAME instruction_matrix COMMAND ${Python3_EXECUTABLE}
-  ${CMAKE_SOURCE_DIR}/verification/instructions/run.py
-  --tools $<TARGET_FILE_DIR:mica-as>
-  --output ${CMAKE_BINARY_DIR}/instruction-matrix)
+                                 ${CMAKE_SOURCE_DIR}/tests/isa_schema.py)
+add_test(
+  NAME instruction_matrix
+  COMMAND
+    ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/verification/instructions/run.py
+    --tools $<TARGET_FILE_DIR:mica-as> --output
+    ${CMAKE_BINARY_DIR}/instruction-matrix)
 find_program(MICA_CLANG NAMES clang-18 clang)
 if(MICA_CLANG)
-  add_test(NAME compiler_subset COMMAND ${Python3_EXECUTABLE}
-    ${CMAKE_SOURCE_DIR}/compiler/tests/run.py --tools $<TARGET_FILE_DIR:mica-as>
-    --clang ${MICA_CLANG} --output ${CMAKE_BINARY_DIR}/compiler-tests)
+  add_test(
+    NAME compiler_subset
+    COMMAND
+      ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/compiler/tests/run.py --tools
+      $<TARGET_FILE_DIR:mica-as> --clang ${MICA_CLANG} --output
+      ${CMAKE_BINARY_DIR}/compiler-tests)
+  add_test(
+    NAME sensor_firmware
+    COMMAND
+      ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/build_sensor_demo.py
+      --tools $<TARGET_FILE_DIR:mica-as> --clang ${MICA_CLANG} --output
+      ${CMAKE_BINARY_DIR}/sensor-firmware)
 endif()
 add_test(
   NAME integration
@@ -133,7 +149,8 @@ install(
   DIRECTORY firmware/
   DESTINATION ${CMAKE_INSTALL_DATADIR}/mica/firmware
   FILES_MATCHING
-  PATTERN "*.mica")
+  PATTERN "*.mica"
+  PATTERN "Makefile")
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(DIRECTORY docs/ DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(FILES README.md BUILDING.md SDK_STATUS.md LICENSE CHANGELOG.md

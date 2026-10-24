@@ -68,7 +68,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check source manifest and build archives
         run: |
-          python3 scripts/package_source.py --update-checksums
+          python3 scripts/package_source.py
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --parallel 4
           cpack --config build/CPackConfig.cmake -B build/releases -G TGZ
@@ -121,21 +121,29 @@ jobs:
           python3 scripts/build_rtl_sim.py --profile MICA-2C
           python3 scripts/build_rtl_sim.py --profile MICA-2E
           python3 scripts/build_rtl_sim.py --profile MICA-2L
+          for profile in MICA-2C MICA-2E MICA-2L; do
+            python3 scripts/build_rtl_sim.py --profile "$profile" --reg-parity 1
+          done
           python3 verification/differential/run.py --tools build
           python3 verification/differential/mica2.py --tools build
+          python3 verification/differential/mica2.py --tools build --reg-parity --output build/differential-parity
           python3 verification/differential/profiles.py --tools build
-          python3 verification/instructions/run.py --tools build --rtl build/rtl --output build/instruction-matrix-rtl
+          python3 verification/instructions/run.py --tools build --rtl build/rtl --output build/instruction-matrix-rtl --check-report docs/verification/INSTRUCTION_MATRIX.md
           python3 compiler/tests/run.py --tools build --rtl build/rtl
+          python3 scripts/test_sensor_demo.py --tools build
+          python3 scripts/test_fault_injection.py --tools build
       - name: Formal, synthesis, diagrams and measured experiments
         run: |
           python3 scripts/generate_mica2_diagrams.py --check
           python3 scripts/run_formal.py
           python3 scripts/synthesize.py --tools build
           python3 scripts/generate_schematics.py --check
-          python3 scripts/generate_soc_schematic.py --check || echo "WARNING: SoC schematic check failed (GHDL may be unavailable or diagrams stale)"
-          python3 scripts/generate_overview_schematics.py --check || echo "WARNING: Overview schematics check failed (diagrams stale)"
+          python3 scripts/generate_soc_schematic.py --check
+          python3 scripts/generate_component_schematics.py --check
+          python3 scripts/generate_overview_schematics.py --check
           python3 benchmarks/hardware.py --tools build
           python3 benchmarks/alu_activity.py
+          python3 benchmarks/compiled_density.py --tools build
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -146,9 +154,16 @@ jobs:
             build/peripherals/*.vcd
             build/differential/results.json
             build/differential-mica2/results.json
+            build/differential-parity/results.json
             build/profile-tests/results.json
             build/instruction-matrix-rtl/results.json
             build/compiler/results.json
+            build/compiled-density/results.json
+            build/compiled-density/commands.log
+            build/sensor-demo/results.json
+            build/sensor-demo/commands.log
+            build/fault-injection/results.json
+            build/fault-injection/commands.log
             build/rtl/*/build.log
             build/formal/*.log
             build/synthesis/*.json

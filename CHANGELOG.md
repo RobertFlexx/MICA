@@ -2,6 +2,26 @@
 
 ## MICA 2.0
 
+### Development r3, 2026-10-23
+
+Restore narrow C regressions and support constant GEP/MMIO pointer expressions.
+Select compact stack accesses and allocate local MICA-2E values to x8..x11.
+Add compiled timer/sensor/CRC/UART/watchdog firmware, native and RTL checks,
+complete-program code-size comparisons and explicit compiler limits.
+
+Add optional register parity with fail-stop detection and targeted injection.
+Enter enabled interrupts directly from SLEEP and record entry/retirement latency.
+Keep MICA-2D/2R/2S proposed. Regenerate drawings and restore strict checksum and
+schematic CI checks. No new instruction encoding in this revision.
+
+### Development r2, 2026-10-18
+
+Add optional `ldpi.sb/sh/sw` in reserved long F slots, preserving existing bytes.
+Validate encoding overlap and feature/version dependencies; execute the per-
+instruction matrix. Reuse aligned long parcels and retain fetch words across
+nonoverlapping stores/redirects. Add portable Verilog UART TX/SPI, VHDL event
+counting, precise watchdog windows and optional MMIO integration.
+
 Fix the formatter dependency that broke Linux/macOS CI. Add extracted-source
 release validation and installed MICA 2.0 smoke tests. Add `PCREL6` compact
 branch relocations, preserve ELF object alignment, reject overflowing literals

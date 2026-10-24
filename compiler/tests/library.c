@@ -6,4 +6,6 @@ int triangle(int n) {
   return n + triangle(n - 1);
 }
 
-int adjust(int value, int bias) { return value + bias + triangle(5); }
+int adjust(int value, int bias) {
+  return value + bias + triangle(5);
+}

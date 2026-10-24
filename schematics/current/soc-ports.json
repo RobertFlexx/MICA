@@ -44,7 +44,7 @@
       },
       "req_addr": {
         "direction": "input",
-        "net": "constant 95949392",
+        "net": "constant 33323130",
         "width": 4
       },
       "req_ready": {
@@ -59,7 +59,7 @@
       },
       "req_valid": {
         "direction": "input",
-        "net": "$mica_soc.sv:235$logic_and$2256_Y",
+        "net": "$mica_soc.sv:292$logic_and$2468_Y",
         "width": 1
       },
       "req_wdata": {
@@ -264,7 +264,7 @@
       },
       "irq_i": {
         "direction": "input",
-        "net": "$mica_soc.sv:129$logic_or$2254_Y",
+        "net": "$mica_soc.sv:164$logic_or$2458_Y",
         "width": 1
       },
       "pc_o": {
@@ -304,7 +304,7 @@
       },
       "d_req_valid": {
         "direction": "input",
-        "net": "$mica_soc.sv:180$logic_and$2255_Y",
+        "net": "$mica_soc.sv:216$logic_and$2459_Y",
         "width": 1
       },
       "d_req_wdata": {
@@ -465,6 +465,61 @@
       "uart_rx_i": {
         "direction": "input",
         "net": "uart_rx_i",
+        "width": 1
+      }
+    }
+  },
+  "safety.watchdog": {
+    "module": "mica_watchdog",
+    "ports": {
+      "clear_i": {
+        "direction": "input",
+        "net": "safety.watchdog_clear",
+        "width": 1
+      },
+      "clk_i": {
+        "direction": "input",
+        "net": "clk_i",
+        "width": 1
+      },
+      "count_o": {
+        "direction": "output",
+        "net": "watchdog_count",
+        "width": 32
+      },
+      "early_o": {
+        "direction": "output",
+        "net": "watchdog_early",
+        "width": 1
+      },
+      "enable_i": {
+        "direction": "input",
+        "net": "constant 1440",
+        "width": 1
+      },
+      "expired_o": {
+        "direction": "output",
+        "net": "watchdog_expired",
+        "width": 1
+      },
+      "kick_i": {
+        "direction": "input",
+        "net": "safety.watchdog_kick",
+        "width": 1
+      },
+      "max_ticks_i": {
+        "direction": "input",
+        "net": "watchdog_max",
+        "width": 32
+      },
+      "min_ticks_i": {
+        "direction": "input",
+        "net": "watchdog_min",
+        "width": 32
+      },
+      "rst_ni": {
+        "direction": "input",
+        "net": "rst_ni",
         "width": 1
       }
     }

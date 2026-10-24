@@ -18,6 +18,7 @@ set_property include_dirs [list [file join $root isa generated]] [current_filese
 read_verilog -sv [list [file join $root rtl mica_core_txn.sv] [file join $root rtl mica_soc.sv] [file join $root rtl mica_uart_tx.sv] [file join $root rtl mica_crc_mmio.sv] [file join $root boards arty_a7 mica_arty_a7.sv]]
 read_verilog [list [file join $root rtl verilog mica_sram_txn.v] [file join $root rtl verilog mica_sync_fifo.v] [file join $root rtl verilog mica_uart_rx.v] [file join $root rtl verilog mica_uart_tx_portable.v]]
 read_vhdl -vhdl2008 [file join $root rtl vhdl mica_crc32.vhd]
+read_vhdl -vhdl2008 [list [file join $root rtl vhdl mica_event_counter.vhd] [file join $root rtl vhdl mica_watchdog.vhd]]
 read_xdc [file join $root boards arty_a7 arty_a7.xdc]
 set_property top mica_arty_a7 [current_fileset]
 set_property generic [list "INIT_FILE=\"$memfile\"" MICA2=$mica2 TRAP=1 PERF=1 UART_RX=1 CRC_ENABLE=1] [current_fileset]

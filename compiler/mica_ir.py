@@ -22,22 +22,29 @@ def typed(text):
     text = text.strip()
     match = re.match(r"(i(?:1|8|16|32)|ptr|void|%[\w.]+)\b", text)
     if match:
-        return match[1], text[match.end():].strip()
+        return match[1], text[match.end() :].strip()
     if text.startswith(("[", "{")):
         depth = 0
         for index, char in enumerate(text):
             depth += char in "[{"
             depth -= char in "]}"
             if depth == 0:
-                return text[:index + 1], text[index + 1:].strip()
+                return text[: index + 1], text[index + 1 :].strip()
     raise Unsupported("unsupported type: " + text)
 
 
 def value(text):
     # Clang's scalar parameter and memory alignment attributes carry no data.
     _, rest = typed(text)
-    # Strip GEP attributes and other known Clang attributes
-    rest = re.sub(r"\b(?:inbounds|nuw|nsw|noundef|signext|zeroext|nonnull|nocapture|readonly|writeonly)\b|\balign \d+\b", "", rest).strip()
+    rest = re.sub(
+        r"\b(?:noundef|signext|zeroext|nonnull|nocapture|readonly|writeonly)\b|\balign \d+\b",
+        "",
+        rest,
+    ).strip()
+    if rest.startswith("getelementptr "):
+        return rest
+    if re.fullmatch(r"inttoptr \(i32 -?\d+ to ptr\)", rest):
+        return rest
     if not re.fullmatch(r"[%@][\w.]+|-?\d+|true|false|null", rest):
         raise Unsupported("unsupported value/attribute: " + text)
     return rest
@@ -48,11 +55,15 @@ def align(n, boundary):
 
 
 class Module:
-    def __init__(self, text, multiply=True):
-        if 'target datalayout = "e-' not in text or 'target triple = "riscv32-' not in text:
+    def __init__(self, text, multiply=True, expanded=False):
+        if (
+            'target datalayout = "e-' not in text
+            or 'target triple = "riscv32-' not in text
+        ):
             raise Unsupported("expected little-endian 32-bit Clang IR")
         self.types, self.functions, self.globals, self.external = {}, [], [], []
         self.multiply = multiply
+        self.expanded = expanded
         lines = iter(text.splitlines())
         for line in lines:
             line = line.strip()
@@ -61,7 +72,10 @@ class Module:
             elif line.startswith("define "):
                 if " internal " in line or " private " in line:
                     raise Unsupported("unsupported internal linkage")
-                match = re.fullmatch(r"define (?:[\w]+ )*(i32|i16|i8|void|ptr) @([\w.]+)\((.*?)\).*\{", line)
+                match = re.fullmatch(
+                    r"define (?:[\w]+ )*(i32|i16|i8|void|ptr) @([\w.]+)\((.*?)\).*\{",
+                    line,
+                )
                 if not match:
                     raise Unsupported("unsupported function signature: " + line)
                 body = []
@@ -72,7 +86,9 @@ class Module:
                     instruction = re.sub(r", ![\w.]+ !\d+.*$", "", instruction)
                     if instruction:
                         body.append(instruction)
-                self.functions.append((match[2], match[1], split(match[3]) if match[3] else [], body))
+                self.functions.append(
+                    (match[2], match[1], split(match[3]) if match[3] else [], body)
+                )
             elif line.startswith("declare "):
                 match = re.search(r"@([\w.]+)\(", line)
                 if not match:
@@ -96,12 +112,16 @@ class Module:
                     boundary = self.layout(ty)[1]
                     for attribute in attributes[1:]:
                         if not re.fullmatch(r"align \d+", attribute):
-                            raise Unsupported("unsupported global attribute: " + attribute)
+                            raise Unsupported(
+                                "unsupported global attribute: " + attribute
+                            )
                         boundary = int(attribute.split()[1])
                         if boundary < 1 or boundary > 4096 or boundary & (boundary - 1):
                             raise Unsupported("unsupported global alignment")
                     self.globals.append((name, ty, attributes[0], boundary))
-            elif line and not line.startswith((";", "source_filename", "target ", "attributes ", "!")):
+            elif line and not line.startswith(
+                (";", "source_filename", "target ", "attributes ", "!")
+            ):
                 raise Unsupported("unsupported module directive: " + line)
 
     def resolve(self, ty):
@@ -142,19 +162,23 @@ class Module:
                 data, index = bytearray(), 0
                 while index < len(raw):
                     if raw[index] == "\\":
-                        data.append(int(raw[index + 1:index + 3], 16))
+                        data.append(int(raw[index + 1 : index + 3], 16))
                         index += 3
                     else:
                         data.append(ord(raw[index]))
                         index += 1
                 result = bytes(data)
             else:
-                result = b"".join(self.initializer(*typed(item)) for item in split(initial[1:-1]))
+                result = b"".join(
+                    self.initializer(*typed(item)) for item in split(initial[1:-1])
+                )
         elif fields := self.members(ty):
             result = b""
             for field, item in zip(fields, split(initial[1:-1]), strict=True):
                 _, boundary = self.layout(field)
-                result = result.ljust(align(len(result), boundary), b"\0") + self.initializer(field, typed(item)[1])
+                result = result.ljust(
+                    align(len(result), boundary), b"\0"
+                ) + self.initializer(field, typed(item)[1])
             result = result.ljust(size, b"\0")
         else:
             raise Unsupported("unsupported initializer: " + initial)
@@ -162,8 +186,41 @@ class Module:
             raise Unsupported("initializer size mismatch")
         return result
 
+    def constant_address(self, expression):
+        text = expression.removeprefix("getelementptr ")
+        text = re.sub(r"^(?:(?:inbounds|nuw|nsw) )+", "", text)
+        if not text.startswith("(") or not text.endswith(")"):
+            raise Unsupported("unsupported constant GEP: " + expression)
+        args = split(text[1:-1])
+        ty, base, offset = args[0], value(args[1]), 0
+        if not re.fullmatch(r"@[\w.]+", base):
+            raise Unsupported("constant GEP requires a global base")
+        for index, item in enumerate(args[2:]):
+            val = int(value(item))
+            fields = self.members(ty)
+            if index and fields:
+                if not 0 <= val < len(fields):
+                    raise Unsupported("constant struct index out of range")
+                field_offset = 0
+                for previous in fields[:val]:
+                    size, boundary = self.layout(previous)
+                    field_offset = align(field_offset, boundary) + size
+                offset += align(field_offset, self.layout(fields[val])[1])
+                ty = fields[val]
+            else:
+                if index:
+                    match = re.fullmatch(r"\[\d+ x (.+)\]", self.resolve(ty))
+                    if not match:
+                        raise Unsupported("unsupported constant GEP descent")
+                    ty = match[1]
+                offset += val * self.layout(ty)[0]
+        return base[1:] + (f"{offset:+}" if offset else "")
+
     def assembly(self):
-        result = ["; Experimental Clang IR lowering, MICA32, scalar ABI subset.", ".arch mica32v2"]
+        result = [
+            "; Experimental Clang IR lowering, MICA32, scalar ABI subset.",
+            ".arch mica32v2",
+        ]
         defined = {f[0] for f in self.functions}
         result += [".extern " + name for name in self.external if name not in defined]
         for name, returns, args, body in self.functions:
@@ -172,16 +229,57 @@ class Module:
             data = self.initializer(ty, initial)
             result += [f".align {boundary}", ".global " + name, name + ":"]
             for offset in range(0, len(data), 32):
-                result.append(".byte " + ",".join(map(str, data[offset:offset + 32])))
+                result.append(".byte " + ",".join(map(str, data[offset : offset + 32])))
         return "\n".join(result) + "\n"
 
 
 class Function:
     def __init__(self, module, name, returns, args, body):
-        self.module, self.name, self.returns, self.args, self.body = module, name, returns, args, body
+        self.module, self.name, self.returns, self.args, self.body = (
+            module,
+            name,
+            returns,
+            args,
+            body,
+        )
         if len(args) > 4:
             raise Unsupported(name + ": at most four scalar arguments")
         self.slots, self.objects, self.code, self.serial = {}, {}, [], 0
+        # Allocate short-lived SSA results to caller-saved high registers only
+        # when every use is in this block and no call can clobber the value.
+        self.cached = {}
+        if module.expanded:
+            blocks, definitions, uses, calls = {}, {}, {}, set()
+            block = 0
+            for index, line in enumerate(body):
+                if line.endswith(":"):
+                    block += 1
+                blocks[index] = block
+                match = re.match(r"(%[\w.]+) = (.+)", line)
+                if match and not match[2].startswith("alloca "):
+                    definitions[match[1]] = index
+                operands = match[2] if match else line
+                for operand in re.findall(r"%[\w.]+", operands):
+                    uses.setdefault(operand, []).append(index)
+                if operands.startswith("call "):
+                    calls.add(index)
+            active = []
+            for dest, start in definitions.items():
+                positions = uses.get(dest, [])
+                if not positions or any(
+                    blocks[pos] != blocks[start] for pos in positions
+                ):
+                    continue
+                end = max(positions)
+                if any(start < call <= end for call in calls):
+                    continue
+                active = [(last, reg) for last, reg in active if last >= start]
+                free = [
+                    reg for reg in range(8, 12) if reg not in [r for _, r in active]
+                ]
+                if free:
+                    self.cached[dest] = free[0]
+                    active.append((end, free[0]))
         offset = 8  # saved x5 and link register, within an aligned frame
         for arg in args:
             ty, _ = typed(arg)
@@ -202,7 +300,7 @@ class Function:
                     offset = align(offset, boundary)
                     self.objects[dest] = offset
                     offset += size
-                else:
+                elif dest not in self.cached:
                     self.slots[dest] = offset
                     offset += 4
         self.frame = align(offset, 16)
@@ -220,10 +318,22 @@ class Function:
         return self.label("cc" + str(self.serial))
 
     def load(self, val, reg):
-        if val in self.objects:
+        if val in self.cached:
+            self.emit(f"add3 x{reg},x{self.cached[val]},x0")
+        elif match := re.fullmatch(r"inttoptr \(i32 (-?\d+) to ptr\)", val):
+            self.emit(f"li32 x{reg},{int(match[1]) & 0xffffffff}")
+        elif val.startswith("getelementptr "):
+            self.emit(f"li32 x{reg},{self.module.constant_address(val)}")
+        elif val in self.objects:
             self.emit(f"add3i x{reg},sp,{self.objects[val]}")
         elif val in self.slots:
-            self.emit(f"add3i x5,sp,{self.slots[val]}", f"ldw x{reg},[x5]")
+            slot = self.slots[val]
+            if slot < 32:
+                self.emit(f"ldsp x{reg},[sp+{slot}]")
+            elif slot <= 60:
+                self.emit(f"ldw x{reg},[sp+{slot}]")
+            else:
+                self.emit(f"add3i x5,sp,{slot}", f"ldw x{reg},[x5]")
         elif val.startswith("@"):
             self.emit(f"li32 x{reg},{val[1:]}")
         elif val in ("false", "null", "true"):
@@ -236,11 +346,22 @@ class Function:
     def save(self, dest, reg=1, ty="i32"):
         if ty in ("i1", "i8", "i16"):
             bits = int(ty[1:])
-            self.emit(f"shl3i x{reg},x{reg},{32 - bits}", f"shr3i x{reg},x{reg},{32 - bits}")
-        self.emit(f"add3i x5,sp,{self.slots[dest]}", f"stw x{reg},[x5]")
+            self.emit(
+                f"shl3i x{reg},x{reg},{32 - bits}", f"shr3i x{reg},x{reg},{32 - bits}"
+            )
+        if dest in self.cached:
+            self.emit(f"add3 x{self.cached[dest]},x{reg},x0")
+        else:
+            slot = self.slots[dest]
+            if slot < 32:
+                self.emit(f"stsp x{reg},[sp+{slot}]")
+            elif slot <= 60:
+                self.emit(f"stw x{reg},[sp+{slot}]")
+            else:
+                self.emit(f"add3i x5,sp,{slot}", f"stw x{reg},[x5]")
 
     def gep(self, text, dest):
-        args = split(text.removeprefix("inbounds ").removeprefix("nuw "))
+        args = split(re.sub(r"^(?:(?:inbounds|nuw|nsw) )+", "", text))
         ty = args[0]
         self.load(value(args[1]), 1)
         for index, item in enumerate(args[2:]):
@@ -265,7 +386,7 @@ class Function:
                 ty = match[1]
             size, _ = self.module.layout(ty)
             if re.fullmatch(r"-?\d+", val):
-                self.load(str((int(val) * size) & 0xffffffff), 2)
+                self.load(str((int(val) * size) & 0xFFFFFFFF), 2)
             else:
                 self.load(val, 2)
                 if size & (size - 1):
@@ -279,7 +400,7 @@ class Function:
         if line.endswith(":"):
             self.emit(self.label(line[:-1]) + ":")
             return
-        dest, op = (line.split(" = ", 1) if " = " in line else (None, line))
+        dest, op = line.split(" = ", 1) if " = " in line else (None, line)
         if op.startswith("alloca "):
             return
         if op.startswith("ret "):
@@ -292,12 +413,22 @@ class Function:
             cond, yes, no = split(op[3:])
             self.load(value(cond), 1)
             fall = self.unique()
-            self.emit(f"bz x1,{fall}", "j " + self.label(yes.removeprefix("label ")),
-                      fall + ":", "j " + self.label(no.removeprefix("label ")))
+            self.emit(
+                f"bz x1,{fall}",
+                "j " + self.label(yes.removeprefix("label ")),
+                fall + ":",
+                "j " + self.label(no.removeprefix("label ")),
+            )
         elif op.startswith("store "):
             args = split(op[6:].removeprefix("volatile "))
             ty, _ = typed(args[0])
-            mnemonic = {"i1": "stb", "i8": "stb", "i16": "sth", "i32": "stw", "ptr": "stw"}.get(ty)
+            mnemonic = {
+                "i1": "stb",
+                "i8": "stb",
+                "i16": "sth",
+                "i32": "stw",
+                "ptr": "stw",
+            }.get(ty)
             if not mnemonic:
                 raise Unsupported("unsupported store type " + ty)
             self.load(value(args[0]), 1)
@@ -305,7 +436,13 @@ class Function:
             self.emit(f"{mnemonic} x1,[x2]")
         elif op.startswith("load "):
             args = split(op[5:].removeprefix("volatile "))
-            mnemonic = {"i1": "ldbu", "i8": "ldbu", "i16": "ldhu", "i32": "ldw", "ptr": "ldw"}.get(args[0])
+            mnemonic = {
+                "i1": "ldbu",
+                "i8": "ldbu",
+                "i16": "ldhu",
+                "i32": "ldw",
+                "ptr": "ldw",
+            }.get(args[0])
             if not mnemonic:
                 raise Unsupported("unsupported load type " + args[0])
             self.load(value(args[1]), 2)
@@ -313,7 +450,9 @@ class Function:
             self.save(dest, ty=args[0])
         elif op.startswith("getelementptr "):
             self.gep(op[14:], dest)
-        elif match := re.fullmatch(r"(sext|zext|trunc|ptrtoint|inttoptr) (.+) to (\w+)", op):
+        elif match := re.fullmatch(
+            r"(sext|zext|trunc|ptrtoint|inttoptr) (.+) to (\w+)", op
+        ):
             cast, arg, target = match.groups()
             ty, _ = typed(arg)
             self.load(value(arg), 1)
@@ -326,7 +465,9 @@ class Function:
             if target not in ("i1", "i8", "i16", "i32", "ptr"):
                 raise Unsupported("unsupported cast destination " + target)
             self.save(dest, ty=target)
-        elif match := re.fullmatch(r"icmp (eq|ne|slt|sle|sgt|sge|ult|ule|ugt|uge) (.+)", op):
+        elif match := re.fullmatch(
+            r"icmp (eq|ne|slt|sle|sgt|sge|ult|ule|ugt|uge) (.+)", op
+        ):
             predicate, operands = match.groups()
             left, right = split(operands)
             ty, _ = typed(left)
@@ -335,14 +476,24 @@ class Function:
             if ty in ("i8", "i16"):
                 for reg in (1, 2):
                     right_shift = "sar3i" if predicate.startswith("s") else "shr3i"
-                    self.emit(f"shl3i x{reg},x{reg},{32 - int(ty[1:])}", f"{right_shift} x{reg},x{reg},{32 - int(ty[1:])}")
+                    self.emit(
+                        f"shl3i x{reg},x{reg},{32 - int(ty[1:])}",
+                        f"{right_shift} x{reg},x{reg},{32 - int(ty[1:])}",
+                    )
             reverse = predicate.endswith(("gt", "le"))
-            mnemonic = "seq3" if predicate in ("eq", "ne") else "slt3" if predicate.startswith("s") else "sltu3"
+            mnemonic = (
+                "seq3"
+                if predicate in ("eq", "ne")
+                else "slt3" if predicate.startswith("s") else "sltu3"
+            )
             self.emit(f"{mnemonic} x3,x{2 if reverse else 1},x{1 if reverse else 2}")
             if predicate == "ne" or predicate.endswith(("ge", "le")):
                 self.emit("xor3i x3,x3,1")
             self.save(dest, 3)
-        elif match := re.fullmatch(r"(add|sub|mul|and|or|xor|shl|lshr|ashr) (?:(?:nuw|nsw) )*(i1|i8|i16|i32) (.+)", op):
+        elif match := re.fullmatch(
+            r"(add|sub|mul|and|or|xor|shl|lshr|ashr) (?:(?:nuw|nsw) )*(i1|i8|i16|i32) (.+)",
+            op,
+        ):
             operation, ty, operands = match.groups()
             left, right = split(operands)
             self.load(left, 1)
@@ -352,15 +503,29 @@ class Function:
                 self.emit(f"shl3i x1,x1,{32 - bits}", f"sar3i x1,x1,{32 - bits}")
             if operation == "mul" and not self.module.multiply:
                 loop, skip, done = self.unique(), self.unique(), self.unique()
-                self.emit("li8 x3,0", f"bz x2,{done}", loop + ":", "and3i x4,x2,1",
-                          f"bz x4,{skip}", "add x3,x1", skip + ":", "shli x1,1", "shri x2,1",
-                          f"bnz x2,{loop}", done + ":", "mov x1,x3")
+                self.emit(
+                    "li8 x3,0",
+                    f"bz x2,{done}",
+                    loop + ":",
+                    "and3i x4,x2,1",
+                    f"bz x4,{skip}",
+                    "add x3,x1",
+                    skip + ":",
+                    "shli x1,1",
+                    "shri x2,1",
+                    f"bnz x2,{loop}",
+                    done + ":",
+                    "mov x1,x3",
+                )
             else:
                 mnemonic = {"lshr": "shr", "ashr": "sar"}.get(operation, operation)
                 self.emit(f"{mnemonic}3 x1,x1,x2")
             self.save(dest, ty=ty)
         elif op.startswith("call "):
-            match = re.fullmatch(r"call (?:\w+ )*(void|i8|i16|i32|ptr) @([\w.]+)\((.*)\)(?: #[0-9]+)?", op)
+            match = re.fullmatch(
+                r"call (?:\w+ )*(void|i8|i16|i32|ptr) @([\w.]+)\((.*)\)(?: #[0-9]+)?",
+                op,
+            )
             if not match or match[2].startswith("llvm."):
                 raise Unsupported("unsupported call/intrinsic: " + op)
             returns, name, operands = match.groups()
@@ -376,8 +541,16 @@ class Function:
             raise Unsupported("unsupported instruction: " + line)
 
     def assembly(self):
-        self.emit(".global " + self.name, self.name + ":", f"add3i sp,sp,-{self.frame}",
-                  "stw x5,[sp]", "stw x6,[sp+4]")
+        self.emit(
+            f"; {self.name}: frame={self.frame} bytes, register temporaries={len(self.cached)}"
+        )
+        self.emit(
+            ".global " + self.name,
+            self.name + ":",
+            f"add3i sp,sp,-{self.frame}",
+            "stw x5,[sp]",
+            "stw x6,[sp+4]",
+        )
         for index, arg in enumerate(self.args):
             self.save(value(arg), index + 1, typed(arg)[0])
         for line in self.body:
@@ -385,6 +558,11 @@ class Function:
                 self.instruction(line)
             except (ValueError, KeyError) as error:
                 raise Unsupported(f"{self.name}: {line}: {error}") from error
-        self.emit(self.label("epilogue") + ":", "ldw x5,[sp]", "ldw x6,[sp+4]",
-                  f"add3i sp,sp,{self.frame}", "ret")
+        self.emit(
+            self.label("epilogue") + ":",
+            "ldw x5,[sp]",
+            "ldw x6,[sp+4]",
+            f"add3i sp,sp,{self.frame}",
+            "ret",
+        )
         return self.code

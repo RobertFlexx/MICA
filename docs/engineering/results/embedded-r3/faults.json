@@ -1,0 +1,810 @@
+{
+  "method": "One injection per reset at a WFI boundary. Sweep all 32 x1 bits and all 32 bits of one data word; selected invalid FSM, odd PC and instruction response errors.",
+  "limits": "Targeted simulation, not exhaustive fault coverage. No register correction, SRAM protection, CSR parity, lockstep, radiation or safety qualification. Even-bit register errors and errors outside the check boundary can escape detection.",
+  "results": [
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 0,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 1,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 2,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 3,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 4,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 5,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 6,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 7,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 8,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 9,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 10,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 11,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 12,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 13,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 14,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 15,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 16,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 17,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 18,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 19,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 20,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 21,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 22,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 23,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 24,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 25,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 26,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 27,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 28,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 29,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 30,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "register x1",
+      "bit": 31,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 0,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 1,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 2,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 3,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 4,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 5,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 6,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 7,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 8,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 9,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 10,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 11,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 12,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 13,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 14,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 15,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 16,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 17,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 18,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 19,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 20,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 21,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 22,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 23,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 24,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 25,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 26,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 27,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 28,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 29,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 30,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "data SRAM",
+      "bit": 31,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 0,
+      "target": "FSM",
+      "bit": null,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 0,
+      "target": "PC alignment",
+      "bit": null,
+      "outcome": "precise trap"
+    },
+    {
+      "reg_parity": 0,
+      "target": "instruction response",
+      "bit": null,
+      "outcome": "precise trap"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 0,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 1,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 2,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 3,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 4,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 5,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 6,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 7,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 8,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 9,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 10,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 11,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 12,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 13,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 14,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 15,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 16,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 17,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 18,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 19,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 20,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 21,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 22,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 23,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 24,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 25,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 26,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 27,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 28,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 29,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 30,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "register x1",
+      "bit": 31,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 0,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 1,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 2,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 3,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 4,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 5,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 6,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 7,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 8,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 9,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 10,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 11,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 12,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 13,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 14,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 15,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 16,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 17,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 18,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 19,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 20,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 21,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 22,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 23,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 24,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 25,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 26,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 27,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 28,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 29,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 30,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "data SRAM",
+      "bit": 31,
+      "outcome": "undetected corruption"
+    },
+    {
+      "reg_parity": 1,
+      "target": "FSM",
+      "bit": null,
+      "outcome": "fail-stop"
+    },
+    {
+      "reg_parity": 1,
+      "target": "PC alignment",
+      "bit": null,
+      "outcome": "precise trap"
+    },
+    {
+      "reg_parity": 1,
+      "target": "instruction response",
+      "bit": null,
+      "outcome": "precise trap"
+    }
+  ]
+}

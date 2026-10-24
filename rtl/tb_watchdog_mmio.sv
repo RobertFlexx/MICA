@@ -5,13 +5,25 @@ module tb_watchdog_mmio;
   logic [7 : 0] leds;
   integer irqs = 0;
   logic slept = 0;
-  always #5 clk = ~clk;
-  mica_soc #(.XLEN(XLEN), .MICA2(1), .TRAP(1), .WATCHDOG_ENABLE(1),
-      .INIT_FILE(XLEN == 32 ? "program_watchdog_mmio.mem32" : "program_watchdog_mmio.mem64"))
-    dut(.clk_i(clk), .rst_ni(rst_n), .irq_i(1'b0), .uart_rx_i(1'b1),
-        .uart_tx_o(tx), .leds_o(leds), .halted_o(halted), .fault_o(fault));
+  always
+    #5 clk = ~clk;
+  mica_soc #(.XLEN(XLEN),
+             .MICA2(1),
+             .TRAP(1),
+             .WATCHDOG_ENABLE(1),
+             .INIT_FILE(XLEN == 32 ? "program_watchdog_mmio.mem32"
+                                   : "program_watchdog_mmio.mem64"))
+      dut(.clk_i(clk),
+          .rst_ni(rst_n),
+          .irq_i(1'b0),
+          .uart_rx_i(1'b1),
+          .uart_tx_o(tx),
+          .leds_o(leds),
+          .halted_o(halted),
+          .fault_o(fault));
   initial begin
-    repeat (4) @(negedge clk);
+    repeat (4) @(negedge clk)
+      ;
     rst_n = 1;
     repeat (3000) begin
       @(negedge clk);
@@ -24,8 +36,11 @@ module tb_watchdog_mmio;
         if (fault || dut.a0 !== XLEN'(42) || dut.core.regs[3] !== XLEN'(1) ||
             irqs != 1 || !slept || dut.watchdog_expired || dut.watchdog_early ||
             dut.watchdog_count != 0 || dut.watchdog_control != 0)
-          $fatal(1, "watchdog MMIO XLEN=%0d irqs=%0d slept=%0d a0=%h", XLEN, irqs, slept, dut.a0);
-        $display("PASS watchdog MMIO XLEN=%0d: timeout, WFI wake, precise IRQ, clear and resume", XLEN);
+          $fatal(1, "watchdog MMIO XLEN=%0d irqs=%0d slept=%0d a0=%h", XLEN,
+                 irqs, slept, dut.a0);
+        $display(
+            "PASS watchdog MMIO XLEN=%0d: timeout, WFI wake, precise IRQ, clear and resume",
+            XLEN);
         $finish;
       end
     end

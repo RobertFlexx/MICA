@@ -1,0 +1,22 @@
+digraph component {rankdir=LR;node[shape=box,fontname="monospace"];core[label="mica_watchdog\nclk_i rising edge; rst_ni asynchronous active low\nDefault parameters; interface widths from elaboration"];
+n0[label="clk_i[1]"];
+n0->core;
+n1[label="rst_ni[1]"];
+n1->core;
+n2[label="enable_i[1]"];
+n2->core;
+n3[label="kick_i[1]"];
+n3->core;
+n4[label="clear_i[1]"];
+n4->core;
+n5[label="min_ticks_i[32]"];
+n5->core;
+n6[label="max_ticks_i[32]"];
+n6->core;
+n7[label="expired_o[1]"];
+core->n7;
+n8[label="early_o[1]"];
+core->n8;
+n9[label="count_o[32]"];
+core->n9;
+}

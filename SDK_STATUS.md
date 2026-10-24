@@ -26,9 +26,17 @@ and limits. Original MICA 1.0 evidence remains separately dated.
 | Schematics | All 31 drawing paths refreshed | DOT/SVG/PNG/PDF, Yosys port checks, SHA-256 source/preview manifest |
 | RISC-V comparison | Assembler-measured code-size advantage on counted loops | Byte-copy body 6 vs 16 bytes RV32IC, 12 bytes with Zcb |
 | Power / Fmax | Unmeasured | Requires physical power and timing measurements |
-| C / LLVM backend | Not implemented | Assembly toolchain is available |
+| C compilation | Experimental subset | Clang IR lowering for MICA-2C/2E; calls, recursion, arrays, structures, volatile MMIO and native/RTL checks; full LLVM backend incomplete |
+| Signed F | Implemented in tools and scalar RTL | `ldpi.sb/sh/sw`, sign/stride boundaries and precise faults; requires development r2+ |
+| Register parity | Optional experimental detector | Fail-stop before decode effects; targeted register sweep; no correction or SRAM protection |
+| Sensor demonstration | Compiled C and SoC simulation | Timer wake, CRC-8 packets, watchdog and sleep activity; physical energy unmeasured |
+| MICA-2D / 2R / 2S | Proposed | DSP, reliability and security requirements incomplete; tool selections rejected |
 | SIMD / multicore | Emulator / proposal | No production RTL subsystem or protected task isolation |
 
 The processor is a single-issue multicycle reference. Physical board validation,
 routed timing and electrical measurements are pending. The board constraint
 targets 100 MHz.
+
+The [embedded refinement report](docs/engineering/EMBEDDED_REFINEMENT.md) records
+current code-generation losses, observed wake behavior and remaining acceptance
+gates. Historical evidence above is retained with its original scope.

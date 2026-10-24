@@ -1,9 +1,10 @@
-// MICA 1.0 transactional multicycle reference core. SPDX-License-Identifier: MIT
+// MICA 32/64 transactional multicycle reference core. SPDX-License-Identifier: MIT
 // One request per port outstanding. Reset cancels both ports with the fabric.
 module mica_core_txn
     #(parameter integer XLEN = 32, XREG = 0, MUL = 0, FLOW = 0, BITOPS = 0,
       parameter integer TRAP = 0, PERF = 1, MICA2 = 0, RAM_BYTES = 65536,
-                        FETCH_REUSE = 1, FETCH_SELECTIVE = 1, FAST_FETCH = 1)
+                        FETCH_REUSE = 1, FETCH_SELECTIVE = 1, FAST_FETCH = 1,
+                        REG_PARITY = 0)
     (input logic clk_i, irq_i,
      // Assertions sample reset to disable checks; architectural reset is asynchronous.
      /* verilator lint_off SYNCASYNCNET */
@@ -61,6 +62,7 @@ module mica_core_txn
   } state_t;
   state_t state;
   logic [XLEN - 1 : 0] regs[0 : NR - 1];
+  wire register_error;
   logic [XLEN - 1 : 0] pc, fetch_addr, cache_tag;
   logic [31 : 0] cache_data, parcel_word;
   logic cache_valid, second;
@@ -74,6 +76,11 @@ module mica_core_txn
   wire [XLEN - 1 : 0] pending =
                           ip_reg | XLEN'(irq_i) |
                           (timer_count >= timer_cmp ? XLEN'(2) : XLEN'(0));
+  wire interrupt_ready = TRAP != 0 && status_reg[0] && (ie_reg & pending) != 0;
+  wire [XLEN - 1 : 0] interrupt_cause =
+                          (XLEN'(1) << (XLEN - 1)) |
+                          (((ie_reg & pending & XLEN'(2)) != 0) ? XLEN'(2)
+                                                                : XLEN'(1));
 
   function automatic[XLEN - 1 : 0] rr
       (input logic [3 : 0] idx);
@@ -216,6 +223,39 @@ module mica_core_txn
   logic [2 : 0] q_size;
   logic [7 : 0] q_csr;
   logic [XLEN - 1 : 0] response_data;
+  wire [XLEN - 1 : 0] writeback_value =
+                          q_mem ? (q_memsign
+                                       ? sext(response_data, 8 * (1 << q_size))
+                                       : response_data &
+                                             ({XLEN{1'b1}} >>
+                                              (XLEN - 8 * (1 << q_size))))
+                                : q_value1;
+  generate
+    if (REG_PARITY != 0) begin : parity
+      logic [NR - 1 : 0] bits;
+      wire [NR - 1 : 0] errors;
+      for (genvar r = 0; r < NR; r = r + 1) begin : check_register
+        assign errors[r] = (^regs[r]) != bits[r];
+      end
+      assign register_error = |errors;
+      always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (!rst_ni) begin
+          bits <= '0;
+          bits[7] <= ^XLEN'(int'((RAM_BYTES - 16) & ~15));
+        end else begin
+          bits[0] <= 0;
+          if (state == COMMIT && !q_ecall) begin
+            if (q_w1 && q_dst1 != 0)
+              bits[q_dst1[$clog2(NR) - 1 : 0]] <= ^writeback_value;
+            if (q_w2 && q_dst2 != 0)
+              bits[q_dst2[$clog2(NR) - 1 : 0]] <= ^q_value2;
+          end
+        end
+      end
+    end else begin : no_parity
+      assign register_error = 0;
+    end
+  endgenerate
 
   assign halt_o = state == STOP;
   assign pc_o = pc;
@@ -802,11 +842,8 @@ module mica_core_txn
           q_mem <= 0;
           lo <= 0;
           hi <= 0;
-          if (TRAP != 0 && status_reg[0] && (ie_reg & pending) != 0)
-            trap_entry((XLEN'(1) << (XLEN - 1)) |
-                           (((ie_reg & pending & XLEN'(2)) != 0) ? XLEN'(2)
-                                                                 : XLEN'(1)),
-                       pc, 0, 0, 1);
+          if (interrupt_ready)
+            trap_entry(interrupt_cause, pc, 0, 0, 1);
           else if (pc[0])
             trap_entry(0, pc, pc, 0, 0);
           else begin
@@ -859,7 +896,12 @@ module mica_core_txn
           end
         end
         DECODE: begin
-          if (illegal)
+          if (register_error) begin
+            // Integrity failure is fail-stop; recovery belongs to the system.
+            fault_o <= 1;
+            cache_valid <= 0;
+            state <= STOP;
+          end else if (illegal)
             trap_entry(decoded_cause, pc, decoded_tval, 0, 0);
           else begin
             q_w1 <= w1;
@@ -907,14 +949,7 @@ module mica_core_txn
             trap_entry(XLEN'(11), MICA2 != 0 ? pc : q_nextpc, 0, 1, 0);
           else begin
             if (q_w1 && q_dst1 != 0) begin
-              if (q_mem)
-                regs[q_dst1[$clog2(NR) - 1 : 0]] <=
-                    q_memsign
-                        ? sext(response_data, 8 * (1 << q_size))
-                        : response_data &
-                              ({XLEN{1'b1}} >> (XLEN - 8 * (1 << q_size)));
-              else
-                regs[q_dst1[$clog2(NR) - 1 : 0]] <= q_value1;
+              regs[q_dst1[$clog2(NR) - 1 : 0]] <= writeback_value;
             end
             if (q_w2 && q_dst2 != 0)
               regs[q_dst2[$clog2(NR) - 1 : 0]] <= q_value2;
@@ -954,7 +989,7 @@ module mica_core_txn
             if (q_invalidate ||
                 (q_mem && q_memwrite &&
                  (FETCH_SELECTIVE == 0 ||
-                  (cache_tag[XLEN-1:3] == q_addr[XLEN-1:3] &&
+                  (cache_tag[XLEN - 1 : 3] == q_addr[XLEN - 1 : 3] &&
                    (q_size == 3 || cache_tag[2] == q_addr[2])))) ||
                 (FETCH_SELECTIVE == 0 && q_nextpc != pc + XLEN'(ilen)))
               cache_valid <= 0;
@@ -971,7 +1006,9 @@ module mica_core_txn
           end
         end
         SLEEP:
-          if (pending != 0)
+          if (interrupt_ready)
+            trap_entry(interrupt_cause, pc, 0, 0, 1);
+          else if (pending != 0)
             state <= START;
         STOP: begin
         end

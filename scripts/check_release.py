@@ -7,6 +7,8 @@ from pathlib import Path
 import subprocess
 import tarfile
 import tempfile
+import shutil
+import sys
 
 p = argparse.ArgumentParser()
 p.add_argument("--binary", type=Path, required=True)
@@ -17,23 +19,28 @@ a = p.parse_args()
 commands = []
 
 
-def run(command, cwd):
+def run(command, cwd, raw=False):
     command = [str(x) for x in command]
     if a.verbose:
         print("[release-check] " + " ".join(command), flush=True)
     result = subprocess.run(
-        command, cwd=cwd, capture_output=True, text=True, timeout=180
+        command, cwd=cwd, capture_output=True, text=not raw, timeout=180
     )
     commands.append(
         {
             "command": command,
             "exit": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr,
+            "stdout": result.stdout.hex() if raw else result.stdout,
+            "stderr": result.stderr.decode(errors="replace") if raw else result.stderr,
+            "stdout_encoding": "hex" if raw else "text",
         }
     )
     if result.returncode:
-        raise SystemExit(result.stdout + result.stderr)
+        raise SystemExit(
+            (result.stdout + result.stderr).decode(errors="replace")
+            if raw
+            else result.stdout + result.stderr
+        )
     return result
 
 
@@ -68,6 +75,8 @@ with tempfile.TemporaryDirectory(prefix="mica-release-") as temp:
     work = Path(temp)
     binary = extract(a.binary, work / "binary")
     tools = binary / "bin"
+    for flag in ["--help", "--version"]:
+        run([sys.executable, tools / "mica-cc", flag], work)
     for name in [
         "mica-as",
         "mica-ld",
@@ -216,6 +225,67 @@ with tempfile.TemporaryDirectory(prefix="mica-release-") as temp:
     )
     if result.stdout != "ABC" or "x1=0x2a" not in result.stderr:
         raise SystemExit("installed peripheral firmware failed")
+    if shutil.which("clang"):
+        objects = []
+        for name in ("sensor_node", "platform"):
+            obj = work / (name + ".o")
+            run(
+                [
+                    sys.executable,
+                    tools / "mica-cc",
+                    sdk / f"compiler/examples/{name}.c",
+                    "--assembler",
+                    tools / "mica-as",
+                    "-o",
+                    obj,
+                ],
+                work,
+            )
+            objects.append(obj)
+        start = work / "sensor-start.o"
+        run(
+            [
+                tools / "mica-as",
+                "--profile",
+                "MICA-2E",
+                "-c",
+                sdk / "firmware/examples/sensor_start32.mica",
+                "-o",
+                start,
+            ],
+            work,
+        )
+        elf = work / "sensor.elf"
+        run(
+            [
+                tools / "mica-ld",
+                start,
+                *objects,
+                "--elf",
+                elf,
+                "-o",
+                work / "sensor.bin",
+            ],
+            work,
+        )
+        result = run(
+            [
+                tools / "mica-run",
+                "--profile",
+                "MICA-2E",
+                "--watchdog",
+                "--memory",
+                65536,
+                elf,
+            ],
+            work,
+            raw=True,
+        )
+        if (
+            result.stdout != bytes.fromhex("a500643ba5016529a502661fa503670d")
+            or b"x1=0x2a" not in result.stderr
+        ):
+            raise SystemExit("installed compiled sensor failed")
     if a.source:
         source = extract(a.source, work / "source")
         # Check every source checksum without relying on platform sha256sum.

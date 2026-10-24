@@ -12,6 +12,7 @@ module mica_arty_a7
       parameter integer RAM_BYTES = 4096,
       parameter integer UART_RX = 1,
       parameter integer CRC_ENABLE = 0,
+      parameter integer WATCHDOG_ENABLE = 0, REG_PARITY = 0,
       parameter INIT_FILE = "program.mem32")
     (input logic CLK100MHZ,
      input logic btn_reset,
@@ -42,6 +43,8 @@ module mica_arty_a7
              .RAM_BYTES(RAM_BYTES),
              .UART_RX(UART_RX),
              .CRC_ENABLE(CRC_ENABLE),
+             .WATCHDOG_ENABLE(WATCHDOG_ENABLE),
+             .REG_PARITY(REG_PARITY),
              .CLOCK_HZ(100000000),
              .BAUD(115200),
              .INIT_FILE(INIT_FILE))

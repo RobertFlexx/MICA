@@ -1,0 +1,714 @@
+{
+  "method": "Same assembled firmware and five fixed bus-stall seeds; architectural retirement compared to the interpreter on every run. DSP variants use the same signed input and independent host sum.",
+  "limits": "Handwritten kernels; cycles and memory requests only. No compiler, routed timing, power or energy claim.",
+  "results": [
+    {
+      "name": "arithmetic32",
+      "xlen": 32,
+      "core": "baseline",
+      "driver_sha256": "0b89d55cc53ad59b5eaac178c7f2aecac0876e26dec10ccb2f048019edad37f5",
+      "rom_bytes": 28,
+      "retired": 8,
+      "median_cycles": 100,
+      "fetches": 7,
+      "data_requests": 2,
+      "runs": [
+        {
+          "cycles": 112,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 88,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 100,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 113,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        },
+        {
+          "cycles": 96,
+          "fetches": 7,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "arithmetic32",
+      "xlen": 32,
+      "core": "current",
+      "driver_sha256": "6f33c9113386b92569fffdf8dccbed44bb0af5bf6b817b70de14053e0ca48f65",
+      "rom_bytes": 28,
+      "retired": 8,
+      "median_cycles": 90,
+      "fetches": 6,
+      "data_requests": 2,
+      "runs": [
+        {
+          "cycles": 89,
+          "fetches": 6,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 90,
+          "fetches": 6,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 90,
+          "fetches": 6,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 93,
+          "fetches": 6,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 81,
+          "fetches": 6,
+          "loads": 1,
+          "stores": 1,
+          "events": 8,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "arithmetic64",
+      "xlen": 64,
+      "core": "baseline",
+      "driver_sha256": "0b0592d63e7001f69976143351a8add9348004c122604c66d070f27386987440",
+      "rom_bytes": 80,
+      "retired": 17,
+      "median_cycles": 259,
+      "fetches": 17,
+      "data_requests": 4,
+      "runs": [
+        {
+          "cycles": 260,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 253,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 259,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 255,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        },
+        {
+          "cycles": 267,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "arithmetic64",
+      "xlen": 64,
+      "core": "current",
+      "driver_sha256": "cb386187a8f2be4161a9ceb0461ab0fb96b85b94dd43c1d0465e4fd6069d2e6b",
+      "rom_bytes": 80,
+      "retired": 17,
+      "median_cycles": 217,
+      "fetches": 17,
+      "data_requests": 4,
+      "runs": [
+        {
+          "cycles": 206,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 224,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 217,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 216,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 246,
+          "fetches": 17,
+          "loads": 3,
+          "stores": 1,
+          "events": 17,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "flow_copy32",
+      "xlen": 32,
+      "core": "baseline",
+      "driver_sha256": "0b89d55cc53ad59b5eaac178c7f2aecac0876e26dec10ccb2f048019edad37f5",
+      "rom_bytes": 124,
+      "retired": 43,
+      "median_cycles": 595,
+      "fetches": 30,
+      "data_requests": 20,
+      "runs": [
+        {
+          "cycles": 596,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 595,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 564,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 586,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        },
+        {
+          "cycles": 596,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "flow_copy32",
+      "xlen": 32,
+      "core": "current",
+      "driver_sha256": "6f33c9113386b92569fffdf8dccbed44bb0af5bf6b817b70de14053e0ca48f65",
+      "rom_bytes": 124,
+      "retired": 43,
+      "median_cycles": 554,
+      "fetches": 30,
+      "data_requests": 20,
+      "runs": [
+        {
+          "cycles": 562,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 556,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 532,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 544,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 554,
+          "fetches": 30,
+          "loads": 11,
+          "stores": 9,
+          "events": 43,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "string32",
+      "xlen": 32,
+      "core": "baseline",
+      "driver_sha256": "0b89d55cc53ad59b5eaac178c7f2aecac0876e26dec10ccb2f048019edad37f5",
+      "rom_bytes": 400,
+      "retired": 82,
+      "median_cycles": 907,
+      "fetches": 59,
+      "data_requests": 14,
+      "runs": [
+        {
+          "cycles": 931,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 906,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 907,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 929,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        },
+        {
+          "cycles": 905,
+          "fetches": 59,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "string32",
+      "xlen": 32,
+      "core": "current",
+      "driver_sha256": "6f33c9113386b92569fffdf8dccbed44bb0af5bf6b817b70de14053e0ca48f65",
+      "rom_bytes": 400,
+      "retired": 82,
+      "median_cycles": 845,
+      "fetches": 53,
+      "data_requests": 14,
+      "runs": [
+        {
+          "cycles": 845,
+          "fetches": 53,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 826,
+          "fetches": 53,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 839,
+          "fetches": 53,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 854,
+          "fetches": 53,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 871,
+          "fetches": 53,
+          "loads": 6,
+          "stores": 8,
+          "events": 82,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "div32",
+      "xlen": 32,
+      "core": "baseline",
+      "driver_sha256": "0b89d55cc53ad59b5eaac178c7f2aecac0876e26dec10ccb2f048019edad37f5",
+      "rom_bytes": 98,
+      "retired": 333,
+      "median_cycles": 2887,
+      "fetches": 184,
+      "data_requests": 2,
+      "runs": [
+        {
+          "cycles": 2887,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "fault": 0
+        },
+        {
+          "cycles": 2887,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "fault": 0
+        },
+        {
+          "cycles": 2836,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "fault": 0
+        },
+        {
+          "cycles": 2980,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "fault": 0
+        },
+        {
+          "cycles": 2926,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "div32",
+      "xlen": 32,
+      "core": "current",
+      "driver_sha256": "6f33c9113386b92569fffdf8dccbed44bb0af5bf6b817b70de14053e0ca48f65",
+      "rom_bytes": 98,
+      "retired": 333,
+      "median_cycles": 2892,
+      "fetches": 184,
+      "data_requests": 2,
+      "runs": [
+        {
+          "cycles": 2887,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 2892,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 2835,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 2930,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 2928,
+          "fetches": 184,
+          "loads": 1,
+          "stores": 1,
+          "events": 333,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        }
+      ]
+    },
+    {
+      "name": "dot-s16",
+      "xlen": 32,
+      "core": "current",
+      "driver_sha256": "6f33c9113386b92569fffdf8dccbed44bb0af5bf6b817b70de14053e0ca48f65",
+      "rom_bytes": 320,
+      "retired": 595,
+      "median_cycles": 6069,
+      "fetches": 333,
+      "data_requests": 132,
+      "runs": [
+        {
+          "cycles": 6143,
+          "fetches": 333,
+          "loads": 130,
+          "stores": 2,
+          "events": 595,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 6034,
+          "fetches": 333,
+          "loads": 130,
+          "stores": 2,
+          "events": 595,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 6069,
+          "fetches": 333,
+          "loads": 130,
+          "stores": 2,
+          "events": 595,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 6059,
+          "fetches": 333,
+          "loads": 130,
+          "stores": 2,
+          "events": 595,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 6090,
+          "fetches": 333,
+          "loads": 130,
+          "stores": 2,
+          "events": 595,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        }
+      ],
+      "kernel_bytes": 18
+    },
+    {
+      "name": "dot-s16_flow",
+      "xlen": 32,
+      "core": "current",
+      "driver_sha256": "6f33c9113386b92569fffdf8dccbed44bb0af5bf6b817b70de14053e0ca48f65",
+      "rom_bytes": 318,
+      "retired": 339,
+      "median_cycles": 4373,
+      "fetches": 269,
+      "data_requests": 132,
+      "runs": [
+        {
+          "cycles": 4424,
+          "fetches": 269,
+          "loads": 130,
+          "stores": 2,
+          "events": 339,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 4373,
+          "fetches": 269,
+          "loads": 130,
+          "stores": 2,
+          "events": 339,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 4337,
+          "fetches": 269,
+          "loads": 130,
+          "stores": 2,
+          "events": 339,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 4420,
+          "fetches": 269,
+          "loads": 130,
+          "stores": 2,
+          "events": 339,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        },
+        {
+          "cycles": 4342,
+          "fetches": 269,
+          "loads": 130,
+          "stores": 2,
+          "events": 339,
+          "irq_entry_cycles": 0,
+          "irq_retire_cycles": 0,
+          "fault": 0
+        }
+      ],
+      "kernel_bytes": 14
+    }
+  ]
+}

@@ -32,7 +32,9 @@ for source in sorted((ROOT / "examples").glob("*.mica")):
         + ["--xlen", str(width), "--mul", "--flow", "--bitops", "--atomic", "--simd"]
         + (
             ["--trap"]
-            if not source.stem.startswith("mica2_") or "timer" in source.stem or "watchdog" in source.stem
+            if not source.stem.startswith("mica2_")
+            or "timer" in source.stem
+            or "watchdog" in source.stem
             else []
         )
     )
@@ -56,7 +58,8 @@ for source in sorted((ROOT / "examples").glob("*.mica")):
         if source.stem == "peripherals32" and result.stdout != "ABC":
             raise AssertionError("UART/CRC peripheral firmware failed")
         if (
-            source.stem in ["scheduler32", "selftest32", "peripherals32", "mica2_watchdog32"]
+            source.stem
+            in ["scheduler32", "selftest32", "peripherals32", "mica2_watchdog32"]
             and "x1=0x2a" not in result.stderr
         ):
             raise AssertionError(source.name + ": self-test failed\n" + result.stderr)

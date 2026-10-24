@@ -1,6 +1,6 @@
 {
   "isa": "MICA 2.0",
-  "engineering_revision": 2,
+  "engineering_revision": 3,
   "formats": {
     "R": {
       "class": 0,
@@ -789,7 +789,10 @@
         "semantics": "Load8 at old base and sign-extend to XLEN. On success update destination and base += sext(stride14). Base must be nonzero and distinct from destination; faults preserve both registers.",
         "extension": "F",
         "since": "2.0",
-        "requires": ["F", "2C"]
+        "requires": [
+          "F",
+          "2C"
+        ]
       },
       {
         "name": "ldpi.sh",
@@ -797,7 +800,10 @@
         "semantics": "Load16 at naturally aligned old base and sign-extend to XLEN. On success update destination and base += sext(stride14). Base must be nonzero and distinct from destination; faults preserve both registers.",
         "extension": "F",
         "since": "2.0",
-        "requires": ["F", "2C"]
+        "requires": [
+          "F",
+          "2C"
+        ]
       },
       {
         "name": "ldpi.sw",
@@ -805,7 +811,10 @@
         "semantics": "Load32 at naturally aligned old base and sign-extend to XLEN. On success update destination and base += sext(stride14). Base must be nonzero and distinct from destination; faults preserve both registers.",
         "extension": "F",
         "since": "2.0",
-        "requires": ["F", "2C"]
+        "requires": [
+          "F",
+          "2C"
+        ]
       }
     ],
     "MX": [

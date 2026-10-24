@@ -44,6 +44,8 @@ int main(int argc, char **argv) {
     const unsigned irq_retired = argc > 6 ? unsigned(std::stoul(argv[6])) : 0;
     const unsigned irq_delay = argc > 7 ? unsigned(std::stoul(argv[7])) : 0;
     unsigned retired = 0, wake_cycle = 0;
+    unsigned irq_asserted_cycle = 0, irq_entry_cycles = 0,
+             irq_retire_cycles = 0;
     bool irq_line = false, irq_fired = false;
     Request insn, data;
     bool i_stalled = false, d_stalled = false;
@@ -54,6 +56,7 @@ int main(int argc, char **argv) {
       if (wake_cycle && cycle == wake_cycle) {
         irq_line = true;
         irq_fired = true;
+        irq_asserted_cycle = cycle;
       }
       const bool reset = cycle < 3 || (reset_cycle && cycle == reset_cycle);
       if (reset) {
@@ -164,6 +167,7 @@ int main(int argc, char **argv) {
         if (!irq_fired && irq_memory && loads + stores == irq_memory) {
           irq_line = true;
           irq_fired = true;
+          irq_asserted_cycle = cycle + 1;
         }
       }
       cpu.clk_i = 1;
@@ -177,8 +181,13 @@ int main(int argc, char **argv) {
         if (wake_cycle && cycle < wake_cycle)
           throw std::runtime_error(
               "instruction retired before the WFI wake event");
-        if (cpu.trace_trap && (U(cpu.trace_cause) >> (MICA_XLEN - 1)))
+        if (cpu.trace_trap && (U(cpu.trace_cause) >> (MICA_XLEN - 1))) {
           irq_line = false;
+          if (irq_asserted_cycle && !irq_entry_cycles)
+            irq_entry_cycles = cycle - irq_asserted_cycle + 1;
+        }
+        if (cpu.trace_retired && irq_asserted_cycle && !irq_retire_cycles)
+          irq_retire_cycles = cycle - irq_asserted_cycle + 1;
         trace << "{\"order\":" << cpu.trace_order
               << ",\"pc\":" << U(cpu.trace_pc) << ",\"insn\":" << cpu.trace_insn
               << ",\"length\":" << unsigned(cpu.trace_length)
@@ -213,6 +222,8 @@ int main(int argc, char **argv) {
         std::cerr << "{\"cycles\":" << cycle - 2 << ",\"fetches\":" << fetches
                   << ",\"loads\":" << loads << ",\"stores\":" << stores
                   << ",\"events\":" << events
+                  << ",\"irq_entry_cycles\":" << irq_entry_cycles
+                  << ",\"irq_retire_cycles\":" << irq_retire_cycles
                   << ",\"fault\":" << unsigned(cpu.fault_o) << "}\n";
         return cpu.fault_o ? 2 : 0;
       }

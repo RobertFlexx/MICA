@@ -17,6 +17,17 @@ files = [*ROOT.glob("*.md"), *ROOT.glob("docs/**/*.md"), *ROOT.glob("boards/**/*
 with tempfile.TemporaryDirectory(prefix="mica-docs-") as temp:
     for path in files:
         text = path.read_text()
+        if "\u2014" in text:
+            errors.append(
+                f"{path.relative_to(ROOT)}: replace the em dash with normal punctuation"
+            )
+        if re.search(
+            r"(?im)^\s*(?:As an AI\b|Certainly[,!](?=\s|$)|Absolutely[,!](?=\s|$)|Let.s dive\b|Happy to help\b)",
+            text,
+        ):
+            errors.append(
+                f"{path.relative_to(ROOT)}: conversational assistant phrasing"
+            )
         for target in re.findall(r"\[[^\]]*\]\(([^)]+)\)", text):
             target = target.split("#", 1)[0].strip("<>")
             if not target or "://" in target or target.startswith("mailto:"):

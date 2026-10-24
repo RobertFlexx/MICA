@@ -7,7 +7,6 @@ import subprocess
 import tempfile
 import unittest
 
-
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--tools", type=Path, required=True)
 ARGS, EXTRA = CLI.parse_known_args()
@@ -63,8 +62,7 @@ class ElfRevision(unittest.TestCase):
                 )
                 helper = self.assemble(
                     f"helper{width}",
-                    f".arch mica{width}v2\n.global helper\n"
-                    "helper: addi x1,2\nret\n",
+                    f".arch mica{width}v2\n.global helper\n" "helper: addi x1,2\nret\n",
                     width,
                 )
                 expected_flags = 0x10000 | (width == 64)
@@ -74,9 +72,7 @@ class ElfRevision(unittest.TestCase):
                     self.command("mica-objdump", obj, contains="ISA=2.0")
                 image = self.root / f"linked{width}.bin"
                 executable = self.root / f"linked{width}.elf"
-                self.command(
-                    "mica-ld", start, helper, "-o", image, "--elf", executable
-                )
+                self.command("mica-ld", start, helper, "-o", image, "--elf", executable)
                 self.assertEqual(
                     int.from_bytes(executable.read_bytes()[48:52], "little"),
                     expected_flags,
@@ -111,21 +107,36 @@ class ElfRevision(unittest.TestCase):
                 for kind in ("main", "data"):
                     obj = self.root / f"example_{kind}{width}.o"
                     source = (
-                        root / "firmware/examples"
-                        / f"mica2_pcrel_{kind}{width}.mica"
+                        root / "firmware/examples" / f"mica2_pcrel_{kind}{width}.mica"
                     )
                     self.command(
-                        "mica-as", "--mica2", "--xlen", width,
-                        "-c", source, "-o", obj,
+                        "mica-as",
+                        "--mica2",
+                        "--xlen",
+                        width,
+                        "-c",
+                        source,
+                        "-o",
+                        obj,
                     )
                     objects.append(obj)
                 elf = self.root / f"example{width}.elf"
                 self.command(
-                    "mica-ld", *objects, "--base", "0x1000",
-                    "--elf", elf, "-o", self.root / f"example{width}.bin",
+                    "mica-ld",
+                    *objects,
+                    "--base",
+                    "0x1000",
+                    "--elf",
+                    elf,
+                    "-o",
+                    self.root / f"example{width}.bin",
                 )
                 self.command(
-                    "mica-run", "--mica2", "--xlen", width, elf,
+                    "mica-run",
+                    "--mica2",
+                    "--xlen",
+                    width,
+                    elf,
                     contains="x1=0x2a",
                 )
 
@@ -161,13 +172,21 @@ class ElfRevision(unittest.TestCase):
                 contains="cannot mix MICA 1.0 and 2.0",
             )
             self.command(
-                "mica-ld", old, "-o", self.root / "legacy.bin",
-                "--elf", self.root / "legacy.elf",
+                "mica-ld",
+                old,
+                "-o",
+                self.root / "legacy.bin",
+                "--elf",
+                self.root / "legacy.elf",
             )
             self.command("mica-run", "--xlen", width, self.root / "legacy.elf")
             self.command(
-                "mica-run", "--mica2", "--xlen", width,
-                self.root / "legacy.elf", success=False,
+                "mica-run",
+                "--mica2",
+                "--xlen",
+                width,
+                self.root / "legacy.elf",
+                success=False,
                 contains="ELF ISA revision differs",
             )
 
@@ -205,8 +224,12 @@ class ElfRevision(unittest.TestCase):
                 source = self.root / "trailing.mica"
                 source.write_text(instruction + "\n")
                 self.command(
-                    "mica-as", source, "-o", self.root / "bad.bin",
-                    success=False, contains="empty trailing operand",
+                    "mica-as",
+                    source,
+                    "-o",
+                    self.root / "bad.bin",
+                    success=False,
+                    contains="empty trailing operand",
                 )
         for expression, error in (
             ("target+other", "relocation addend must be absolute"),
@@ -221,12 +244,17 @@ class ElfRevision(unittest.TestCase):
                     "target: stop\nother: stop\n"
                 )
                 self.command(
-                    "mica-as", "--mica2", "-c", source,
-                    "-o", self.root / "bad.o", success=False, contains=error,
+                    "mica-as",
+                    "--mica2",
+                    "-c",
+                    source,
+                    "-o",
+                    self.root / "bad.o",
+                    success=False,
+                    contains=error,
                 )
         # Signed relocation addends at their representable boundaries remain valid.
-        for expression in ("target+9223372036854775807",
-                           "target-9223372036854775808"):
+        for expression in ("target+9223372036854775807", "target-9223372036854775808"):
             source = self.root / "boundary.mica"
             source.write_text(
                 ".arch mica32v2\n.global _start\n"
@@ -234,8 +262,12 @@ class ElfRevision(unittest.TestCase):
                 "target: stop\n"
             )
             self.command(
-                "mica-as", "--mica2", "-c", source,
-                "-o", self.root / "boundary.o",
+                "mica-as",
+                "--mica2",
+                "-c",
+                source,
+                "-o",
+                self.root / "boundary.o",
             )
 
     def test_adrpc_symbol_relocation_forward_and_backward(self):
@@ -249,27 +281,48 @@ class ElfRevision(unittest.TestCase):
                 )
                 tail = self.assemble(
                     f"pcrel_target{width}",
-                    f".arch mica{width}v2\n.global target\n"
-                    "target: stop\n",
+                    f".arch mica{width}v2\n.global target\n" "target: stop\n",
                     width,
                 )
                 self.command("mica-objdump", head, contains="ADRPC16 target")
                 elf = self.root / f"forward{width}.elf"
                 self.command(
-                    "mica-ld", head, tail, "--base", "0x1000",
-                    "--elf", elf, "-o", self.root / "forward.bin",
+                    "mica-ld",
+                    head,
+                    tail,
+                    "--base",
+                    "0x1000",
+                    "--elf",
+                    elf,
+                    "-o",
+                    self.root / "forward.bin",
                 )
                 self.command(
-                    "mica-run", "--mica2", "--xlen", width, elf,
+                    "mica-run",
+                    "--mica2",
+                    "--xlen",
+                    width,
+                    elf,
                     contains="x1=0x1010",
                 )
                 backward = self.root / f"backward{width}.elf"
                 self.command(
-                    "mica-ld", tail, head, "--base", "0x1000",
-                    "--elf", backward, "-o", self.root / "backward.bin",
+                    "mica-ld",
+                    tail,
+                    head,
+                    "--base",
+                    "0x1000",
+                    "--elf",
+                    backward,
+                    "-o",
+                    self.root / "backward.bin",
                 )
                 self.command(
-                    "mica-run", "--mica2", "--xlen", width, backward,
+                    "mica-run",
+                    "--mica2",
+                    "--xlen",
+                    width,
+                    backward,
                     contains="x1=0x1000",
                 )
 
@@ -289,28 +342,42 @@ class ElfRevision(unittest.TestCase):
                     32,
                 )
                 self.command(
-                    "mica-ld", main, target, "-o", self.root / "bad.bin",
-                    success=False, contains=message,
+                    "mica-ld",
+                    main,
+                    target,
+                    "-o",
+                    self.root / "bad.bin",
+                    success=False,
+                    contains=message,
                 )
         # A relocation is only legal at the exact WIDE/ADRPC instruction.
         good = self.assemble(
-            "template", ".arch mica32v2\n.global _start\n.extern target\n"
-            "_start: adrpc x1,target\nstop\n", 32
+            "template",
+            ".arch mica32v2\n.global _start\n.extern target\n"
+            "_start: adrpc x1,target\nstop\n",
+            32,
         )
         mutated = bytearray(good.read_bytes())
         section_headers = int.from_bytes(mutated[40:48], "little")
         image_offset = int.from_bytes(
-            mutated[section_headers + 64 + 24:section_headers + 64 + 32], "little"
+            mutated[section_headers + 64 + 24 : section_headers + 64 + 32], "little"
         )
-        first_parcel = int.from_bytes(mutated[image_offset:image_offset + 2], "little")
-        mutated[image_offset:image_offset + 2] = (
-            first_parcel ^ (1 << 10)
-        ).to_bytes(2, "little")
+        first_parcel = int.from_bytes(
+            mutated[image_offset : image_offset + 2], "little"
+        )
+        mutated[image_offset : image_offset + 2] = (first_parcel ^ (1 << 10)).to_bytes(
+            2, "little"
+        )
         damaged = self.root / "template_bad.o"
         damaged.write_bytes(mutated)
         self.command(
-            "mica-ld", damaged, target, "-o", self.root / "bad.bin",
-            success=False, contains="ADRPC16 relocation instruction template mismatch",
+            "mica-ld",
+            damaged,
+            target,
+            "-o",
+            self.root / "bad.bin",
+            success=False,
+            contains="ADRPC16 relocation instruction template mismatch",
         )
 
     def test_required_extensions_are_checked_with_revision(self):
@@ -321,13 +388,9 @@ class ElfRevision(unittest.TestCase):
             True,
             "--flow",
         )
-        self.assertEqual(
-            int.from_bytes(source.read_bytes()[48:52], "little"), 0x10400
-        )
+        self.assertEqual(int.from_bytes(source.read_bytes()[48:52], "little"), 0x10400)
         binary = self.root / "flow.elf"
-        self.command(
-            "mica-ld", source, "--elf", binary, "-o", self.root / "flow.bin"
-        )
+        self.command("mica-ld", source, "--elf", binary, "-o", self.root / "flow.bin")
         self.command(
             "mica-run",
             "--mica2",

@@ -4,6 +4,7 @@
 import argparse
 from pathlib import Path
 import subprocess
+import json
 from run import compare, checked
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -27,6 +28,7 @@ cases = [
     ("MICA-E", "disabled-xreg", "li16 x8,42\nwfi\n", 2),
     ("MICA-C", "reserved-alias", ".half 0x1000\nwfi\n", 2),
 ]
+results = []
 for profile, name, source, expected in cases:
     path = a.output / (profile + "-" + name + ".mica")
     path.write_text(source)
@@ -66,7 +68,17 @@ for profile, name, source, expected in cases:
             raise AssertionError(
                 f"{name}: exit {result.returncode} != {expected}: {result.stderr}"
             )
-    compare(reference, rtltrace, profile + "/" + name)
+    count = compare(reference, rtltrace, profile + "/" + name)
+    results.append(
+        {
+            "profile": profile,
+            "case": name,
+            "expected_exit": expected,
+            "events": count,
+            "rtl": json.loads(result.stderr),
+        }
+    )
+(a.output / "results.json").write_text(json.dumps(results, indent=2) + "\n")
 print(
     f"PASS {len(cases)} configured profile programs, including disabled instruction faults"
 )

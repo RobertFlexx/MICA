@@ -15,8 +15,12 @@ from isa_schema import patterns
 class Schema(unittest.TestCase):
     def setUp(self):
         self.spec = json.loads((ROOT / "isa/encodings/mica2.json").read_text())
-        self.compact = json.loads((ROOT / "isa/encodings/mica2-compact.json").read_text())
-        self.profiles = json.loads((ROOT / "isa/profiles/profiles.json").read_text())["profiles"]
+        self.compact = json.loads(
+            (ROOT / "isa/encodings/mica2-compact.json").read_text()
+        )
+        self.profiles = json.loads((ROOT / "isa/profiles/profiles.json").read_text())[
+            "profiles"
+        ]
 
     def validate(self):
         return patterns(self.spec, self.compact, self.profiles)

@@ -1,0 +1,4187 @@
+{
+  "source_sha256": {
+    "isa/encodings/mica2.json": "d10c57918caed1a8746f44e9c9792128e62b4863d05d6978baaf5bcbe1f932f6",
+    "rtl/mica_core_txn.sv": "2bfbe6d5ef49f10f4dbe146dc12e28bf9167fc084a03b8958c360eeb23ca4998",
+    "sim/emulator.cpp": "95637dab2b252d58a2eae3146b7d083add577214786834f1364118dffd0a24d4",
+    "toolchain/assembler.cpp": "c5730b45c88ab35db861b7c7f058c98e71915dc4654886706acd3167e37351a8"
+  },
+  "instructions": [
+    {
+      "instruction": "nop",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "mov",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "add",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sub",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "and",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "or",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "xor",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shl",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shr",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sar",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "slt",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sltu",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "seq",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "jr",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "jalr",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "not",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "neg",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "mul",
+      "group": "R",
+      "extension": "M",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "wfi",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "fence",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ecall",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 14,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 14,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "eret",
+      "group": "R",
+      "extension": "T",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 19,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 19,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "fence.i",
+      "group": "R",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "li8",
+      "group": "I",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "addi",
+      "group": "I",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "andi",
+      "group": "I",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shli",
+      "group": "I",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shri",
+      "group": "I",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "bz",
+      "group": "I",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "bnz",
+      "group": "I",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "b",
+      "group": "I",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldw",
+      "group": "MEM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "stw",
+      "group": "MEM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldh",
+      "group": "MEM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sth",
+      "group": "MEM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldb",
+      "group": "MEM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "stb",
+      "group": "MEM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldhu",
+      "group": "MEM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldbu",
+      "group": "MEM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "add3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sub3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "and3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "or3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "xor3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shl3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shr3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sar3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "slt3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sltu3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "seq3",
+      "group": "ALU",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "mul3",
+      "group": "ALU",
+      "extension": "M",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "add3i",
+      "group": "IMM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "and3i",
+      "group": "IMM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "or3i",
+      "group": "IMM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "xor3i",
+      "group": "IMM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shl3i",
+      "group": "IMM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shr3i",
+      "group": "IMM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sar3i",
+      "group": "IMM",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "movhi",
+      "group": "WIDE",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "movlo",
+      "group": "WIDE",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "li16",
+      "group": "WIDE",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "adrpc",
+      "group": "WIDE",
+      "extension": "2C",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "beq",
+      "group": "BR",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "bne",
+      "group": "BR",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "blt",
+      "group": "BR",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "bge",
+      "group": "BR",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "bltu",
+      "group": "BR",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "bgeu",
+      "group": "BR",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "csrr",
+      "group": "SYS",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "csrw",
+      "group": "SYS",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "lr.w",
+      "group": "SYS",
+      "extension": "A",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "sc.w",
+      "group": "SYS",
+      "extension": "A",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 12,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 12,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "amoadd.w",
+      "group": "SYS",
+      "extension": "A",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "amoswap.w",
+      "group": "SYS",
+      "extension": "A",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "lr.q",
+      "group": "SYS",
+      "extension": "A",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "sc.q",
+      "group": "SYS",
+      "extension": "A",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 12,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "amoadd.q",
+      "group": "SYS",
+      "extension": "A",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "amoswap.q",
+      "group": "SYS",
+      "extension": "A",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "clz3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ctz3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "popcnt3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "rev8",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ror3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "rol3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "min3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "max3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "minu3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "maxu3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "bset3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "bclr3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "binv3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "bext3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "andn3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "orn3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "xnor3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sextb3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sexth3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "zexth3",
+      "group": "BITOPS",
+      "extension": "B",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "addw3",
+      "group": "W32",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "subw3",
+      "group": "W32",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shlw3",
+      "group": "W32",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "shrw3",
+      "group": "W32",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "sarw3",
+      "group": "W32",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "andw3",
+      "group": "W32",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "orw3",
+      "group": "W32",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "xorw3",
+      "group": "W32",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "mulw3",
+      "group": "W32",
+      "extension": "M",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldpi.b",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldpi.h",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldpi.w",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldpi.q",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "stpi.b",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "stpi.h",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "stpi.w",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "stpi.q",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldpi.sb",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldpi.sh",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldpi.sw",
+      "group": "FLOW",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldq",
+      "group": "MX",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "stq",
+      "group": "MX",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldws",
+      "group": "MX",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldwu",
+      "group": "MX",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldbs",
+      "group": "MX",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldhs",
+      "group": "MX",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "vadd",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vsub",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vmul",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vand",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vor",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vxor",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vshl",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vshr",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vsar",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vmin",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vmax",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vcmpeq",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vcmplt",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vabs",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vneg",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vdot8",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vld",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vst",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vziplo",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vziphi",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vunziplo",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "vunziphi",
+      "group": "V",
+      "extension": "V",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": null,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 13,
+          "rtl_seeds": []
+        },
+        {
+          "xlen": 64,
+          "events": 13,
+          "rtl_seeds": []
+        }
+      ],
+      "status": "Software only"
+    },
+    {
+      "instruction": "j",
+      "group": "J",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "call",
+      "group": "J",
+      "extension": "base",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "dbnz",
+      "group": "LOOP",
+      "extension": "F",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "ldsp",
+      "group": "2C",
+      "extension": "2C",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "stsp",
+      "group": "2C",
+      "extension": "2C",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "dbnz.s",
+      "group": "2C",
+      "extension": "2C",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 11,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    },
+    {
+      "instruction": "stop",
+      "group": "2C",
+      "extension": "2C",
+      "assembler": true,
+      "disassembler": true,
+      "emulator": true,
+      "rtl": true,
+      "cases": [
+        {
+          "xlen": 32,
+          "events": 10,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        },
+        {
+          "xlen": 64,
+          "events": 10,
+          "rtl_seeds": [
+            1,
+            17,
+            1234
+          ]
+        }
+      ],
+      "status": "Experimental"
+    }
+  ]
+}

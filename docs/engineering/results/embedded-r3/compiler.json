@@ -1,0 +1,1122 @@
+[
+  {
+    "name": "multifile",
+    "profile": "MICA-2C",
+    "expected": 66,
+    "rom_bytes": 896,
+    "retired": 684,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 9452,
+        "fetches": 525,
+        "loads": 181,
+        "stores": 154,
+        "events": 684,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 9466,
+        "fetches": 525,
+        "loads": 181,
+        "stores": 154,
+        "events": 684,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 9460,
+        "fetches": 525,
+        "loads": 181,
+        "stores": 154,
+        "events": 684,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "multifile",
+    "profile": "MICA-2E",
+    "expected": 66,
+    "rom_bytes": 952,
+    "retired": 660,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 8615,
+        "fetches": 594,
+        "loads": 86,
+        "stores": 63,
+        "events": 660,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 8619,
+        "fetches": 594,
+        "loads": 86,
+        "stores": 63,
+        "events": 660,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 8610,
+        "fetches": 594,
+        "loads": 86,
+        "stores": 63,
+        "events": 660,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "narrow",
+    "profile": "MICA-2C",
+    "expected": 497,
+    "rom_bytes": 740,
+    "retired": 226,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 3173,
+        "fetches": 174,
+        "loads": 54,
+        "stores": 49,
+        "events": 226,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 3142,
+        "fetches": 174,
+        "loads": 54,
+        "stores": 49,
+        "events": 226,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 3067,
+        "fetches": 174,
+        "loads": 54,
+        "stores": 49,
+        "events": 226,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "narrow",
+    "profile": "MICA-2E",
+    "expected": 497,
+    "rom_bytes": 772,
+    "retired": 208,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 2716,
+        "fetches": 184,
+        "loads": 26,
+        "stores": 21,
+        "events": 208,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 2683,
+        "fetches": 184,
+        "loads": 26,
+        "stores": 21,
+        "events": 208,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 2798,
+        "fetches": 184,
+        "loads": 26,
+        "stores": 21,
+        "events": 208,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random0",
+    "profile": "MICA-2C",
+    "expected": 594706648,
+    "rom_bytes": 512,
+    "retired": 1202,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 13809,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1202,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13839,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1202,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13925,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1202,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random0",
+    "profile": "MICA-2E",
+    "expected": 594706648,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6669,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6718,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6778,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random1",
+    "profile": "MICA-2C",
+    "expected": 1619001333,
+    "rom_bytes": 512,
+    "retired": 964,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 11629,
+        "fetches": 718,
+        "loads": 150,
+        "stores": 127,
+        "events": 964,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 11507,
+        "fetches": 718,
+        "loads": 150,
+        "stores": 127,
+        "events": 964,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 11719,
+        "fetches": 718,
+        "loads": 150,
+        "stores": 127,
+        "events": 964,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random1",
+    "profile": "MICA-2E",
+    "expected": 1619001333,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6669,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6718,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6778,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random2",
+    "profile": "MICA-2C",
+    "expected": 2874904288,
+    "rom_bytes": 512,
+    "retired": 1090,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 12878,
+        "fetches": 802,
+        "loads": 150,
+        "stores": 127,
+        "events": 1090,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13008,
+        "fetches": 802,
+        "loads": 150,
+        "stores": 127,
+        "events": 1090,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 12901,
+        "fetches": 802,
+        "loads": 150,
+        "stores": 127,
+        "events": 1090,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random2",
+    "profile": "MICA-2E",
+    "expected": 2874904288,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6676,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6730,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6755,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random3",
+    "profile": "MICA-2C",
+    "expected": 3074132639,
+    "rom_bytes": 512,
+    "retired": 1167,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 13547,
+        "fetches": 858,
+        "loads": 150,
+        "stores": 127,
+        "events": 1167,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13476,
+        "fetches": 858,
+        "loads": 150,
+        "stores": 127,
+        "events": 1167,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13595,
+        "fetches": 858,
+        "loads": 150,
+        "stores": 127,
+        "events": 1167,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random3",
+    "profile": "MICA-2E",
+    "expected": 3074132639,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6676,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6730,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6755,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random4",
+    "profile": "MICA-2C",
+    "expected": 225816633,
+    "rom_bytes": 512,
+    "retired": 1209,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 13958,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1209,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13782,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1209,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13993,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1209,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random4",
+    "profile": "MICA-2E",
+    "expected": 225816633,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6669,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6718,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6778,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random5",
+    "profile": "MICA-2C",
+    "expected": 2873737830,
+    "rom_bytes": 512,
+    "retired": 1125,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 13078,
+        "fetches": 830,
+        "loads": 150,
+        "stores": 127,
+        "events": 1125,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13073,
+        "fetches": 830,
+        "loads": 150,
+        "stores": 127,
+        "events": 1125,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13404,
+        "fetches": 830,
+        "loads": 150,
+        "stores": 127,
+        "events": 1125,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random5",
+    "profile": "MICA-2E",
+    "expected": 2873737830,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6669,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6718,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6778,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random6",
+    "profile": "MICA-2C",
+    "expected": 1896659849,
+    "rom_bytes": 512,
+    "retired": 1195,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 13899,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1195,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13922,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1195,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13854,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1195,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random6",
+    "profile": "MICA-2E",
+    "expected": 1896659849,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6669,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6718,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6778,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random7",
+    "profile": "MICA-2C",
+    "expected": 2042183780,
+    "rom_bytes": 512,
+    "retired": 1216,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 14094,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1216,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13844,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1216,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13998,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1216,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random7",
+    "profile": "MICA-2E",
+    "expected": 2042183780,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6669,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6718,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6778,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random8",
+    "profile": "MICA-2C",
+    "expected": 31457247,
+    "rom_bytes": 512,
+    "retired": 1202,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 14136,
+        "fetches": 914,
+        "loads": 150,
+        "stores": 127,
+        "events": 1202,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13902,
+        "fetches": 914,
+        "loads": 150,
+        "stores": 127,
+        "events": 1202,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 14115,
+        "fetches": 914,
+        "loads": 150,
+        "stores": 127,
+        "events": 1202,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random8",
+    "profile": "MICA-2E",
+    "expected": 31457247,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6669,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6718,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6778,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random9",
+    "profile": "MICA-2C",
+    "expected": 2356096051,
+    "rom_bytes": 512,
+    "retired": 1202,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 14133,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1202,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13758,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1202,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13931,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1202,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random9",
+    "profile": "MICA-2E",
+    "expected": 2356096051,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6669,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6718,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6778,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random10",
+    "profile": "MICA-2C",
+    "expected": 627382275,
+    "rom_bytes": 512,
+    "retired": 1181,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 13721,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1181,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13851,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1181,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 13909,
+        "fetches": 886,
+        "loads": 150,
+        "stores": 127,
+        "events": 1181,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random10",
+    "profile": "MICA-2E",
+    "expected": 627382275,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6676,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6730,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6755,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random11",
+    "profile": "MICA-2C",
+    "expected": 648586290,
+    "rom_bytes": 512,
+    "retired": 1230,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 14347,
+        "fetches": 914,
+        "loads": 150,
+        "stores": 127,
+        "events": 1230,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 14163,
+        "fetches": 914,
+        "loads": 150,
+        "stores": 127,
+        "events": 1230,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 14380,
+        "fetches": 914,
+        "loads": 150,
+        "stores": 127,
+        "events": 1230,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  },
+  {
+    "name": "random11",
+    "profile": "MICA-2E",
+    "expected": 648586290,
+    "rom_bytes": 524,
+    "retired": 531,
+    "rtl": true,
+    "rtl_runs": [
+      {
+        "cycles": 6676,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6730,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      },
+      {
+        "cycles": 6755,
+        "fetches": 504,
+        "loads": 50,
+        "stores": 27,
+        "events": 531,
+        "irq_entry_cycles": 0,
+        "irq_retire_cycles": 0,
+        "fault": 0
+      }
+    ]
+  }
+]

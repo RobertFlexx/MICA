@@ -1,0 +1,27 @@
+; SRAM startup for the finite compiled sensor-node demonstration.
+.arch mica32v2
+.global _start,platform_wait_tick
+.extern main
+_start:
+    li32 sp,65520
+    li32 x1,timer_handler
+    csrw tvec,x1
+    li8 x1,2
+    csrw ie,x1
+    li8 x1,1
+    csrw status,x1
+    call main
+    stop
+platform_wait_tick:
+    csrr x1,timer_lo
+    add3i x1,x1,2000
+    csrw cmp_lo,x1
+    csrw cmp_hi,x0
+    wfi
+    ret
+timer_handler:
+    push x1
+    li8 x1,-1
+    csrw cmp_hi,x1
+    pop x1
+    eret

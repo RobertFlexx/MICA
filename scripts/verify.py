@@ -152,6 +152,17 @@ if a.all:
         run(profile, [sys.executable, "scripts/build_rtl_sim.py", "--profile", profile])
     for profile in ["MICA-2C", "MICA-2E", "MICA-2L"]:
         run(profile, [sys.executable, "scripts/build_rtl_sim.py", "--profile", profile])
+        run(
+            profile + "-parity",
+            [
+                sys.executable,
+                "scripts/build_rtl_sim.py",
+                "--profile",
+                profile,
+                "--reg-parity",
+                1,
+            ],
+        )
     run(
         "differential",
         [sys.executable, "verification/differential/run.py", "--tools", out],
@@ -161,19 +172,66 @@ if a.all:
         [sys.executable, "verification/differential/mica2.py", "--tools", out],
     )
     run(
+        "differential-parity",
+        [
+            sys.executable,
+            "verification/differential/mica2.py",
+            "--tools",
+            out,
+            "--reg-parity",
+            "--output",
+            ROOT / "build/differential-parity",
+        ],
+    )
+    run(
         "profiles",
         [sys.executable, "verification/differential/profiles.py", "--tools", out],
     )
-    run("instruction-matrix", [sys.executable, "verification/instructions/run.py",
-        "--tools", out, "--rtl", ROOT / "build/rtl",
-        "--output", out / "instruction-matrix-rtl"])
+    run(
+        "instruction-matrix",
+        [
+            sys.executable,
+            "verification/instructions/run.py",
+            "--tools",
+            out,
+            "--rtl",
+            ROOT / "build/rtl",
+            "--output",
+            out / "instruction-matrix-rtl",
+            "--check-report",
+            ROOT / "docs/verification/INSTRUCTION_MATRIX.md",
+        ],
+    )
     if shutil.which("clang"):
-        run("compiler-rtl", [sys.executable, "compiler/tests/run.py", "--tools", out,
-            "--rtl", ROOT / "build/rtl", "--output", out / "compiler-rtl"])
+        run(
+            "compiler-rtl",
+            [
+                sys.executable,
+                "compiler/tests/run.py",
+                "--tools",
+                out,
+                "--rtl",
+                ROOT / "build/rtl",
+                "--output",
+                out / "compiler-rtl",
+            ],
+        )
+        run(
+            "sensor-demo",
+            [sys.executable, "scripts/test_sensor_demo.py", "--tools", out],
+        )
+    run(
+        "fault-injection",
+        [sys.executable, "scripts/test_fault_injection.py", "--tools", out],
+    )
     run("formal", [sys.executable, "scripts/run_formal.py"])
     run("synthesis", [sys.executable, "scripts/synthesize.py", "--tools", out])
     run("diagrams", [sys.executable, "scripts/generate_schematics.py", "--check"])
     run("soc-diagram", [sys.executable, "scripts/generate_soc_schematic.py", "--check"])
+    run(
+        "component-diagrams",
+        [sys.executable, "scripts/generate_component_schematics.py", "--check"],
+    )
     run(
         "mica2-diagrams",
         [sys.executable, "scripts/generate_mica2_diagrams.py", "--check"],

@@ -4,7 +4,7 @@
 #include <string_view>
 namespace mica {
 struct Profile {std::string_view name; int width; unsigned features; bool runnable;};
-inline constexpr std::array<Profile,8> profiles={{
+inline constexpr std::array<Profile,11> profiles={{
   {"MICA-C", 32, 0, true},
   {"MICA-E", 32, 102, true},
   {"MICA-64", 64, 103, true},
@@ -13,5 +13,8 @@ inline constexpr std::array<Profile,8> profiles={{
   {"MICA-2C", 32, 256, true},
   {"MICA-2E", 32, 359, true},
   {"MICA-2L", 64, 359, true},
+  {"MICA-2D", 32, 359, false},
+  {"MICA-2R", 32, 359, false},
+  {"MICA-2S", 32, 359, false},
 }};
 } // namespace mica

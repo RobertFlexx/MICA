@@ -1,0 +1,194 @@
+[
+  {
+    "profile": "MICA-C",
+    "case": "base",
+    "expected_exit": 0,
+    "events": 3,
+    "rtl": {
+      "cycles": 20,
+      "fetches": 2,
+      "loads": 0,
+      "stores": 0,
+      "events": 3,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 0
+    }
+  },
+  {
+    "profile": "MICA-C",
+    "case": "features",
+    "expected_exit": 0,
+    "events": 3,
+    "rtl": {
+      "cycles": 28,
+      "fetches": 3,
+      "loads": 0,
+      "stores": 0,
+      "events": 3,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 0
+    }
+  },
+  {
+    "profile": "MICA-E",
+    "case": "features",
+    "expected_exit": 0,
+    "events": 3,
+    "rtl": {
+      "cycles": 28,
+      "fetches": 3,
+      "loads": 0,
+      "stores": 0,
+      "events": 3,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 0
+    }
+  },
+  {
+    "profile": "MICA-E",
+    "case": "multiply",
+    "expected_exit": 0,
+    "events": 4,
+    "rtl": {
+      "cycles": 25,
+      "fetches": 2,
+      "loads": 0,
+      "stores": 0,
+      "events": 4,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 0
+    }
+  },
+  {
+    "profile": "MICA-C",
+    "case": "disabled-multiply",
+    "expected_exit": 2,
+    "events": 2,
+    "rtl": {
+      "cycles": 11,
+      "fetches": 1,
+      "loads": 0,
+      "stores": 0,
+      "events": 2,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 1
+    }
+  },
+  {
+    "profile": "MICA-C",
+    "case": "disabled-flow",
+    "expected_exit": 2,
+    "events": 3,
+    "rtl": {
+      "cycles": 27,
+      "fetches": 3,
+      "loads": 0,
+      "stores": 0,
+      "events": 3,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 1
+    }
+  },
+  {
+    "profile": "MICA-C",
+    "case": "disabled-bits",
+    "expected_exit": 2,
+    "events": 1,
+    "rtl": {
+      "cycles": 6,
+      "fetches": 1,
+      "loads": 0,
+      "stores": 0,
+      "events": 1,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 1
+    }
+  },
+  {
+    "profile": "MICA-C",
+    "case": "disabled-xreg",
+    "expected_exit": 2,
+    "events": 1,
+    "rtl": {
+      "cycles": 6,
+      "fetches": 1,
+      "loads": 0,
+      "stores": 0,
+      "events": 1,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 1
+    }
+  },
+  {
+    "profile": "MICA-C",
+    "case": "disabled-csr",
+    "expected_exit": 2,
+    "events": 1,
+    "rtl": {
+      "cycles": 6,
+      "fetches": 1,
+      "loads": 0,
+      "stores": 0,
+      "events": 1,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 1
+    }
+  },
+  {
+    "profile": "MICA-C",
+    "case": "invalid-shift",
+    "expected_exit": 2,
+    "events": 1,
+    "rtl": {
+      "cycles": 6,
+      "fetches": 1,
+      "loads": 0,
+      "stores": 0,
+      "events": 1,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 1
+    }
+  },
+  {
+    "profile": "MICA-E",
+    "case": "disabled-xreg",
+    "expected_exit": 2,
+    "events": 1,
+    "rtl": {
+      "cycles": 6,
+      "fetches": 1,
+      "loads": 0,
+      "stores": 0,
+      "events": 1,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 1
+    }
+  },
+  {
+    "profile": "MICA-C",
+    "case": "reserved-alias",
+    "expected_exit": 2,
+    "events": 1,
+    "rtl": {
+      "cycles": 6,
+      "fetches": 1,
+      "loads": 0,
+      "stores": 0,
+      "events": 1,
+      "irq_entry_cycles": 0,
+      "irq_retire_cycles": 0,
+      "fault": 1
+    }
+  }
+]

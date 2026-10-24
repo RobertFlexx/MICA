@@ -78,7 +78,28 @@ change is selected only in 2.0 mode. Existing MICA 1.0 images run with the
 old semantics when MICA2 is disabled. `ldsp` on XLEN64 reads all 64 bits.
 
 The separate 32-bit W arithmetic instructions retain their sign-extended result.
-Flow loads retain their 1.0 zero-extension semantics.
+Existing `ldpi.b/h/w/q` loads retain their 1.0 zero-extension semantics.
+
+## Signed flow loads, development revision 2
+
+Optional F adds `ldpi.sb`, `ldpi.sh` and `ldpi.sw` at major 10, subopcodes
+8, 9 and 10. These long instructions sign-extend 8, 16 or 32 bits to XLEN.
+They require both F and the 2.0 revision bit. There are no short aliases.
+Existing encodings are unchanged; earlier 2.0 cores reject these previously
+reserved subopcodes. Binaries using them require revision 2 or newer hardware.
+
+The address is the old base value. The signed 14-bit byte stride defaults to
+the access width. After a successful read, the destination receives the extended
+value and the base receives `(old_base + stride) mod 2^XLEN`. The base must be
+nonzero and distinct from the destination. A zero destination still performs
+the read. An alignment or access fault changes neither register. The assembler,
+encoding validator, disassembler, interpreter and transactional RTL implement
+the same rule. `tests/isa_contract.py` covers sign boundaries, both widths,
+stride limits, high registers, unavailable features and precise faults.
+
+Development revision 3 adds no machine instruction encodings. Optional register
+parity is an implementation fault detector; it does not add privilege or memory
+protection. See the [reliability contract](../hardware/RELIABILITY.md).
 
 ## Sleep and trap changes
 

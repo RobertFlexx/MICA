@@ -81,6 +81,59 @@
         "2C"
       ],
       "status": "64-bit scalar reference; optional not minimal MCU"
+    },
+    "MICA-2D": {
+      "xlen": 32,
+      "registers": 16,
+      "extensions": [
+        "X",
+        "M",
+        "F",
+        "B",
+        "T",
+        "2C"
+      ],
+      "status": "proposal; packed DSP and DSP profile verification incomplete",
+      "requires_components": [
+        "specified packed DSP arithmetic",
+        "numerical and deadline verification"
+      ]
+    },
+    "MICA-2R": {
+      "xlen": 32,
+      "registers": 16,
+      "extensions": [
+        "X",
+        "M",
+        "F",
+        "B",
+        "T",
+        "2C"
+      ],
+      "status": "proposal; protected state and reliability integration incomplete",
+      "requires_components": [
+        "memory integrity",
+        "watchdog recovery policy",
+        "fault injection coverage"
+      ]
+    },
+    "MICA-2S": {
+      "xlen": 32,
+      "registers": 16,
+      "extensions": [
+        "X",
+        "M",
+        "F",
+        "B",
+        "T",
+        "2C"
+      ],
+      "status": "proposal; isolation and root of trust unimplemented",
+      "requires_components": [
+        "privilege and memory isolation",
+        "authenticated boot",
+        "key and debug policy"
+      ]
     }
   }
 }

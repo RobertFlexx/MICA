@@ -1,0 +1,27 @@
+{
+  "firmware_bytes": 1220,
+  "expected_uart_hex": "a500643ba5016529a502661fa503670d",
+  "measurements": 4,
+  "timer_delta_ticks": 2000,
+  "watchdog_max_ticks": 250000,
+  "emulator_engines_passed": 3,
+  "limits": "Functional emulator timer ticks per executed instruction or sleep step, not RTL clocks. No physical energy model.",
+  "cycles": 53715,
+  "sleep_cycles": 7868,
+  "active_cycles": 45847,
+  "timer_interrupts": 4,
+  "maximum_observed_entry_cycles": 1,
+  "selected_signal_bit_transitions": {
+    "active": {
+      "datapath": 207016,
+      "counters": 194331,
+      "clocks": 45848
+    },
+    "sleep": {
+      "datapath": 0,
+      "counters": 31446,
+      "clocks": 7864
+    }
+  },
+  "activity_limits": "Selected RTL signals, stable-state timestamps only, no routing/glitches/capacitance. The clock and timer remain active. No watt, joule, battery-life or clock-gating claim."
+}

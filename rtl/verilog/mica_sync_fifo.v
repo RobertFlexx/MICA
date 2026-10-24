@@ -20,8 +20,8 @@ module mica_sync_fifo
   reg [PTR_W - 1 : 0] head, tail;
   reg [COUNT_W - 1 : 0] count;
   initial begin
-    if (WIDTH < 1 || DEPTH < 1 || COUNT_W < $clog2(DEPTH + 1) ||
-        PTR_W < 1 || PTR_W < $clog2(DEPTH))
+    if (WIDTH < 1 || DEPTH < 1 || COUNT_W < $clog2(DEPTH + 1) || PTR_W < 1 ||
+        PTR_W < $clog2(DEPTH))
       $fatal(1, "invalid FIFO parameters");
   end
   wire pop = pop_valid_o && pop_ready_i;

@@ -115,6 +115,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tools", type=Path, default=ROOT / "build")
     parser.add_argument("--rtl", type=Path, default=ROOT / "build/rtl")
+    parser.add_argument("--reg-parity", action="store_true")
     parser.add_argument(
         "--output", type=Path, default=ROOT / "build/differential-mica2"
     )
@@ -124,7 +125,11 @@ def main():
     report = []
     for name in ["MICA-2C", "MICA-2E", "MICA-2L"]:
         width = profiles[name]["xlen"]
-        driver = args.rtl / f"{name}-reuse1/Vmica_core_txn"
+        driver = (
+            args.rtl
+            / (f"{name}-reuse1" + ("-parity1" if args.reg_parity else ""))
+            / "Vmica_core_txn"
+        )
         flags = ["--profile", name]
         for case, source, irq in cases(width, "T" in profiles[name]["extensions"]):
             stem = args.output / f"{name}-{case}"

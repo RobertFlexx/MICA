@@ -17,6 +17,7 @@ p.add_argument(
     choices=["MICA-C", "MICA-E", "MICA-64", "MICA-2C", "MICA-2E", "MICA-2L"],
 )
 p.add_argument("--reuse", type=int, choices=[0, 1], default=1)
+p.add_argument("--reg-parity", type=int, choices=[0, 1], default=0)
 p.add_argument("--build-dir", type=Path, default=ROOT / "build/rtl")
 p.add_argument("--verilator", default="verilator")
 a = p.parse_args()
@@ -31,7 +32,9 @@ if profile:
     a.xlen = profile["xlen"]
 ext = profile["extensions"] if profile else ["X", "M", "F", "B", "T"]
 out = a.build_dir.resolve() / (
-    (a.profile if a.profile else f"x{a.xlen}") + f"-reuse{a.reuse}"
+    (a.profile if a.profile else f"x{a.xlen}")
+    + f"-reuse{a.reuse}"
+    + ("-parity1" if a.reg_parity else "")
 )
 out.mkdir(parents=True, exist_ok=True)
 with tempfile.TemporaryDirectory(prefix="mica-verilator-") as temp:
@@ -68,6 +71,7 @@ with tempfile.TemporaryDirectory(prefix="mica-verilator-") as temp:
         f"-GTRAP={int('T' in ext)}",
         f"-GFETCH_REUSE={a.reuse}",
         f"-GMICA2={int('2C' in ext)}",
+        f"-GREG_PARITY={a.reg_parity}",
         "mica_core_txn.sv",
         "rtl_driver.cpp",
     ]

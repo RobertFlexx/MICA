@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="16"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="3"
+	timestamp="2026-10-23T20:39:24"
+	>
+	<testcase name="generated_isa" classname="generated_isa" time="0.0386237" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="isa_schema" classname="isa_schema" time="0.0834379" status="run">
+		<properties/>
+		<system-out>test_compact_collision (__main__.Schema.test_compact_collision) ... ok
+test_current_allocations (__main__.Schema.test_current_allocations) ... ok
+test_duplicate_opcode (__main__.Schema.test_duplicate_opcode) ... ok
+test_overlapping_fields (__main__.Schema.test_overlapping_fields) ... ok
+test_unknown_extension_and_revision (__main__.Schema.test_unknown_extension_and_revision) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.007s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="instruction_matrix" classname="instruction_matrix" time="3.43116" status="run">
+		<properties/>
+		<system-out>PASS nop: Experimental
+PASS mov: Experimental
+PASS add: Experimental
+PASS sub: Experimental
+PASS and: Experimental
+PASS or: Experimental
+PASS xor: Experimental
+PASS shl: Experimental
+PASS shr: Experimental
+PASS sar: Experimental
+PASS slt: Experimental
+PASS sltu: Experimental
+PASS seq: Experimental
+PASS jr: Experimental
+PASS jalr: Experimental
+PASS not: Experimental
+PASS neg: Experimental
+PASS mul: Experimental
+PASS wfi: Experimental
+PASS fence: Experimental
+PASS ecall: Experimental
+PASS eret: Experimental
+PASS fence.i: Experimental
+PASS li8: Experimental
+PASS addi: Experimental
+PASS andi: Experimental
+PASS shli: Experimental
+PASS shri: Experimental
+PASS bz: Experimental
+PASS bnz: Experimental
+PASS b: Experimental
+PASS ldw: Experimental
+PASS stw: Experimental
+PASS ldh: Experimental
+PASS sth: Experimental
+PASS ldb: Experimental
+PASS stb: Experimental
+PASS ldhu: Experimental
+PASS ldbu: Experimental
+PASS add3: Experimental
+PASS sub3: Experimental
+PASS and3: Experimental
+PASS or3: Experimental
+PASS xor3: Experimen...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compiler_subset" classname="compiler_subset" time="3.53807" status="run">
+		<properties/>
+		<system-out>PASS C multifile MICA-2C
+PASS C multifile MICA-2E
+PASS C narrow MICA-2C
+PASS C narrow MICA-2E
+PASS C random0 MICA-2C
+PASS C random0 MICA-2E
+PASS C random1 MICA-2C
+PASS C random1 MICA-2E
+PASS C random2 MICA-2C
+PASS C random2 MICA-2E
+PASS C random3 MICA-2C
+PASS C random3 MICA-2E
+PASS C random4 MICA-2C
+PASS C random4 MICA-2E
+PASS C random5 MICA-2C
+PASS C random5 MICA-2E
+PASS C random6 MICA-2C
+PASS C random6 MICA-2E
+PASS C random7 MICA-2C
+PASS C random7 MICA-2E
+PASS C random8 MICA-2C
+PASS C random8 MICA-2E
+PASS C random9 MICA-2C
+PASS C random9 MICA-2E
+PASS C random10 MICA-2C
+PASS C random10 MICA-2E
+PASS C random11 MICA-2C
+PASS C random11 MICA-2E
+PASS 28 C/profile cases, native oracle, ABI, three execution engines and negative diagnostics
+</system-out>
+	</testcase>
+	<testcase name="sensor_firmware" classname="sensor_firmware" time="0.230085" status="run">
+		<properties/>
+		<system-out>PASS compiled sensor: four timer wakes, CRC-8 packets, volatile MMIO and watchdog; 1220 bytes
+</system-out>
+	</testcase>
+	<testcase name="integration" classname="integration" time="0.680223" status="run">
+		<properties/>
+		<system-out>test_64bit_constants (__main__.SDKTest.test_64bit_constants) ... ok
+test_all_xlen_extensions (__main__.SDKTest.test_all_xlen_extensions) ... ok
+test_arena_alloc_32_64 (__main__.SDKTest.test_arena_alloc_32_64) ... ok
+test_ascii_ctype (__main__.SDKTest.test_ascii_ctype) ... ok
+test_atomic64 (__main__.SDKTest.test_atomic64) ... ok
+test_bitops_encodings_errors_and_disassembly (__main__.SDKTest.test_bitops_encodings_errors_and_disassembly) ... ok
+test_bitops_examples_and_feature_discovery (__main__.SDKTest.test_bitops_examples_and_feature_discovery) ... ok
+test_bitops_randomized_reference (__main__.SDKTest.test_bitops_randomized_reference) ... ok
+test_bitops_runtime_helpers (__main__.SDKTest.test_bitops_runtime_helpers) ... ok
+test_branches (__main__.SDKTest.test_branches) ... ok
+test_buffer_library_memxor (__main__.SDKTest.test_buffer_library_memxor) ... ok
+test_buffer_memeq_and_zero (__main__.SDKTest.test_buffer_memeq_and_zero) ... ok
+test_console_libraries (__main__.SDKTest.test_console_libraries) ... ok
+test_c...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="binary_compatibility" classname="binary_compatibility" time="0.087626" status="run">
+		<properties/>
+		<system-out>MATCH arena32 (256 bytes)
+MATCH arena64 (304 bytes)
+MATCH arithmetic32 (28 bytes)
+MATCH arithmetic64 (80 bytes)
+MATCH bitops32 (36 bytes)
+MATCH bitops64 (48 bytes)
+MATCH console64 (201 bytes)
+MATCH flow_copy32 (124 bytes)
+MATCH flow_copy64 (152 bytes)
+MATCH fpga_blink32 (32 bytes)
+MATCH fpga_uart32 (166 bytes)
+MATCH hello32 (24 bytes)
+MATCH trap32 (28 bytes)
+MATCH trap_irq32 (44 bytes)
+PASS 14 previous 1.0 firmware images unchanged
+</system-out>
+	</testcase>
+	<testcase name="fast_differential" classname="fast_differential" time="0.490909" status="run">
+		<properties/>
+		<system-out>.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.394s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="engineering" classname="engineering" time="0.645937" status="run">
+		<properties/>
+		<system-out>test_all_relocations (__main__.Engineering.test_all_relocations) ... ok
+test_bounded_copy_ranges (__main__.Engineering.test_bounded_copy_ranges) ... ok
+test_crc_and_uart_devices (__main__.Engineering.test_crc_and_uart_devices) ... ok
+test_disassembly_byte_comments (__main__.Engineering.test_disassembly_byte_comments) ... ok
+test_expression_and_preprocessor_limits (__main__.Engineering.test_expression_and_preprocessor_limits) ... ok
+test_fir_against_independent_reference (__main__.Engineering.test_fir_against_independent_reference) ... ok
+test_linker_errors_and_weak_symbols (__main__.Engineering.test_linker_errors_and_weak_symbols) ... ok
+test_lossless_disassembly (__main__.Engineering.test_lossless_disassembly) ... ok
+test_malformed_elf (__main__.Engineering.test_malformed_elf) ... ok
+test_mixed_width_reservation (__main__.Engineering.test_mixed_width_reservation) ... ok
+test_precise_fault_and_step_budget (__main__.Engineering.test_precise_fault_and_step_budget) ... ok
+test_profile_and_debugger (__main__.Engi...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="mica2" classname="mica2" time="0.135114" status="run">
+		<properties/>
+		<system-out>test_32_and_64 (__main__.Compact.test_32_and_64) ... ok
+test_64bit_word_canonicalization (__main__.Compact.test_64bit_word_canonicalization) ... ok
+test_adrpc (__main__.Compact.test_adrpc) ... ok
+test_invalid (__main__.Compact.test_invalid) ... ok
+test_literal_relaxation (__main__.Compact.test_literal_relaxation) ... ok
+test_masked_irq_still_wakes_wfi (__main__.Compact.test_masked_irq_still_wakes_wfi) ... ok
+test_minimal_core_wfi_sleep (__main__.Compact.test_minimal_core_wfi_sleep) ... ok
+test_wfi_sleep_and_timer_wakeup (__main__.Compact.test_wfi_sleep_and_timer_wakeup) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.053s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="elf_revision" classname="elf_revision" time="0.181827" status="run">
+		<properties/>
+		<system-out>test_adrpc_alignment_range_and_template_validation (__main__.ElfRevision.test_adrpc_alignment_range_and_template_validation) ... ok
+test_adrpc_symbol_relocation_forward_and_backward (__main__.ElfRevision.test_adrpc_symbol_relocation_forward_and_backward) ... ok
+test_mixed_isa_semantics_are_not_linkable (__main__.ElfRevision.test_mixed_isa_semantics_are_not_linkable) ... ok
+test_multifile_v2_32_and_64_end_to_end (__main__.ElfRevision.test_multifile_v2_32_and_64_end_to_end) ... ok
+test_parser_rejects_trailing_operands_and_symbol_addends (__main__.ElfRevision.test_parser_rejects_trailing_operands_and_symbol_addends) ... ok
+test_published_pic_style_symbol_examples (__main__.ElfRevision.test_published_pic_style_symbol_examples) ... ok
+test_reject_reserved_and_unknown_feature_bits (__main__.ElfRevision.test_reject_reserved_and_unknown_feature_bits) ... ok
+test_required_extensions_are_checked_with_revision (__main__.ElfRevision.test_required_extensions_are_checked_with_revision) ... ok
+
+-----------------------------...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="isa_contract" classname="isa_contract" time="2.01821" status="run">
+		<properties/>
+		<system-out>test_compact_cross_object_displacements_and_limits (__main__.IsaContract.test_compact_cross_object_displacements_and_limits) ... ok
+test_compact_local_loop_relocates_at_both_widths (__main__.IsaContract.test_compact_local_loop_relocates_at_both_widths) ... ok
+test_compact_relocation_template_and_revision_are_checked (__main__.IsaContract.test_compact_relocation_template_and_revision_are_checked) ... ok
+test_disassembler_uses_elf_revision_and_extensions (__main__.IsaContract.test_disassembler_uses_elf_revision_and_extensions) ... ok
+test_illegal_trap_values_do_not_depend_on_trace (__main__.IsaContract.test_illegal_trap_values_do_not_depend_on_trace) ... ok
+test_literal_relaxation_rejects_overflow_before_narrowing (__main__.IsaContract.test_literal_relaxation_rejects_overflow_before_narrowing) ... ok
+test_minimal_core_wakes_on_peripheral_levels (__main__.IsaContract.test_minimal_core_wakes_on_peripheral_levels) ... ok
+test_object_alignment_survives_linking_and_nonzero_origins (__main__.IsaContract.test_object_a...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="format_safety" classname="format_safety" time="0.428769" status="run">
+		<properties/>
+		<system-out>test_missing_hdl_tools_invalidate_previous_verification (__main__.FormatterSafety.test_missing_hdl_tools_invalidate_previous_verification) ... ok
+test_no_partial_writes_when_later_formatter_fails (__main__.FormatterSafety.test_no_partial_writes_when_later_formatter_fails) ... ok
+test_source_archive_without_git_or_ripgrep (__main__.FormatterSafety.test_source_archive_without_git_or_ripgrep) ... ok
+test_unknown_path_is_rejected (__main__.FormatterSafety.test_unknown_path_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.349s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="mica2_density" classname="mica2_density" time="0.0515844" status="run">
+		<properties/>
+		<system-out>MICA-32: 18 -&gt; 16 bytes, 11.1% smaller (this test only)
+MICA-64: 22 -&gt; 16 bytes, 27.3% smaller (this test only)
+</system-out>
+	</testcase>
+	<testcase name="firmware_examples" classname="firmware_examples" time="0.126809" status="run">
+		<properties/>
+		<system-out>PASS arena32.mica
+PASS arena64.mica
+PASS arithmetic32.mica
+PASS arithmetic64.mica
+PASS atomic32.mica
+PASS bitops32.mica
+PASS bitops64.mica
+PASS console32.mica
+PASS console64.mica
+PASS div32.mica
+PASS div64.mica
+PASS fir32.mica
+PASS flow_copy32.mica
+PASS flow_copy64.mica
+PASS fpga_blink32.mica
+PASS fpga_uart32.mica
+PASS hello32.mica
+PASS macros.mica
+PASS mica2_adrpc32.mica
+PASS mica2_short32.mica
+PASS mica2_short64.mica
+PASS mica2_timer32.mica
+PASS mica2_timer64.mica
+PASS mica2_watchdog32.mica
+PASS peripherals32.mica
+PASS reduce32.mica
+PASS scheduler32.mica
+PASS selftest32.mica
+PASS string32.mica
+PASS trap32.mica
+PASS trap_irq32.mica
+PASS vector32.mica
+PASS watchdog32.mica
+PASS separate startup, application, runtime -&gt; ELF -&gt; emulator
+</system-out>
+	</testcase>
+	<testcase name="documentation" classname="documentation" time="0.0605312" status="run">
+		<properties/>
+		<system-out>PASS 79 Markdown files and 4 executable assembly snippets
+</system-out>
+	</testcase>
+</testsuite>

@@ -1,0 +1,14 @@
+digraph component {rankdir=LR;node[shape=box,fontname="monospace"];core[label="mica_uart_tx_portable\nclk_i rising edge; rst_ni asynchronous active low\nDefault parameters; interface widths from elaboration"];
+n0[label="clk_i[1]"];
+n0->core;
+n1[label="rst_ni[1]"];
+n1->core;
+n2[label="send_i[1]"];
+n2->core;
+n3[label="data_i[8]"];
+n3->core;
+n4[label="busy_o[1]"];
+core->n4;
+n5[label="uart_tx_o[1]"];
+core->n5;
+}

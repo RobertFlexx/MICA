@@ -73,9 +73,10 @@ class CPU {
   std::vector<std::uint8_t> uart_input;
   size_t uart_head = 0;
   bool uart_irq_enable = false;
-  bool watchdog_present = false, watchdog_expired = false, watchdog_early = false;
-  std::uint32_t watchdog_control = 0, watchdog_min = 0, watchdog_max = 0xffffffffu,
-                watchdog_count = 0;
+  bool watchdog_present = false, watchdog_expired = false,
+       watchdog_early = false;
+  std::uint32_t watchdog_control = 0, watchdog_min = 0,
+                watchdog_max = 0xffffffffu, watchdog_count = 0;
   bool external_pending() const {
     return (uart_irq_enable && uart_head < uart_input.size()) ||
            ((watchdog_control & 2) && (watchdog_expired || watchdog_early));
@@ -84,7 +85,8 @@ class CPU {
     if (!(watchdog_control & 1)) {
       watchdog_count = 0;
     } else if (!watchdog_expired && !watchdog_early) {
-      if (!watchdog_max || watchdog_min >= watchdog_max || watchdog_count >= watchdog_max - 1)
+      if (!watchdog_max || watchdog_min >= watchdog_max ||
+          watchdog_count >= watchdog_max - 1)
         watchdog_expired = true;
       if (watchdog_count != 0xffffffffu)
         ++watchdog_count;
@@ -129,7 +131,9 @@ class CPU {
     else if (addr == 0xffff001cULL && n <= 4)
       r = uart_irq_enable;
     else if (addr == 0xffff0020ULL && n <= 4)
-      r = 3 | (watchdog_present ? 4 : 0); // Platform devices, separate from ISA extensions.
+      r = 3 | (watchdog_present
+                   ? 4
+                   : 0); // Platform devices, separate from ISA extensions.
     else if (addr == 0xffff0040ULL && n <= 4)
       r = 0; // Functional device model completes each byte immediately.
     else if (addr == 0xffff0048ULL && n <= 4)
@@ -189,7 +193,8 @@ class CPU {
       watchdog_max = std::uint32_t(value);
     } else if (watchdog_present && n <= 4 && addr == 0xffff006cULL) {
       if ((watchdog_control & 1) && !watchdog_expired && !watchdog_early) {
-        if (!watchdog_max || watchdog_min >= watchdog_max || watchdog_count >= watchdog_max)
+        if (!watchdog_max || watchdog_min >= watchdog_max ||
+            watchdog_count >= watchdog_max)
           watchdog_expired = true;
         else if (watchdog_count < watchdog_min)
           watchdog_early = true;
@@ -235,8 +240,7 @@ class CPU {
     if (!traps || id > 19)
       throw Fault("unimplemented CSR");
     if (id == 6)
-      return ((csr[6] | U(external_pending())) &
-              1) |
+      return ((csr[6] | U(external_pending())) & 1) |
              (timer >= timer_cmp ? 2 : 0);
     if (id == 9)
       return timer & 0xffffffffULL;
@@ -550,8 +554,8 @@ class CPU {
   // still use the reference engine. Volatile state forces actual iteration,
   // instead of replacing a benchmark with a multiplication and calling it fast.
   U native_counted_loop(U step_budget) {
-    if (traps || watchdog_present || trace || retirement.is_open() || !flow || pc > ram.size() ||
-        ram.size() - size_t(pc) < 6 || (pc & 1))
+    if (traps || watchdog_present || trace || retirement.is_open() || !flow ||
+        pc > ram.size() || ram.size() - size_t(pc) < 6 || (pc & 1))
       return 0;
     const size_t ip = size_t(pc);
     const unsigned hw = unsigned(ram[ip]) | (unsigned(ram[ip + 1]) << 8);
@@ -1185,7 +1189,9 @@ public:
         irq_at = ~U(0);
       }
       const U wake_pending =
-          traps ? csr_read(6) : ((mica2 && (retired == irq_at || external_pending())) ? 1u : 0u);
+          traps ? csr_read(6)
+                : ((mica2 && (retired == irq_at || external_pending())) ? 1u
+                                                                        : 0u);
       const U pending = traps ? (csr[5] & wake_pending) : wake_pending;
       if (!traps && retired == irq_at)
         irq_at = ~U(0);

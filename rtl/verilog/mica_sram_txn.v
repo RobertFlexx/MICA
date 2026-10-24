@@ -30,8 +30,8 @@ module mica_sram_txn
   localparam [2 : 0] SIZE_LIMIT = SHIFT[2 : 0];
   // INIT_FILE contains DATA_W-bit little-endian words, not individual bytes.
   initial begin
-    if ((DATA_W != 32 && DATA_W != 64) || ADDR_W < 32 ||
-        RAM_BYTES < BYTES || (RAM_BYTES & (RAM_BYTES - 1)) != 0)
+    if ((DATA_W != 32 && DATA_W != 64) || ADDR_W < 32 || RAM_BYTES < BYTES ||
+        (RAM_BYTES & (RAM_BYTES - 1)) != 0)
       $fatal(1, "invalid transactional SRAM parameters");
     if (INIT_FILE != "")
       $readmemh(INIT_FILE, mem);

@@ -29,6 +29,7 @@ Separate ELF objects support local symbol scope; export callable labels with
 | `buffer.mica` | XOR, full-length equality, zeroing | Base |
 | `reduce.mica` | Byte sum and XOR; F sum variant | Base or F |
 | `dsp32.mica` | Signed 16-bit dot product | 32-bit M |
+| `dsp32_flow.mica` | `mica_dot_s16_flow`, signed streaming dot product | 32-bit 2.0 development r2+, M and F |
 | `bounded32.mica` | Copy after source/destination range checks | 32-bit F |
 | `macro.mica` | Compile-time helpers | Assembler source |
 

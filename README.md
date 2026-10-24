@@ -11,10 +11,11 @@ addressing and wakeable `wfi`. MICA-2C keeps eight register slots; MICA-2E and
 MICA-2L offer sixteen. The 1.0 compatibility mode and all 14 frozen firmware
 fixtures are preserved.
 
-With F enabled, MICA's byte-copy loop takes **6 bytes, versus 16 for RV32IC or 12 with Zcb**:
-50–62.5% less code for that loop. It also takes three instructions instead of
-six. The [comparison](docs/research/RISCV_COMPARISON.md) includes the assembly
-and a stack-access example where both architectures tie.
+With F enabled, one handwritten byte-copy loop body takes 6 bytes, versus 16
+for RV32IC or 12 with Zcb. This does not establish an application-wide advantage.
+The experimental C path currently produces larger complete programs than the
+tested RISC-V and Thumb compilers. The [engineering report](docs/engineering/EMBEDDED_REFINEMENT.md)
+publishes those results alongside the [loop comparison](docs/research/RISCV_COMPARISON.md).
 
 ## Build and run
 
@@ -57,9 +58,10 @@ Use `stop` to end a test and `wfi` to sleep until a pending event wakes the core
 | Component | Current implementation |
 | --- | --- |
 | CPU | 32/64-bit scalar multicycle core, compact loops, precise traps, timer interrupts and fetch-word reuse |
-| Memory and devices | Synchronous SRAM, GPIO, UART TX/RX with FIFO and an optional VHDL CRC-32 engine |
+| Memory and devices | SRAM, GPIO, UART TX/RX, optional VHDL CRC/watchdog and register parity; standalone Verilog SPI |
 | Tools | `mica-as`, `mica-ld`, `mica-dis`, `mica-run`, `mica-objdump`, `mica-nm`, `mica-objcopy` |
 | Firmware | Linked startup and CRC, UART echo, FIR filtering, scheduler, compact loops and timer wake tests |
+| C support | Restricted Clang IR lowering for MICA-2C/2E, scalar ABI, local register allocation and a compiled sensor simulation |
 | Verification | Retirement comparison, randomized memory latency, HDL simulations, component formal checks, sanitizers and fuzzing |
 | Hardware target | Arty A7-100 board top, pin constraints and Vivado build script; board-top simulation passes |
 
@@ -78,8 +80,9 @@ board build and serial console.
 Vivado implementation, timing closure and physical board boot still need testing.
 Power use and maximum clock speed are still unmeasured.
 
-The SDK supports assembly development. A C compiler backend, pipelined core,
-protected tasks and multicore RTL are still needed. SIMD and atomic operations
+The SDK supports assembly and a [restricted C subset](docs/toolchain/COMPILER.md).
+A maintained optimizing compiler backend, pipelined core, protected tasks and
+multicore RTL are still needed. SIMD and atomic operations
 have emulator implementations. The [status table](SDK_STATUS.md) covers the
 remaining work.
 

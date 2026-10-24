@@ -1,0 +1,17 @@
+; Finite fault-injection probe. Injection occurs at the first WFI boundary.
+.arch mica32v2
+    li32 x5,handler
+    csrw tvec,x5
+    li8 x1,42
+    li32 x2,4096
+    li32 x6,0xffff0010
+    wfi
+    ldw x3,[x2]
+    xor x1,x3
+    stw x1,[x6]
+    stop
+handler:
+    csrr x4,cause
+    stop
+.org 4096
+.word 0

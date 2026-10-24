@@ -1,0 +1,26 @@
+digraph component {rankdir=LR;node[shape=box,fontname="monospace"];core[label="mica_spi_master\nclk_i rising edge; rst_ni asynchronous active low\nDefault parameters; interface widths from elaboration"];
+n0[label="clk_i[1]"];
+n0->core;
+n1[label="rst_ni[1]"];
+n1->core;
+n2[label="req_valid_i[1]"];
+n2->core;
+n3[label="req_ready_o[1]"];
+core->n3;
+n4[label="req_data_i[8]"];
+n4->core;
+n5[label="rsp_valid_o[1]"];
+core->n5;
+n6[label="rsp_ready_i[1]"];
+n6->core;
+n7[label="rsp_data_o[8]"];
+core->n7;
+n8[label="sclk_o[1]"];
+core->n8;
+n9[label="mosi_o[1]"];
+core->n9;
+n10[label="miso_i[1]"];
+n10->core;
+n11[label="cs_no[1]"];
+core->n11;
+}

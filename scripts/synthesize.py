@@ -24,6 +24,7 @@ p.add_argument(
         "MICA-2E",
         "MICA-2L",
         "MICA-2E-peripherals",
+        "MICA-2E-parity",
     ],
 )
 a = p.parse_args()
@@ -32,7 +33,8 @@ profiles = json.loads((ROOT / "isa/profiles/profiles.json").read_text())["profil
 report = {}
 for name in a.profiles:
     devices = name.endswith("peripherals")
-    profile = profiles[name.removesuffix("-peripherals") if devices else name]
+    parity = name.endswith("-parity")
+    profile = profiles[name.removesuffix("-peripherals").removesuffix("-parity")]
     with tempfile.TemporaryDirectory(prefix="mica-synth-") as temp:
         stage = Path(temp)
         for source in [
@@ -63,9 +65,21 @@ for name in a.profiles:
                 check=True,
             )
             (stage / "mica_crc32.v").write_text(generated.stdout)
-            generated = subprocess.run(["ghdl", "--synth", "--std=08", "--out=verilog",
-                ROOT / "rtl/vhdl/mica_event_counter.vhd", ROOT / "rtl/vhdl/mica_watchdog.vhd",
-                "-e", "mica_watchdog"], capture_output=True, text=True, check=True)
+            generated = subprocess.run(
+                [
+                    "ghdl",
+                    "--synth",
+                    "--std=08",
+                    "--out=verilog",
+                    ROOT / "rtl/vhdl/mica_event_counter.vhd",
+                    ROOT / "rtl/vhdl/mica_watchdog.vhd",
+                    "-e",
+                    "mica_watchdog",
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
             (stage / "mica_watchdog.v").write_text(generated.stdout)
         width, ext = profile["xlen"], profile["extensions"]
         code = (
@@ -90,6 +104,7 @@ for name in a.profiles:
         params = f'.XLEN({width}),.XREG({int(profile["registers"] == 16)}),.RAM_BYTES(4096),.PERF({int(perf)}),.INIT_FILE("program.mem{width}")'
         params += f",.UART_RX({int(devices)}),.CRC_ENABLE({int(devices)}),.WATCHDOG_ENABLE({int(devices)})"
         params += f",.MICA2({int('2C' in ext)})"
+        params += f",.REG_PARITY({int(parity)})"
         params += "".join(
             f",.{key}({int(feature in ext)})"
             for key, feature in [
@@ -131,6 +146,7 @@ for name in a.profiles:
             "uart_rx": devices,
             "crc_vhdl": devices,
             "watchdog_vhdl": devices,
+            "reg_parity": parity,
             "cells": data["design"]["num_cells_by_type"],
         }
         print("PASS mapped synthesis", name)

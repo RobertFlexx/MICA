@@ -11,3 +11,11 @@ retirement, every interrupt arrival point, bus reset races after non-idempotent
 peripheral writes, vector hardware, multicore ordering and pipeline hazards.
 Protected task isolation, FPGA clock corners and physical-board boot are untested.
 Coverage percentages require an instrumented coverage database.
+
+The generated [instruction matrix](INSTRUCTION_MATRIX.md) executes one explicit
+case per allocated instruction and supported XLEN, then compares scalar retirement
+under three bus-stall seeds. These vectors establish integration, not exhaustive
+semantics. A/V remain software-only. Signed-flow boundary/fault tests, self-modifying
+parcel tests, compiled C programs, watchdog integration and targeted register/FSM/
+PC/fetch injection supplement those vectors. Register parity is also exercised
+through the scalar differential suite. SPI has bounded protocol/completion checks.

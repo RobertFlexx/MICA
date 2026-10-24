@@ -1,5 +1,10 @@
 # MICA 2.0 documentation
 
+The current [embedded report](engineering/EMBEDDED_REFINEMENT.md),
+[C subset guide](toolchain/COMPILER.md), [demonstrators](hardware/DEMONSTRATORS.md)
+and [reliability contract](hardware/RELIABILITY.md) describe the latest development
+revision and its incomplete gates.
+
 The [2.0 scalar specification](architecture/MICA2.md) defines architectural behavior.
 The [verification report](engineering/MICA2_VERIFICATION.md) records executed checks;
 the [RISC-V comparison](research/RISCV_COMPARISON.md) reports measured code sizes.

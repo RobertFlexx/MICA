@@ -4,7 +4,7 @@ node [shape=box,style="rounded,filled",fillcolor="#f1f5f9",color="#475569",fontn
 edge [fontname="DejaVu Sans",fontsize=9,color="#334155"];
 label="MICA 2.0 | implemented activity controls and unmeasured power";
 sleep [label="WFI -> SLEEP\nno new instruction/data requests\nclock and enabled counters continue"];
-fetch [label="One aligned-word reuse buffer\nfewer instruction transactions\ninvalidate on stores/redirects/fence.i"];
+fetch [label="One aligned-word reuse buffer\nselective invalidation on overlapping stores\nfence.i / traps invalidate; redirects use tags"];
 optional [label="Static parameter guards\nMUL / BITOPS / TRAP / PERF\nunused paths removed by synthesis"];
 rails [label="No implemented power-rail domains\nno clock gating or DVFS\nwatts/joules require physical measurement"];
 sleep -> rails [label="activity change only"];

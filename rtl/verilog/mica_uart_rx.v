@@ -19,8 +19,7 @@ module mica_uart_rx
   reg [COUNT_W - 1 : 0] ticks;
   reg [7 : 0] shift;
   initial begin
-    if (CLOCK_HZ <= 0 || BAUD <= 0 || DIVISOR < 4 ||
-        COUNT_W < $clog2(DIVISOR))
+    if (CLOCK_HZ <= 0 || BAUD <= 0 || DIVISOR < 4 || COUNT_W < $clog2(DIVISOR))
       $fatal(1, "invalid UART RX parameters");
   end
   always @(posedge clk_i or negedge rst_ni) begin

@@ -1,0 +1,150 @@
+{
+  "mica_event_counter": {
+    "clear_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "clk_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "count_o": {
+      "direction": "output",
+      "width": 32
+    },
+    "enable_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "event_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "overflow_o": {
+      "direction": "output",
+      "width": 1
+    },
+    "rst_ni": {
+      "direction": "input",
+      "width": 1
+    }
+  },
+  "mica_spi_master": {
+    "clk_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "cs_no": {
+      "direction": "output",
+      "width": 1
+    },
+    "miso_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "mosi_o": {
+      "direction": "output",
+      "width": 1
+    },
+    "req_data_i": {
+      "direction": "input",
+      "width": 8
+    },
+    "req_ready_o": {
+      "direction": "output",
+      "width": 1
+    },
+    "req_valid_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "rsp_data_o": {
+      "direction": "output",
+      "width": 8
+    },
+    "rsp_ready_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "rsp_valid_o": {
+      "direction": "output",
+      "width": 1
+    },
+    "rst_ni": {
+      "direction": "input",
+      "width": 1
+    },
+    "sclk_o": {
+      "direction": "output",
+      "width": 1
+    }
+  },
+  "mica_uart_tx_portable": {
+    "busy_o": {
+      "direction": "output",
+      "width": 1
+    },
+    "clk_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "data_i": {
+      "direction": "input",
+      "width": 8
+    },
+    "rst_ni": {
+      "direction": "input",
+      "width": 1
+    },
+    "send_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "uart_tx_o": {
+      "direction": "output",
+      "width": 1
+    }
+  },
+  "mica_watchdog": {
+    "clear_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "clk_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "count_o": {
+      "direction": "output",
+      "width": 32
+    },
+    "early_o": {
+      "direction": "output",
+      "width": 1
+    },
+    "enable_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "expired_o": {
+      "direction": "output",
+      "width": 1
+    },
+    "kick_i": {
+      "direction": "input",
+      "width": 1
+    },
+    "max_ticks_i": {
+      "direction": "input",
+      "width": 32
+    },
+    "min_ticks_i": {
+      "direction": "input",
+      "width": 32
+    },
+    "rst_ni": {
+      "direction": "input",
+      "width": 1
+    }
+  }
+}

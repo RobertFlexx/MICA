@@ -299,24 +299,52 @@ class IsaContract(unittest.TestCase):
     def test_signed_flow_values_strides_and_encoding(self):
         for width in (32, 64):
             for suffix, size in (("sb", 1), ("sh", 2), ("sw", 4)):
-                for value in (0, (1 << (size * 8 - 1)) - 1,
-                              1 << (size * 8 - 1), (1 << (size * 8)) - 1):
+                for value in (
+                    0,
+                    (1 << (size * 8 - 1)) - 1,
+                    1 << (size * 8 - 1),
+                    (1 << (size * 8)) - 1,
+                ):
                     for stride in (-8192, -size, 0, size, 8191):
-                        with self.subTest(width=width, suffix=suffix, value=value, stride=stride):
+                        with self.subTest(
+                            width=width, suffix=suffix, value=value, stride=stride
+                        ):
                             directive = {1: "byte", 2: "half", 4: "word"}[size]
                             image = self.assemble(
-                                "signed", "li32 x8,32768\n"
+                                "signed",
+                                "li32 x8,32768\n"
                                 f"ldpi.{suffix} x9,[x8],{stride}\nstop\n"
                                 f".org 32768\n.{directive} {value}\n",
-                                width, False, False, "--flow", "--xreg")
-                            expected = value - (1 << (size * 8)) if value >> (size * 8 - 1) else value
+                                width,
+                                False,
+                                False,
+                                "--flow",
+                                "--xreg",
+                            )
+                            expected = (
+                                value - (1 << (size * 8))
+                                if value >> (size * 8 - 1)
+                                else value
+                            )
                             for engine in ((), ("--fast",), ("--native-loops",)):
                                 result = self.command(
-                                    "mica-run", "--mica2", "--flow", "--xreg",
-                                    "--xlen", width, *engine, image)
+                                    "mica-run",
+                                    "--mica2",
+                                    "--flow",
+                                    "--xreg",
+                                    "--xlen",
+                                    width,
+                                    *engine,
+                                    image,
+                                )
                                 self.assertIn(f"x8=0x{32768 + stride:x}", result.stderr)
-                                self.assertIn(f"x9=0x{expected & ((1 << width) - 1):x}", result.stderr)
-                            listing = self.command("mica-dis", "--mica2", "--xlen", width, image).stdout
+                                self.assertIn(
+                                    f"x9=0x{expected & ((1 << width) - 1):x}",
+                                    result.stderr,
+                                )
+                            listing = self.command(
+                                "mica-dis", "--mica2", "--xlen", width, image
+                            ).stdout
                             self.assertIn(f"ldpi.{suffix} x9", listing)
 
     def test_signed_flow_faults_preserve_base_and_destination(self):
@@ -324,17 +352,39 @@ class IsaContract(unittest.TestCase):
             for suffix, size in (("sb", 1), ("sh", 2), ("sw", 4)):
                 for base, cause in [(65536, 5)] + ([(32769, 4)] if size > 1 else []):
                     for dest in (0, 9):
-                        with self.subTest(width=width, suffix=suffix, base=base, dest=dest):
+                        with self.subTest(
+                            width=width, suffix=suffix, base=base, dest=dest
+                        ):
                             image = self.assemble(
-                                "fault", "li32 x5,handler\ncsrw tvec,x5\nli32 x9,55\n"
+                                "fault",
+                                "li32 x5,handler\ncsrw tvec,x5\nli32 x9,55\n"
                                 f"li32 x8,{base}\nldpi.{suffix} x{dest},[x8],-7\n"
                                 "stop\nhandler: csrr x1,cause\ncsrr x2,tval\nstop\n",
-                                width, False, False, "--flow", "--xreg", "--trap")
+                                width,
+                                False,
+                                False,
+                                "--flow",
+                                "--xreg",
+                                "--trap",
+                            )
                             trace = self.root / "fault.jsonl"
-                            self.command("mica-run", "--mica2", "--flow", "--xreg",
-                                         "--trap", "--xlen", width, "--memory", 65536,
-                                         "--retire-trace", trace, image)
-                            events = list(map(json.loads, trace.read_text().splitlines()))
+                            self.command(
+                                "mica-run",
+                                "--mica2",
+                                "--flow",
+                                "--xreg",
+                                "--trap",
+                                "--xlen",
+                                width,
+                                "--memory",
+                                65536,
+                                "--retire-trace",
+                                trace,
+                                image,
+                            )
+                            events = list(
+                                map(json.loads, trace.read_text().splitlines())
+                            )
                             fault = next(e for e in events if e["trap"])
                             self.assertFalse(fault["retired"])
                             self.assertEqual(fault["cause"], cause)
@@ -354,10 +404,48 @@ class IsaContract(unittest.TestCase):
         ):
             source.write_text(code + "\n")
             self.command("mica-as", *flags, source, "-o", target, ok=False)
-        image = self.assemble("features", "ldpi.sb x1,[x2]\nstop\n",
-                              32, False, False, "--flow")
+        image = self.assemble(
+            "features", "ldpi.sb x1,[x2]\nstop\n", 32, False, False, "--flow"
+        )
         for flags in (["--flow"], ["--mica2"]):
             self.command("mica-run", *flags, image, ok=False)
+
+    def test_proposed_industry_profiles_are_not_runnable(self):
+        image = self.assemble("proposal", "stop\n")
+        source = self.root / "proposal.mica"
+        for profile in ("MICA-2D", "MICA-2R", "MICA-2S"):
+            for tool, input_file in (("mica-as", source), ("mica-run", image)):
+                result = self.command(tool, "--profile", profile, input_file, ok=False)
+                self.assertIn("proposal", result.stderr)
+
+    def test_minimal_core_wakes_on_peripheral_levels(self):
+        uart = self.assemble(
+            "uart_wake",
+            "li32 x2,0xffff001c\nli8 x1,1\n" "stw x1,[x2]\nwfi\nldbu x1,[x2-8]\nstop\n",
+        )
+        watchdog = self.assemble(
+            "watchdog_wake",
+            "li32 x2,0xffff0060\nli8 x1,10\n"
+            "stw x1,[x2+8]\nli8 x1,3\nstw x1,[x2]\nwfi\n"
+            "ldw x3,[x2+16]\nli8 x1,42\nstop\n",
+        )
+        for engine in ((), ("--fast",), ("--native-loops",)):
+            result = self.command(
+                "mica-run",
+                "--mica2",
+                *engine,
+                "--uart-input",
+                "2a",
+                "--steps",
+                100,
+                uart,
+            )
+            self.assertIn("x1=0x2a", result.stderr)
+            result = self.command(
+                "mica-run", "--mica2", *engine, "--watchdog", "--steps", 100, watchdog
+            )
+            self.assertIn("x1=0x2a", result.stderr)
+            self.assertIn("x3=0x1", result.stderr)
 
 
 if __name__ == "__main__":
