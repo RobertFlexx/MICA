@@ -1,0 +1,34 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 06 / 20 | Branches, calls, returns and counted loops</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Branch displacements are halfwords from sequential PC. ADRPC alone uses instruction PC.<BR ALIGN="LEFT"/>Calls write x6; ret is jr x6. dbnz.s uses an ordinary register and no loop-state CSRs.<BR ALIGN="LEFT"/>Odd control targets trap before commit. There is no pipeline flush circuit in this implementation.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+operands[label="rr() / branch operands"];
+compare[label="decode branch comparison"];
+pc[label="Current and sequential PC"];
+target[label="Signed displacement / target\naddition"];
+link[label="Link write x6"];
+count[label="dbnz / dbnz.s decrement"];
+commit[label="Pending PC and precise commit"];
+fetch[label="Fetch redirect / tag lookup"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->operands[style=invis,weight=100];
+{rank=same;operands;compare;pc;}
+operands->compare[style=invis,weight=100];
+compare->pc[style=invis,weight=100];
+{rank=same;target;link;count;}
+target->link[style=invis,weight=100];
+link->count[style=invis,weight=100];
+{rank=same;commit;fetch;}
+commit->fetch[style=invis,weight=100];
+operands->target[style=invis,weight=100];
+target->commit[style=invis,weight=100];
+operands->compare[label="decode.av[32/64]\ndecode.bv[32/64]",color="#174a70",style="solid",constraint=false];
+compare->target[label="decode.take[1]",color="#174a70",style="solid",constraint=false];
+pc->target[label="pc[32/64]\nilen[3]\np[26]",color="#174a70",style="solid",constraint=false];
+target->commit[label="nextpc[32/64]",color="#174a70",style="solid",constraint=false];
+pc->link[label="pc[32/64]\nilen[3]",color="#174a70",style="solid",constraint=false];
+count->commit[label="value1[32/64]\nnextpc[32/64]",color="#174a70",style="solid",constraint=false];
+commit->fetch[label="q_nextpc[32/64]",color="#174a70",style="solid",constraint=false];
+link->commit[label="value1[32/64]\ndst1[4]\nw1[1]",color="#174a70",style="solid",constraint=false];
+}

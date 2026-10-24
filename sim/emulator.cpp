@@ -1439,7 +1439,7 @@ int main(int argc, char **argv) {
       else if (opt == "--mul")
         m = true;
       else if (opt == "--version") {
-        std::cout << "mica-run 2.0 development\n";
+        std::cout << "mica-run " << mica::sdk_version << "\n";
         return 0;
       } else if (opt == "--help") {
         std::cout

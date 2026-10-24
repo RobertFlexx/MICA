@@ -1,6 +1,6 @@
 # Known implementation gaps
 
-These issues remain open after development r3. Passing simulations do not close
+These issues remain open in MICA 3.0 development r1. Passing simulations do not close
 the broader acceptance gates.
 
 | ID | Gap | Required evidence to close |

@@ -21,6 +21,14 @@ x8..x11 when all uses remain within one basic block and no call can clobber them
 Other values have stack homes. This is a small allocator with substantial remaining
 spill traffic; it is not a competitive optimizing compiler.
 
+MICA 3.0 development selects existing short destructive arithmetic and known
+small literals. Frame adjustments use addi when the signed displacement fits in
+eight bits; logical shifts use shli and shri when the register is low and the
+amount is below 32. A zero displacement is not emitted. This changes code size
+without allocating opcodes or changing the ABI. The
+[development report](../engineering/MICA3_DEVELOPMENT.md) compares the resulting
+complete ROM with the previous compiler and other targets.
+
 Unsupported IR fails with a function/instruction diagnostic before replacing an
 existing output. This includes floating point, 64-bit integers, division,
 aggregate arguments/returns, varargs, internal linkage, dynamic allocation,

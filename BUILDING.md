@@ -2,7 +2,7 @@
 
 The software builds with CMake 3.20+, Python 3.10+, and GCC or Clang accepting
 C++23. The vector interpreter also uses the compilers' `__int128` extension.
-MICA 2.0 validation uses Linux. Historical Linux/macOS results are in the
+MICA 3.0 development validation uses Linux. Historical Linux/macOS results are in the
 [1.0 CI archive](docs/engineering/results/ci.json).
 
 ## Software
@@ -52,6 +52,10 @@ Graphviz and GNU make. The recorded r2 runs use OSS CAD Suite **2026-10-17** on
 Linux x86-64, also pinned in CI. Install the bundle separately and put its `bin`
 directory on `PATH` before running the commands below.
 
+Drawing regeneration also needs qpdf. PDF timestamps and document IDs are
+normalized; identical RTL, generator sources, tools and fonts produce identical
+collection artifacts. CI checks committed artifact hashes without rerendering.
+
 ```sh
 make -C rtl sim32 sim64 sim-mica2-32 sim-mica2-64 sim-mica2-timer32 sim-mica2-timer64
 make -C rtl sim-flow32 sim-flow64 sim-bits32 sim-bits64 sim-trap sim-trap-irq
@@ -69,6 +73,7 @@ python3 scripts/generate_schematics.py --check
 python3 scripts/generate_soc_schematic.py --check
 python3 scripts/generate_mica2_diagrams.py --check
 python3 scripts/generate_overview_schematics.py --check
+python3 scripts/generate_v3_schematics.py --check
 ```
 
 The makefiles expect `../build/mica-as`. For another build directory, pass its
@@ -139,9 +144,10 @@ python3 scripts/generate_schematics.py
 python3 scripts/generate_soc_schematic.py
 python3 scripts/generate_mica2_diagrams.py
 python3 scripts/generate_overview_schematics.py
+python3 scripts/generate_v3_schematics.py
 ```
 
-The last command refreshes the SHA-256 manifest of sources and every preview.
+The generators refresh their SHA-256 manifests of sources and previews.
 See the [drawing index](docs/hardware/DATAPATH.md).
 
 ## Format sources

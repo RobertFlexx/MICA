@@ -1,0 +1,23 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 14 / 20 | Implemented scalar DSP stream and SIMD status</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">The signed dot-product kernel uses ordinary GPRs and M/F; no hidden accumulator state.<BR ALIGN="LEFT"/>Packed arithmetic and 128-bit SIMD are NOT implemented in RTL. Eight vector registers exist only in the emulator.<BR ALIGN="LEFT"/>No saturation, rounding, vector load/store or vector datapath is depicted as hardware.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+flow[label="F signed post-increment loads\n----------------------\nIN N05: q_nextpc[32/64]"];
+rf[label="Ordinary scalar registers"];
+mul[label="Optional shared multiplication"];
+add[label="Scalar accumulation / counted\nbranch"];
+commit[label="Precise scalar commit\n----------------------\nOUT N05: q_nextpc[32/64]"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->flow[style=invis,weight=100];
+{rank=same;flow;rf;mul;}
+flow->rf[style=invis,weight=100];
+rf->mul[style=invis,weight=100];
+{rank=same;add;commit;}
+add->commit[style=invis,weight=100];
+flow->add[style=invis,weight=100];
+flow->rf[label="writeback_value[32/64]\nq_value2[32/64]\nq_w1[1]\nq_w2[1]",color="#536574",style="dashed",constraint=false];
+rf->mul[label="multiply_a[32/64]\nmultiply_b[32/64]",color="#174a70",style="solid",constraint=false];
+mul->commit[label="multiply_product[32/64]",color="#174a70",style="solid",constraint=false];
+add->commit[label="value1[32/64]\nnextpc[32/64]",color="#174a70",style="solid",constraint=false];
+}

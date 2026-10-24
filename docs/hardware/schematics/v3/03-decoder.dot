@@ -1,0 +1,32 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 03 / 20 | Instruction fields, extension guards and control</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Class = lo[15:14]; long major = lo[13:10]; payload p = {lo[9:0],hi}.<BR ALIGN="LEFT"/>Unused fields and unassigned encodings are illegal. Schema overlap checks supplement RTL guards.<BR ALIGN="LEFT"/>No mandatory vector, atomic, DSP accumulator or hidden loop state.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+parcel[label="lo / hi parcel registers"];
+fields[label="decode field extraction"];
+regs[label="rr() / valid_reg()"];
+immediate[label="sext() / immediate construction"];
+guards[label="MICA2 / XREG / MUL / FLOW / BITOPS\n/ TRAP guards"];
+effects[label="Decoded effects"];
+trap[label="Illegal / alignment cause\nselection"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->parcel[style=invis,weight=100];
+{rank=same;parcel;fields;regs;}
+parcel->fields[style=invis,weight=100];
+fields->regs[style=invis,weight=100];
+{rank=same;immediate;guards;effects;}
+immediate->guards[style=invis,weight=100];
+guards->effects[style=invis,weight=100];
+{rank=same;trap;}
+parcel->immediate[style=invis,weight=100];
+immediate->trap[style=invis,weight=100];
+parcel->fields[label="lo[16]\nhi[16]\np[26]\nmajor[4]\nilen[3]",color="#174a70",style="solid",constraint=false];
+fields->regs[label="decode.d[4]\ndecode.a[4]\ndecode.b[4]\nread_a_index[4]\nread_b_index[4]",color="#174a70",style="solid",constraint=false];
+regs->effects[label="decode.av[32/64]\ndecode.bv[32/64]",color="#174a70",style="solid",constraint=false];
+fields->immediate[label="p[26]",color="#174a70",style="solid",constraint=false];
+immediate->effects[label="nextpc[32/64]\naddr[32/64]\nvalue1[32/64]\nvalue2[32/64]",color="#174a70",style="solid",constraint=false];
+guards->trap[label="illegal[1]\ndecoded_cause[32/64]\ndecoded_tval[32/64]",color="#a12d2d",style="solid",constraint=false];
+effects->trap[label="mem[1]\nsize_log[3]",color="#174a70",style="solid",constraint=false];
+effects->guards[label="w1[1]\nw2[1]\nmemwrite[1]\nmemsign[1]\ncsrwrite[1]\ndo_ecall[1]\ndo_eret[1]",color="#174a70",style="solid",constraint=false];
+}

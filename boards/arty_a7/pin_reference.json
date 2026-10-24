@@ -1,0 +1,17 @@
+{
+  "board": "Digilent Arty A7-100 Rev D/E",
+  "source": "https://raw.githubusercontent.com/Digilent/digilent-xdc/master/Arty-A7-100-Master.xdc",
+  "verified_date": "2026-10-23",
+  "clock_hz": 100000000,
+  "iostandard": "LVCMOS33",
+  "pins": {
+    "CLK100MHZ": "E3",
+    "btn_reset": "D9",
+    "led[0]": "H5",
+    "led[1]": "J5",
+    "led[2]": "T9",
+    "led[3]": "T10",
+    "uart_txd": "D10",
+    "uart_rxd": "A9"
+  }
+}

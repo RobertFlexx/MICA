@@ -1,0 +1,22 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 13 / 20 | Optional bit operations and result selection</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">BITOPS=0 removes the optional unit. Unary instructions require a zero unused source field.<BR ALIGN="LEFT"/>Source loops and variable rotates are combinational; area and timing are synthesis-dependent.<BR ALIGN="LEFT"/>This is a functional RTL region, not a separately instantiated barrel-shifter or popcount module.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+decode[label="BITOPS guard / opcode fields\n----------------------\nOUT N04: illegal[1]"];
+rf[label="Scalar operands"];
+bits[label="bit_arithmetic()\nCLZ CTZ POPCNT REV8 / rotates /\nmin-max / bit logic"];
+result[label="value1 / pending writeback"];
+illegal[label="Reserved fields / disabled\nextension\n----------------------\nIN N04: illegal[1]"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->decode[style=invis,weight=100];
+{rank=same;decode;rf;bits;}
+decode->rf[style=invis,weight=100];
+rf->bits[style=invis,weight=100];
+{rank=same;result;illegal;}
+result->illegal[style=invis,weight=100];
+decode->result[style=invis,weight=100];
+decode->bits[label="decode.op[8]",color="#174a70",style="solid",constraint=false];
+rf->bits[label="decode.av[32/64]\ndecode.bv[32/64]",color="#174a70",style="solid",constraint=false];
+bits->result[label="value1[32/64]\ndst1[4]\nw1[1]",color="#174a70",style="solid",constraint=false];
+}

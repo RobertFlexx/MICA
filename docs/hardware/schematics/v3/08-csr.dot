@@ -1,0 +1,28 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 08 / 20 | CSR permissions, counters and trap state</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Addresses and masks are indexed in the generated ISA/CSR tables; unimplemented IDs are illegal.<BR ALIGN="LEFT"/>coreid/features/arch/counters are read-only. TRAP=0 removes privileged trap/timer state.<BR ALIGN="LEFT"/>PERF controls cycle/instret implementation. Timer ticks in SLEEP; STOP stops core counters.<BR ALIGN="LEFT"/>One active handler; no implemented privilege levels or memory protection.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+decode[label="CSR address / operation\n----------------------\nOUT N07: csr_value[32/64],\ncsrwrite[1]"];
+read[label="CSR read mux / permissions\n----------------------\nIN N03: epc_reg[32/64],\ncause_reg[32/64], tval_reg[32/64],\ntvec_reg[32/64]\nIN N04: timer_count[64],\ntimer_cmp[64]\nIN N05: cycle_count[64],\ninstret[64]\nOUT N06: value1[32/64], illegal[1]"];
+status[label="status / ie / software pending\n----------------------\nIN N08: q_csr[8],\nq_csr_value[32/64], q_csrwrite[1]"];
+trap[label="Saved trap state\n----------------------\nOUT N03: epc_reg[32/64],\ncause_reg[32/64], tval_reg[32/64],\ntvec_reg[32/64]"];
+timer[label="64-bit timer / comparator\n----------------------\nOUT N04: timer_count[64],\ntimer_cmp[64]\nIN N09: q_csr_value[32/64]"];
+counter[label="Optional performance counters\n----------------------\nOUT N05: cycle_count[64],\ninstret[64]"];
+write[label="COMMIT CSR write selection\n----------------------\nIN N07: csr_value[32/64],\ncsrwrite[1]\nOUT N08: q_csr[8],\nq_csr_value[32/64], q_csrwrite[1]\nOUT N09: q_csr_value[32/64]"];
+result[label="GPR result\n----------------------\nIN N06: value1[32/64], illegal[1]"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->decode[style=invis,weight=100];
+{rank=same;decode;read;status;}
+decode->read[style=invis,weight=100];
+read->status[style=invis,weight=100];
+{rank=same;trap;timer;counter;}
+trap->timer[style=invis,weight=100];
+timer->counter[style=invis,weight=100];
+{rank=same;write;result;}
+write->result[style=invis,weight=100];
+decode->trap[style=invis,weight=100];
+trap->write[style=invis,weight=100];
+decode->read[label="csr_id[8]\ndecode.op[8]",color="#174a70",style="solid",constraint=false];
+status->read[label="status_reg[32/64]\nie_reg[32/64]\npending[32/64]",color="#174a70",style="solid",constraint=false];
+}

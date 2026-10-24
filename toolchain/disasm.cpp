@@ -212,7 +212,7 @@ int main(int argc, char **argv) {
       else if (a == "--assembly")
         assembly = true;
       else if (a == "--version") {
-        std::cout << "mica-dis 2.0 development\n";
+        std::cout << "mica-dis " << mica::sdk_version << "\n";
         return 0;
       } else if (a == "--help") {
         std::cout

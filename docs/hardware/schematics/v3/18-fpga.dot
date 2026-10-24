@@ -1,0 +1,26 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 18 / 20 | Arty A7-100 board boundary and verified pins</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | Arty A7-100 board interface | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Only the eight connections present in boards/arty_a7/arty_a7.xdc are shown.<BR ALIGN="LEFT"/>Pin map checked against the Digilent Arty-A7-100 master constraints, Rev D/E.<BR ALIGN="LEFT"/>This is an FPGA interface drawing, not a new PCB or an electrical schematic.<BR ALIGN="LEFT"/>Vivado placement/routing, physical boot and board timing remain unverified.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+board[label="mica_arty_a7
+xc7a100tcsg324-1
+4 KiB SRAM / onboard USB-UART
+Reset release synchronizer",fillcolor="#e3edf2"];
+p0[shape=component,label="CLK100MHZ\nPackage pin E3 / LVCMOS33"];
+p0->board[label="1 bit"];
+p1[shape=component,label="btn_reset\nPackage pin D9 / LVCMOS33"];
+p1->board[label="1 bit"];
+p2[shape=component,label="led[0]\nPackage pin H5 / LVCMOS33"];
+board->p2[label="1 bit"];
+p3[shape=component,label="led[1]\nPackage pin J5 / LVCMOS33"];
+board->p3[label="1 bit"];
+p4[shape=component,label="led[2]\nPackage pin T9 / LVCMOS33"];
+board->p4[label="1 bit"];
+p5[shape=component,label="led[3]\nPackage pin T10 / LVCMOS33"];
+board->p5[label="1 bit"];
+p6[shape=component,label="uart_txd\nPackage pin D10 / LVCMOS33"];
+board->p6[label="1 bit"];
+p7[shape=component,label="uart_rxd\nPackage pin A9 / LVCMOS33"];
+p7->board[label="1 bit"];
+}

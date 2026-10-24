@@ -1,0 +1,33 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 02 / 20 | Instruction fetch and parcel assembly</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Fetch requests are four-byte aligned and return one 32-bit word. One outstanding request.<BR ALIGN="LEFT"/>FAST_FETCH=1: an aligned long instruction captures both parcels without another lookup.<BR ALIGN="LEFT"/>Cross-word long instructions fetch the second word. Redirects use tags; overlapping stores and fence.i invalidate.<BR ALIGN="LEFT"/>Request fields remain stable under backpressure; response errors never retire the instruction.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+pc[label="pc / fetch_addr selection\n----------------------\nIN N10: nextpc[32/64]"];
+lookup[label="LOOKUP / aligned tag comparison"];
+cache[label="cache_tag, cache_data, cache_valid\n----------------------\nIN N09: q_invalidate[1],\nq_addr[32/64], q_size[3],\nq_memwrite[1]"];
+bus[label="Instruction request / response\npins\n----------------------\nOUT N08: i_rsp_error[1]"];
+parcel[label="PARCEL / halfword selection"];
+decode[label="DECODE / instruction length\n----------------------\nOUT N10: nextpc[32/64]"];
+invalidate[label="COMMIT / selective invalidation\n----------------------\nOUT N09: q_invalidate[1],\nq_addr[32/64], q_size[3],\nq_memwrite[1]"];
+trap[label="Instruction fault / trap_entry()\n----------------------\nIN N08: i_rsp_error[1]"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->pc[style=invis,weight=100];
+{rank=same;pc;lookup;cache;}
+pc->lookup[style=invis,weight=100];
+lookup->cache[style=invis,weight=100];
+{rank=same;bus;parcel;decode;}
+bus->parcel[style=invis,weight=100];
+parcel->decode[style=invis,weight=100];
+{rank=same;invalidate;trap;}
+invalidate->trap[style=invis,weight=100];
+pc->bus[style=invis,weight=100];
+bus->invalidate[style=invis,weight=100];
+pc->lookup[label="fetch_addr[32/64]",color="#174a70",style="solid",constraint=false];
+cache->lookup[label="cache_tag[32/64]\ncache_valid[1]",color="#536574",style="dashed",constraint=false];
+lookup->parcel[label="cache_data[32]",color="#174a70",style="solid",constraint=false];
+lookup->bus[label="i_req_valid[1]\ni_req_addr[32/64]",color="#536574",style="dashed",constraint=false];
+bus->parcel[label="i_req_ready[1]\ni_rsp_valid[1]\ni_rsp_rdata[32]",color="#536574",style="dashed",constraint=false];
+parcel->bus[label="i_rsp_ready[1]",color="#536574",style="dashed",constraint=false];
+parcel->decode[label="lo[16]\nhi[16]\np[26]\nilen[3]",color="#174a70",style="solid",constraint=false];
+}

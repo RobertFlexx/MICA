@@ -1,6 +1,9 @@
-# MICA 2.0 documentation
+# MICA 3.0 development documentation
 
-The current [embedded report](engineering/EMBEDDED_REFINEMENT.md),
+The current [development report](engineering/MICA3_DEVELOPMENT.md),
+[3.0 compatibility and complexity contract](architecture/MICA3.md),
+[instruction inventory](architecture/INSTRUCTION_INVENTORY.md),
+[new engineering sheets](hardware/schematics/v3/README.md),
 [C subset guide](toolchain/COMPILER.md), [demonstrators](hardware/DEMONSTRATORS.md)
 and [reliability contract](hardware/RELIABILITY.md) describe the latest development
 revision and its incomplete gates.
@@ -39,7 +42,7 @@ The [microarchitecture guide](hardware/MICROARCHITECTURE.md) follows an instruct
 through the reference core. [Memory ports](hardware/MEMORY_INTERFACE.md),
 [peripherals](hardware/PERIPHERALS.md) and [clock/reset
 behavior](hardware/CLOCK_RESET.md) define the integration contracts.
-[Drawings](hardware/DATAPATH.md) include all refreshed legacy paths, the
+[Drawings](hardware/DATAPATH.md) start with the new 20-sheet collection and retain the
 [2.0 implementation set](hardware/MICA2_IMPLEMENTATION.md), RTL signal widths
 and elaborated SoC module connections. All previews have source/artifact hashes.
 
@@ -58,8 +61,8 @@ and [coverage limits](verification/COVERAGE.md).
 [Prior art](research/PRIOR_ART.md) identifies related designs and comparison
 requirements.
 
-[RISC-V encoding comparisons](research/RISCV_COMPARISON.md) cover compact
-counted loops and stack accesses. Power and clock frequency are unmeasured.
+[RISC-V and Thumb encoding comparisons](research/RISCV_COMPARISON.md) cover compact
+counted loops, copy bodies and stack accesses. Power and clock frequency are unmeasured.
 
 The [workflow and ISA revision](engineering/WORKFLOW_ISA_REVISION.md) records
 the CI dependency repair, compact branch ELF support, alignment and trap fixes.

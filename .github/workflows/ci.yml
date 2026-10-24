@@ -32,7 +32,7 @@ jobs:
         run: |
           cmake --install build --prefix "$PWD/build/install"
           cpack --config build/CPackConfig.cmake -B build/releases -G TGZ
-          for archive in build/releases/mica-sdk-2.0-*.tar.gz; do
+          for archive in build/releases/mica-sdk-3.0-*.tar.gz; do
             python3 scripts/check_release.py --binary "$archive" --output build/releases/validation.json
           done
       - uses: actions/upload-artifact@v4
@@ -74,13 +74,13 @@ jobs:
           cpack --config build/CPackConfig.cmake -B build/releases -G TGZ
       - name: Validate extracted source and installed SDK
         run: |
-          python3 scripts/check_release.py --binary build/releases/mica-sdk-2.0-Linux-x86_64.tar.gz --source build/releases/mica-sdk-2.0-source.tar.gz --output build/releases/source-validation.json
+          python3 scripts/check_release.py --binary build/releases/mica-sdk-3.0-Linux-x86_64.tar.gz --source build/releases/mica-sdk-3.0-source.tar.gz --output build/releases/source-validation.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: source-release
           path: |
-            build/releases/mica-sdk-2.0-source.tar.gz
+            build/releases/mica-sdk-3.0-source.tar.gz
             build/releases/source-validation.json
   hardware:
     runs-on: ubuntu-24.04
@@ -89,6 +89,10 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+      - name: Install versioned compiler and binary utilities
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-18 llvm-18 lld-18 qpdf
       - name: Cache pinned HDL suite
         uses: actions/cache@v4
         id: hdl-cache
@@ -102,7 +106,9 @@ jobs:
           gh release download 2026-10-17 --repo YosysHQ/oss-cad-suite-build --pattern oss-cad-suite-linux-x64-20261017.tgz --dir "$RUNNER_TEMP/mica-hdl"
           tar -xzf "$RUNNER_TEMP/mica-hdl/oss-cad-suite-linux-x64-20261017.tgz" -C "$RUNNER_TEMP/mica-hdl"
       - name: Add tools
-        run: echo "$RUNNER_TEMP/mica-hdl/oss-cad-suite/bin" >> "$GITHUB_PATH"
+        run: |
+          echo "$RUNNER_TEMP/mica-hdl/oss-cad-suite/bin" >> "$GITHUB_PATH"
+          echo "/usr/lib/llvm-18/bin" >> "$GITHUB_PATH"
       - name: Build software and run HDL component/SoC tests
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -126,6 +132,7 @@ jobs:
           done
           python3 verification/differential/run.py --tools build
           python3 verification/differential/mica2.py --tools build
+          python3 verification/differential/multiply.py --tools build
           python3 verification/differential/mica2.py --tools build --reg-parity --output build/differential-parity
           python3 verification/differential/profiles.py --tools build
           python3 verification/instructions/run.py --tools build --rtl build/rtl --output build/instruction-matrix-rtl --check-report docs/verification/INSTRUCTION_MATRIX.md
@@ -141,9 +148,12 @@ jobs:
           python3 scripts/generate_soc_schematic.py --check
           python3 scripts/generate_component_schematics.py --check
           python3 scripts/generate_overview_schematics.py --check
+          python3 scripts/generate_v3_schematics.py --check
           python3 benchmarks/hardware.py --tools build
           python3 benchmarks/alu_activity.py
           python3 benchmarks/compiled_density.py --tools build
+          python3 benchmarks/control_density.py --tools build
+          python3 benchmarks/instruction_mix.py --traces build/compiler --output build/instruction-mix.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -154,12 +164,16 @@ jobs:
             build/peripherals/*.vcd
             build/differential/results.json
             build/differential-mica2/results.json
+            build/multiply-tests/results.json
             build/differential-parity/results.json
             build/profile-tests/results.json
             build/instruction-matrix-rtl/results.json
             build/compiler/results.json
+            build/instruction-mix.json
             build/compiled-density/results.json
             build/compiled-density/commands.log
+            build/control-density/results.json
+            build/control-density/commands.log
             build/sensor-demo/results.json
             build/sensor-demo/commands.log
             build/fault-injection/results.json

@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def generate():
+    release = json.loads((ROOT / "release.json").read_text())
     spec = json.loads((ROOT / "isa/encodings/mica2.json").read_text())
     groups = spec["groups"]
     compact = json.loads((ROOT / "isa/encodings/mica2-compact.json").read_text())
@@ -177,6 +178,12 @@ def generate():
         profile_h += f'  {{"{name}", {profile["xlen"]}, {features}, {runnable}}},\n'
     profile_h += "}};\n} // namespace mica\n"
     return {
+        "isa/generated/version.hpp": banner
+        + "#pragma once\nnamespace mica {\ninline constexpr const char* sdk_version = "
+        + json.dumps(
+            f"{release['sdk_version']} {release['stage']} r{release['revision']}"
+        )
+        + ";\n}\n",
         "isa/generated/assembler.inc": asm,
         "isa/generated/disassembler.inc": dis,
         "isa/generated/mica_isa.svh": sv,

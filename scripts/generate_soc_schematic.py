@@ -8,7 +8,9 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+from schematic_pdf import normalize_pdf
 
+os.environ["SOURCE_DATE_EPOCH"] = "0"
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "schematics/current"
 p = argparse.ArgumentParser()
@@ -163,4 +165,6 @@ with tempfile.TemporaryDirectory(prefix="mica-soc-draw-") as temp:
                         capture_output=True,
                         check=True,
                     )
+                    if fmt == "pdf":
+                        normalize_pdf(target.with_suffix(".pdf"))
 print("PASS RX/CRC SoC drawings and actual module-port wiring")

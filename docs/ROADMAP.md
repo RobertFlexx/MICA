@@ -1,5 +1,12 @@
 # MICA development roadmap
 
+The current SDK starts MICA 3.0 development with the existing ISA 2.0 binary
+contract. The [complexity decisions](architecture/MICA3.md) keep the compact core
+unchanged in architectural state; the [development report](engineering/MICA3_DEVELOPMENT.md)
+records smaller compiler output, shared multiplication and the new validated
+20-sheet hardware collection. None of these closes the pipeline, compiler,
+security or physical-validation milestones below.
+
 MICA targets a compiler-supported, single-core microcontroller platform with
 compact code, predictable memory and interrupts, and reproducible builds.
 MICA-2C is the minimum configuration; MICA-2E adds registers and embedded

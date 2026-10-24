@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
       std::string opt = argv[i];
       if (opt == "--version") {
-        std::cout << tool << " 2.0 development\n";
+        std::cout << tool << " " << mica::sdk_version << "\n";
         return 0;
       }
       if (opt == "--help") {

@@ -310,6 +310,36 @@ class Function:
     def emit(self, *lines):
         self.code.extend(lines)
 
+    def add_imm(self, reg, amount):
+        amount = int(amount)
+        if amount == 0:
+            return
+        name = "sp" if reg == 7 else f"x{reg}"
+        if reg < 8 and -128 <= amount <= 127:
+            self.emit(f"addi {name},{amount}")
+        else:
+            self.emit(f"add3i {name},{name},{amount}")
+
+    def shift_left(self, reg, amount):
+        amount = int(amount)
+        if reg < 8 and 0 <= amount < 32:
+            self.emit(f"shli x{reg},{amount}")
+        else:
+            self.emit(f"shl3i x{reg},x{reg},{amount}")
+
+    def shift_right(self, reg, amount, arithmetic=False):
+        amount = int(amount)
+        if not arithmetic and reg < 8 and 0 <= amount < 32:
+            self.emit(f"shri x{reg},{amount}")
+        else:
+            mnemonic = "sar3i" if arithmetic else "shr3i"
+            self.emit(f"{mnemonic} x{reg},x{reg},{amount}")
+
+    def narrow(self, reg, bits, arithmetic=False):
+        shift = 32 - int(bits)
+        self.shift_left(reg, shift)
+        self.shift_right(reg, shift, arithmetic)
+
     def label(self, name):
         return self.name + "." + name.lstrip("%")
 
@@ -339,16 +369,16 @@ class Function:
         elif val in ("false", "null", "true"):
             self.emit(f"li8 x{reg},{int(val == 'true')}")
         elif re.fullmatch(r"-?\d+", val):
-            self.emit(f"li32 x{reg},{int(val) & 0xffffffff}")
+            constant = int(val) & 0xFFFFFFFF
+            if constant >= 0x80000000:
+                constant -= 1 << 32
+            self.emit(f"li x{reg},{constant}")
         else:
             raise Unsupported("undefined or unsupported value: " + val)
 
     def save(self, dest, reg=1, ty="i32"):
         if ty in ("i1", "i8", "i16"):
-            bits = int(ty[1:])
-            self.emit(
-                f"shl3i x{reg},x{reg},{32 - bits}", f"shr3i x{reg},x{reg},{32 - bits}"
-            )
+            self.narrow(reg, int(ty[1:]))
         if dest in self.cached:
             self.emit(f"add3 x{self.cached[dest]},x{reg},x0")
         else:
@@ -376,7 +406,7 @@ class Function:
                     n, a = self.module.layout(previous)
                     offset = align(offset, a) + n
                 offset = align(offset, self.module.layout(fields[field])[1])
-                self.emit(f"add3i x1,x1,{offset}")
+                self.add_imm(1, offset)
                 ty = fields[field]
                 continue
             if index:
@@ -392,7 +422,7 @@ class Function:
                 if size & (size - 1):
                     raise Unsupported("dynamic GEP requires power-of-two element size")
                 if size > 1:
-                    self.emit(f"shl3i x2,x2,{size.bit_length() - 1}")
+                    self.shift_left(2, size.bit_length() - 1)
             self.emit("add x1,x2")
         self.save(dest)
 
@@ -457,11 +487,9 @@ class Function:
             ty, _ = typed(arg)
             self.load(value(arg), 1)
             if cast == "sext" and ty != "i32":
-                bits = int(ty[1:])
-                self.emit(f"shl3i x1,x1,{32 - bits}", f"sar3i x1,x1,{32 - bits}")
+                self.narrow(1, int(ty[1:]), arithmetic=True)
             elif cast == "zext" and ty != "i32":
-                bits = int(ty[1:])
-                self.emit(f"shl3i x1,x1,{32 - bits}", f"shr3i x1,x1,{32 - bits}")
+                self.narrow(1, int(ty[1:]))
             if target not in ("i1", "i8", "i16", "i32", "ptr"):
                 raise Unsupported("unsupported cast destination " + target)
             self.save(dest, ty=target)
@@ -475,11 +503,7 @@ class Function:
             self.load(right, 2)
             if ty in ("i8", "i16"):
                 for reg in (1, 2):
-                    right_shift = "sar3i" if predicate.startswith("s") else "shr3i"
-                    self.emit(
-                        f"shl3i x{reg},x{reg},{32 - int(ty[1:])}",
-                        f"{right_shift} x{reg},x{reg},{32 - int(ty[1:])}",
-                    )
+                    self.narrow(reg, int(ty[1:]), arithmetic=predicate.startswith("s"))
             reverse = predicate.endswith(("gt", "le"))
             mnemonic = (
                 "seq3"
@@ -499,8 +523,7 @@ class Function:
             self.load(left, 1)
             self.load(right, 2)
             if operation == "ashr" and ty != "i32":
-                bits = int(ty[1:])
-                self.emit(f"shl3i x1,x1,{32 - bits}", f"sar3i x1,x1,{32 - bits}")
+                self.narrow(1, int(ty[1:]), arithmetic=True)
             if operation == "mul" and not self.module.multiply:
                 loop, skip, done = self.unique(), self.unique(), self.unique()
                 self.emit(
@@ -519,7 +542,7 @@ class Function:
                 )
             else:
                 mnemonic = {"lshr": "shr", "ashr": "sar"}.get(operation, operation)
-                self.emit(f"{mnemonic}3 x1,x1,x2")
+                self.emit(f"{mnemonic} x1,x2")
             self.save(dest, ty=ty)
         elif op.startswith("call "):
             match = re.fullmatch(
@@ -544,13 +567,9 @@ class Function:
         self.emit(
             f"; {self.name}: frame={self.frame} bytes, register temporaries={len(self.cached)}"
         )
-        self.emit(
-            ".global " + self.name,
-            self.name + ":",
-            f"add3i sp,sp,-{self.frame}",
-            "stw x5,[sp]",
-            "stw x6,[sp+4]",
-        )
+        self.emit(".global " + self.name, self.name + ":")
+        self.add_imm(7, -self.frame)
+        self.emit("stw x5,[sp]", "stw x6,[sp+4]")
         for index, arg in enumerate(self.args):
             self.save(value(arg), index + 1, typed(arg)[0])
         for line in self.body:
@@ -562,7 +581,7 @@ class Function:
             self.label("epilogue") + ":",
             "ldw x5,[sp]",
             "ldw x6,[sp+4]",
-            f"add3i sp,sp,{self.frame}",
-            "ret",
         )
+        self.add_imm(7, self.frame)
+        self.emit("ret")
         return self.code

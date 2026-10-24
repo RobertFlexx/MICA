@@ -6,11 +6,18 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--tools", type=Path, default=ROOT / "build")
 parser.add_argument("--clang", default="clang")
+parser.add_argument(
+    "--objcopy",
+    default=shutil.which("llvm-objcopy")
+    or shutil.which("llvm-objcopy-18")
+    or "llvm-objcopy",
+)
 parser.add_argument("--output", type=Path, default=ROOT / "build/compiled-density")
 args = parser.parse_args()
 out = args.output.resolve()
@@ -141,7 +148,7 @@ for name, target, flags, arm in targets:
             }
         )
         continue
-    run(["llvm-objcopy", "-O", "binary", elf, binary])
+    run([args.objcopy, "-O", "binary", elf, binary])
     rows.append(
         {
             "target": name,

@@ -1,0 +1,48 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 10 / 20 | Minimal multicycle controller</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">All eleven states are represented. State graph is checked against the state_t enum and RTL anchors.<BR ALIGN="LEFT"/>Sequential registers update on clk_i; rst_ni asynchronously enters START and clears pending effects.<BR ALIGN="LEFT"/>Request ownership persists through waits. Reset cancellation requires the fabric to reset with the core.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+START[label="START\ninterrupt / PC alignment check\n----------------------\nenabled IRQ or odd PC: T\notherwise: LOOKUP"];
+LOOKUP[label="LOOKUP\ncache tag and valid\n----------------------\nvalid matching tag: PARCEL\nmiss: IREQ"];
+IREQ[label="IREQ\ni_req_valid; hold address\n----------------------\nready: IWAIT\notherwise: hold"];
+IWAIT[label="IWAIT\ni_rsp_ready; capture parcel_word\n----------------------\nvalid, good: PARCEL\nvalid, error: T\notherwise: hold"];
+PARCEL[label="PARCEL\nwrite lo / hi; length detection\n----------------------\ncross-word / slow long: LOOKUP\ncomplete / aligned fast: DECODE"];
+DECODE[label="DECODE\nvalidate; capture q_* effects\n----------------------\nparity error: STOP; illegal: T\nmemory: DREQ; other: COMMIT"];
+DREQ[label="DREQ\nd_req_valid; held request\n----------------------\nready: DWAIT\notherwise: hold"];
+DWAIT[label="DWAIT\nd_rsp_ready; capture response_data\n----------------------\nvalid, good: COMMIT\nvalid, error: T\notherwise: hold"];
+COMMIT[label="COMMIT\nGPR / CSR / PC / trace enables\n----------------------\necall: T; q_wait: SLEEP\nq_stop: STOP; normal: START"];
+SLEEP[label="SLEEP\nno requests or retirement\n----------------------\nenabled IRQ: T\nother pending: START; else hold"];
+STOP[label="STOP\nhalt_o; no progress until reset\n----------------------\nhold until reset"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->START[style=invis,weight=100];
+{rank=same;START;LOOKUP;IREQ;IWAIT;}
+START->LOOKUP[style=invis,weight=100];
+LOOKUP->IREQ[style=invis,weight=100];
+IREQ->IWAIT[style=invis,weight=100];
+{rank=same;SLEEP;COMMIT;DECODE;PARCEL;}
+SLEEP->COMMIT[style=invis,weight=100];
+COMMIT->DECODE[style=invis,weight=100];
+DECODE->PARCEL[style=invis,weight=100];
+{rank=same;STOP;DWAIT;DREQ;}
+STOP->DWAIT[style=invis,weight=100];
+DWAIT->DREQ[style=invis,weight=100];
+START->SLEEP[style=invis,weight=100];
+SLEEP->STOP[style=invis,weight=100];
+START->LOOKUP[constraint=false];
+LOOKUP->IREQ[constraint=false];
+IREQ->IWAIT[constraint=false];
+IWAIT->PARCEL[constraint=false];
+PARCEL->DECODE[constraint=false];
+DECODE->COMMIT[constraint=false];
+DECODE->DREQ[constraint=false];
+DREQ->DWAIT[constraint=false];
+DWAIT->COMMIT[constraint=false];
+COMMIT->SLEEP[constraint=false];
+COMMIT->STOP[constraint=false];
+reset[shape=ellipse,label="rst_ni=0"];reset->START[label="asynchronous reset"];
+fault[shape=note,label="T = trap_entry() task (not a state)
+Recoverable: set TVEC/EPC/cause/status; START
+Unrecoverable entry or invalid state: fault_o=1; STOP
+All other transitions and stalls are listed in state boxes.",fillcolor="#fdeaea"];
+}

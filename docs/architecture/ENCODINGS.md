@@ -26,9 +26,9 @@ Short class 0. `op8[13:6] rd3[5:3] rs3[2:0]`
 | 15 | `not d` | base | D = ~D. |
 | 16 | `neg d` | base | D = 0-D. |
 | 17 | `mul d,s` | M | D = low_XLEN(D*S). |
-| 18 | `wfi` | base | Retire and halt the current execution run. |
+| 18 | `wfi` | base | ISA 2.0: retire then sleep until a pending event; masked events wake, enabled interrupts enter a handler. ISA 1.0 compatibility: retire and halt the current run. |
 | 19 | `fence` | base | Complete preceding memory operations before following operations. |
-| 20 | `ecall` | base | With T: enter cause 11 with EPC=sequentialPC. Without T: retire and halt. |
+| 20 | `ecall` | base | With T: retire and enter cause 11; ISA 2.0 saves EPC=instruction PC, ISA 1.0 saves EPC=sequentialPC. Without T: retire and halt. |
 | 21 | `eret` | T | Require T and active handler; nextPC=EPC, restore saved IE and clear handler state. |
 | 22 | `fence.i` | base | Synchronize instruction fetch with preceding stores; invalidate fetch reuse. |
 ## I
@@ -51,7 +51,7 @@ Short class 2. `op3[13:11] data3[10:8] base3[7:5] off5[4:0]`
 
 | Opcode | Canonical syntax and disassembly | Extension | Execution |
 | ---: | --- | --- | --- |
-| 0 | `ldw d,[base+offset]` | base | D=zext(load32(A)). |
+| 0 | `ldw d,[base+offset]` | base | ISA 2.0: D=sext(load32(A)) at XLEN64; XLEN32 retains all 32 bits. ISA 1.0 compatibility: zero extension. |
 | 1 | `stw d,[base+offset]` | base | store32(A,low32(D)). |
 | 2 | `ldh d,[base+offset]` | base | D=sext(load16(A)). |
 | 3 | `sth d,[base+offset]` | base | store16(A,low16(D)). |

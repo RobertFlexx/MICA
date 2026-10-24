@@ -1,4 +1,19 @@
-# MICA 2.0 release notes
+# MICA 3.0 development r1 release notes
+
+This development revision retains ISA 2.0 and explicit 1.0 compatibility. The
+SDK and archive version advance to 3.0; ELF ISA flags, machine encodings and
+existing command defaults do not change. Select a profile or --mica2 explicitly.
+
+The compiler selects existing shorter forms, including fitting addi and logical
+shift immediates. The scalar core shares optional
+multiply hardware, and the new 20-sheet collection is checked against elaborated
+RTL and verified FPGA constraints. The [development report](docs/engineering/MICA3_DEVELOPMENT.md)
+publishes resource/code-size measurements and remaining validation gaps.
+
+This is the start of 3.0 development. Pipeline, hardware A/V, full compiler and
+runtime, isolation, physical timing/power and board validation remain incomplete.
+
+## Historical MICA 2.0 notes
 
 MICA 2.0 adds compact stack accesses, a two-byte counted branch, PC-relative
 address arithmetic, wakeable WFI and explicit STOP to the preserved 1.0 SDK.

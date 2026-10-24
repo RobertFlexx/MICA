@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble equivalent loop bodies for MICA 2.0 and standard RISC-V profiles.
+"""Assemble equivalent loop bodies for MICA 2.0, RISC-V and Thumb.
 
 Measures emitted instruction bytes, excluding setup and termination. No clock,
 power, compiler-quality or whole-program advantage is inferred from these loops.
@@ -40,6 +40,24 @@ KERNELS = {
         "sw a0,0(sp)\nlw a0,0(sp)\n",
         2,
         2,
+    ),
+}
+THUMB = {
+    "counted-branch": (
+        "loop:\nsubs r2,#1\nbne loop\n",
+        "loop:\nsubs r2,#1\nbne loop\n",
+    ),
+    "byte-copy": (
+        "loop:\nldrb r3,[r1]\nstrb r3,[r0]\nadds r0,#1\nadds r1,#1\nsubs r2,#1\nbne loop\n",
+        "loop:\nldrb r3,[r1],#1\nstrb r3,[r0],#1\nsubs r2,#1\nbne loop\n",
+    ),
+    "word-copy": (
+        "loop:\nldr r3,[r1]\nstr r3,[r0]\nadds r0,#4\nadds r1,#4\nsubs r2,#1\nbne loop\n",
+        "loop:\nldr r3,[r1],#4\nstr r3,[r0],#4\nsubs r2,#1\nbne loop\n",
+    ),
+    "stack-roundtrip": (
+        "str r0,[sp]\nldr r0,[sp]\n",
+        "str r0,[sp]\nldr r0,[sp]\n",
     ),
 }
 
@@ -117,6 +135,39 @@ def main():
                         100 * (rv_size - size) / rv_size, 3
                     ),
                 }
+            row["thumb"] = {}
+            for profile, (triple, cpu, source_text) in {
+                "Thumb_M0+": ("thumbv6m", "cortex-m0plus", THUMB[name][0]),
+                "Thumb_M4": ("thumbv7m", "cortex-m4", THUMB[name][1]),
+            }.items():
+                thumb_source = stage / "kernel-thumb.s"
+                thumb_source.write_text(".syntax unified\n.thumb\n" + source_text)
+                checked(
+                    [
+                        args.llvm_mc,
+                        "-triple=" + triple,
+                        "-mcpu=" + cpu,
+                        "-filetype=obj",
+                        thumb_source,
+                        "-o",
+                        obj,
+                    ]
+                )
+                checked(
+                    [
+                        args.llvm_objcopy,
+                        "-O",
+                        "binary",
+                        "--only-section=.text",
+                        obj,
+                        raw,
+                    ]
+                )
+                row["thumb"][profile] = {
+                    "bytes": raw.stat().st_size,
+                    "encoding_hex": raw.read_bytes().hex(),
+                    "source": thumb_source.read_text(),
+                }
             rows.append(row)
             print(
                 name,
@@ -124,6 +175,8 @@ def main():
                 size,
                 "RISC-V:",
                 {k: v["bytes"] for k, v in row["riscv"].items()},
+                "Thumb:",
+                {k: v["bytes"] for k, v in row["thumb"].items()},
             )
         # Execute complete MICA copy programs and inspect every copied word.
         # RISC-V is assembled and sized above; it is not run on a RISC-V CPU.
@@ -164,7 +217,7 @@ def main():
                         )
     report = {
         "method": "LLVM and MICA assembler output; loop bodies only, hand-written and register-constrained; MICA copy programs executed at XLEN32/64",
-        "limits": "RISC-V execution, compiler output, synthesized cross-ISA area, routed timing and measured energy are not compared. Zcb is enabled explicitly; custom hardware-loop/postincrement extensions are outside this comparison.",
+        "limits": "RISC-V and Thumb execution, compiler output, synthesized cross-ISA area, routed timing and measured energy are not compared. Zcb is enabled explicitly. Thumb-M0+ uses separate load, store and pointer updates. Thumb-M4 uses post-indexed loads and stores where that encoding exists. Custom hardware-loop extensions are outside this comparison.",
         "llvm": checked([args.llvm_mc, "--version"]).stdout.splitlines()[0],
         "measurements": rows,
     }

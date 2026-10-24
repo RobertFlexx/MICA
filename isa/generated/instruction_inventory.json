@@ -1,0 +1,4913 @@
+[
+  {
+    "name": "nop",
+    "op": 0,
+    "semantics": "No state changes.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 0,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "mov",
+    "op": 1,
+    "semantics": "D = S.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 64,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "add",
+    "op": 2,
+    "semantics": "D = D + S.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 128,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sub",
+    "op": 3,
+    "semantics": "D = D - S.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 192,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "and",
+    "op": 4,
+    "semantics": "D = D & S.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 256,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "or",
+    "op": 5,
+    "semantics": "D = D | S.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 320,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "xor",
+    "op": 6,
+    "semantics": "D = D ^ S.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 384,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shl",
+    "op": 7,
+    "semantics": "D = D << (S & (XLEN-1)).",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 448,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shr",
+    "op": 8,
+    "semantics": "D = unsigned(D) >> (S & (XLEN-1)).",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 512,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sar",
+    "op": 9,
+    "semantics": "D = signed(D) >> (S & (XLEN-1)).",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 576,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "slt",
+    "op": 10,
+    "semantics": "D = signed(D) < signed(S).",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 640,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sltu",
+    "op": 11,
+    "semantics": "D = unsigned(D) < unsigned(S).",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 704,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "seq",
+    "op": 12,
+    "semantics": "D = D == S.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 768,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "jr",
+    "op": 13,
+    "semantics": "nextPC = D; reject odd target before side effects.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 832,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "jalr",
+    "op": 14,
+    "semantics": "target = D; x6 = sequentialPC; nextPC = target; reject odd target before writing x6.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 896,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "not",
+    "op": 15,
+    "semantics": "D = ~D.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 960,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "neg",
+    "op": 16,
+    "semantics": "D = 0-D.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 1024,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "mul",
+    "op": 17,
+    "semantics": "D = low_XLEN(D*S).",
+    "extension": "M",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 1088,
+        "requires": [
+          "M"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "wfi",
+    "op": 18,
+    "semantics": "ISA 2.0: retire then sleep until a pending event; masked events wake, enabled interrupts enter a handler. ISA 1.0 compatibility: retire and halt the current run.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 1152,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "fence",
+    "op": 19,
+    "semantics": "Complete preceding memory operations before following operations.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 1216,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ecall",
+    "op": 20,
+    "semantics": "With T: retire and enter cause 11; ISA 2.0 saves EPC=instruction PC, ISA 1.0 saves EPC=sequentialPC. Without T: retire and halt.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 1280,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "eret",
+    "op": 21,
+    "semantics": "Require T and active handler; nextPC=EPC, restore saved IE and clear handler state.",
+    "extension": "T",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 1344,
+        "requires": [
+          "T"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "fence.i",
+    "op": 22,
+    "semantics": "Synchronize instruction fetch with preceding stores; invalidate fetch reuse.",
+    "extension": "base",
+    "group": "R",
+    "fields": "op8[13:6] rd3[5:3] rs3[2:0]",
+    "encodings": [
+      {
+        "group": "R",
+        "length": 2,
+        "mask": 65472,
+        "value": 1408,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decode / arithmetic / control",
+    "compiler_use": "two-operand arithmetic, copies and control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "li8",
+    "op": 0,
+    "semantics": "D = sext(imm8).",
+    "extension": "base",
+    "group": "I",
+    "fields": "op3[13:11] rd3[10:8] imm8[7:0]",
+    "encodings": [
+      {
+        "group": "I",
+        "length": 2,
+        "mask": 63488,
+        "value": 16384,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate arithmetic / short branch",
+    "compiler_use": "small constants, increments and short conditions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "addi",
+    "op": 1,
+    "semantics": "D = D + sext(imm8).",
+    "extension": "base",
+    "group": "I",
+    "fields": "op3[13:11] rd3[10:8] imm8[7:0]",
+    "encodings": [
+      {
+        "group": "I",
+        "length": 2,
+        "mask": 63488,
+        "value": 18432,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate arithmetic / short branch",
+    "compiler_use": "small constants, increments and short conditions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "andi",
+    "op": 2,
+    "semantics": "D = D & zext(imm8).",
+    "extension": "base",
+    "group": "I",
+    "fields": "op3[13:11] rd3[10:8] imm8[7:0]",
+    "encodings": [
+      {
+        "group": "I",
+        "length": 2,
+        "mask": 63488,
+        "value": 20480,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate arithmetic / short branch",
+    "compiler_use": "small constants, increments and short conditions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shli",
+    "op": 3,
+    "semantics": "D = D << imm8; require imm8 < 32.",
+    "extension": "base",
+    "group": "I",
+    "fields": "op3[13:11] rd3[10:8] imm8[7:0]",
+    "encodings": [
+      {
+        "group": "I",
+        "length": 2,
+        "mask": 63488,
+        "value": 22528,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate arithmetic / short branch",
+    "compiler_use": "small constants, increments and short conditions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shri",
+    "op": 4,
+    "semantics": "D = unsigned(D) >> imm8; require imm8 < 32.",
+    "extension": "base",
+    "group": "I",
+    "fields": "op3[13:11] rd3[10:8] imm8[7:0]",
+    "encodings": [
+      {
+        "group": "I",
+        "length": 2,
+        "mask": 63488,
+        "value": 24576,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate arithmetic / short branch",
+    "compiler_use": "small constants, increments and short conditions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "bz",
+    "op": 5,
+    "semantics": "If D==0: nextPC=sequentialPC+2*sext(imm8).",
+    "extension": "base",
+    "group": "I",
+    "fields": "op3[13:11] rd3[10:8] imm8[7:0]",
+    "encodings": [
+      {
+        "group": "I",
+        "length": 2,
+        "mask": 63488,
+        "value": 26624,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate arithmetic / short branch",
+    "compiler_use": "small constants, increments and short conditions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "bnz",
+    "op": 6,
+    "semantics": "If D!=0: nextPC=sequentialPC+2*sext(imm8).",
+    "extension": "base",
+    "group": "I",
+    "fields": "op3[13:11] rd3[10:8] imm8[7:0]",
+    "encodings": [
+      {
+        "group": "I",
+        "length": 2,
+        "mask": 63488,
+        "value": 28672,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate arithmetic / short branch",
+    "compiler_use": "small constants, increments and short conditions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "b",
+    "op": 7,
+    "semantics": "nextPC=sequentialPC+2*sext(imm11).",
+    "extension": "base",
+    "group": "I",
+    "fields": "op3[13:11] rel11[10:0]",
+    "encodings": [
+      {
+        "group": "I",
+        "length": 2,
+        "mask": 63488,
+        "value": 30720,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate arithmetic / short branch",
+    "compiler_use": "small constants, increments and short conditions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldw",
+    "op": 0,
+    "bytes": 4,
+    "semantics": "ISA 2.0: D=sext(load32(A)) at XLEN64; XLEN32 retains all 32 bits. ISA 1.0 compatibility: zero extension.",
+    "extension": "base",
+    "group": "MEM",
+    "fields": "op3[13:11] data3[10:8] base3[7:5] off5[4:0]",
+    "encodings": [
+      {
+        "group": "MEM",
+        "length": 2,
+        "mask": 63488,
+        "value": 32768,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "transactional LSU / lane selection",
+    "compiler_use": "scalar object, array and stack accesses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "stw",
+    "op": 1,
+    "bytes": 4,
+    "semantics": "store32(A,low32(D)).",
+    "extension": "base",
+    "group": "MEM",
+    "fields": "op3[13:11] data3[10:8] base3[7:5] off5[4:0]",
+    "encodings": [
+      {
+        "group": "MEM",
+        "length": 2,
+        "mask": 63488,
+        "value": 34816,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "transactional LSU / lane selection",
+    "compiler_use": "scalar object, array and stack accesses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldh",
+    "op": 2,
+    "bytes": 2,
+    "semantics": "D=sext(load16(A)).",
+    "extension": "base",
+    "group": "MEM",
+    "fields": "op3[13:11] data3[10:8] base3[7:5] off5[4:0]",
+    "encodings": [
+      {
+        "group": "MEM",
+        "length": 2,
+        "mask": 63488,
+        "value": 36864,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "transactional LSU / lane selection",
+    "compiler_use": "scalar object, array and stack accesses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sth",
+    "op": 3,
+    "bytes": 2,
+    "semantics": "store16(A,low16(D)).",
+    "extension": "base",
+    "group": "MEM",
+    "fields": "op3[13:11] data3[10:8] base3[7:5] off5[4:0]",
+    "encodings": [
+      {
+        "group": "MEM",
+        "length": 2,
+        "mask": 63488,
+        "value": 38912,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "transactional LSU / lane selection",
+    "compiler_use": "scalar object, array and stack accesses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldb",
+    "op": 4,
+    "bytes": 1,
+    "semantics": "D=sext(load8(A)).",
+    "extension": "base",
+    "group": "MEM",
+    "fields": "op3[13:11] data3[10:8] base3[7:5] off5[4:0]",
+    "encodings": [
+      {
+        "group": "MEM",
+        "length": 2,
+        "mask": 63488,
+        "value": 40960,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "transactional LSU / lane selection",
+    "compiler_use": "scalar object, array and stack accesses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "stb",
+    "op": 5,
+    "bytes": 1,
+    "semantics": "store8(A,low8(D)).",
+    "extension": "base",
+    "group": "MEM",
+    "fields": "op3[13:11] data3[10:8] base3[7:5] off5[4:0]",
+    "encodings": [
+      {
+        "group": "MEM",
+        "length": 2,
+        "mask": 63488,
+        "value": 43008,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "transactional LSU / lane selection",
+    "compiler_use": "scalar object, array and stack accesses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldhu",
+    "op": 6,
+    "bytes": 2,
+    "semantics": "D=zext(load16(A)).",
+    "extension": "base",
+    "group": "MEM",
+    "fields": "op3[13:11] data3[10:8] base3[7:5] off5[4:0]",
+    "encodings": [
+      {
+        "group": "MEM",
+        "length": 2,
+        "mask": 63488,
+        "value": 45056,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "transactional LSU / lane selection",
+    "compiler_use": "scalar object, array and stack accesses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldbu",
+    "op": 7,
+    "bytes": 1,
+    "semantics": "D=zext(load8(A)).",
+    "extension": "base",
+    "group": "MEM",
+    "fields": "op3[13:11] data3[10:8] base3[7:5] off5[4:0]",
+    "encodings": [
+      {
+        "group": "MEM",
+        "length": 2,
+        "mask": 63488,
+        "value": 47104,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "transactional LSU / lane selection",
+    "compiler_use": "scalar object, array and stack accesses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "add3",
+    "op": 0,
+    "semantics": "D = A+B.",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3221225472,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sub3",
+    "op": 1,
+    "semantics": "D = A-B.",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3222274048,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "and3",
+    "op": 2,
+    "semantics": "D = A&B.",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3223322624,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "or3",
+    "op": 3,
+    "semantics": "D = A|B.",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3224371200,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "xor3",
+    "op": 4,
+    "semantics": "D = A^B.",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3225419776,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shl3",
+    "op": 5,
+    "semantics": "D = A << (B & (XLEN-1)).",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3226468352,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shr3",
+    "op": 6,
+    "semantics": "D = unsigned(A) >> (B & (XLEN-1)).",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3227516928,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sar3",
+    "op": 7,
+    "semantics": "D = signed(A) >> (B & (XLEN-1)).",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3228565504,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "slt3",
+    "op": 8,
+    "semantics": "D = signed(A)<signed(B).",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3229614080,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sltu3",
+    "op": 9,
+    "semantics": "D = unsigned(A)<unsigned(B).",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3230662656,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "seq3",
+    "op": 10,
+    "semantics": "D = A==B.",
+    "extension": "base",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3231711232,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "mul3",
+    "op": 11,
+    "semantics": "D = low_XLEN(A*B).",
+    "extension": "M",
+    "group": "ALU",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "ALU",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3232759808,
+        "requires": [
+          "M"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "arithmetic() / optional shared multiplier",
+    "compiler_use": "distinct destination or high-register arithmetic",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "add3i",
+    "op": 0,
+    "semantics": "D = A+sext(imm14).",
+    "extension": "base",
+    "group": "IMM",
+    "fields": "op4[25:22] rd4[21:18] ra4[17:14] imm14[13:0]",
+    "encodings": [
+      {
+        "group": "IMM",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3288334336,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate decode / shared scalar operations",
+    "compiler_use": "address offsets, masks and constant shifts",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "and3i",
+    "op": 1,
+    "semantics": "D = A & zext(imm14).",
+    "extension": "base",
+    "group": "IMM",
+    "fields": "op4[25:22] rd4[21:18] ra4[17:14] imm14[13:0]",
+    "encodings": [
+      {
+        "group": "IMM",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3292528640,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate decode / shared scalar operations",
+    "compiler_use": "address offsets, masks and constant shifts",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "or3i",
+    "op": 2,
+    "semantics": "D = A | zext(imm14).",
+    "extension": "base",
+    "group": "IMM",
+    "fields": "op4[25:22] rd4[21:18] ra4[17:14] imm14[13:0]",
+    "encodings": [
+      {
+        "group": "IMM",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3296722944,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate decode / shared scalar operations",
+    "compiler_use": "address offsets, masks and constant shifts",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "xor3i",
+    "op": 3,
+    "semantics": "D = A ^ zext(imm14).",
+    "extension": "base",
+    "group": "IMM",
+    "fields": "op4[25:22] rd4[21:18] ra4[17:14] imm14[13:0]",
+    "encodings": [
+      {
+        "group": "IMM",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3300917248,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate decode / shared scalar operations",
+    "compiler_use": "address offsets, masks and constant shifts",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shl3i",
+    "op": 4,
+    "semantics": "D = A << imm14 ; require imm14 < XLEN.",
+    "extension": "base",
+    "group": "IMM",
+    "fields": "op4[25:22] rd4[21:18] ra4[17:14] imm14[13:0]",
+    "encodings": [
+      {
+        "group": "IMM",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3305111552,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate decode / shared scalar operations",
+    "compiler_use": "address offsets, masks and constant shifts",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shr3i",
+    "op": 5,
+    "semantics": "D = unsigned(A) >> imm14 ; require imm14 < XLEN.",
+    "extension": "base",
+    "group": "IMM",
+    "fields": "op4[25:22] rd4[21:18] ra4[17:14] imm14[13:0]",
+    "encodings": [
+      {
+        "group": "IMM",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3309305856,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate decode / shared scalar operations",
+    "compiler_use": "address offsets, masks and constant shifts",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sar3i",
+    "op": 6,
+    "semantics": "D = signed(A) >> imm14 ; require imm14 < XLEN.",
+    "extension": "base",
+    "group": "IMM",
+    "fields": "op4[25:22] rd4[21:18] ra4[17:14] imm14[13:0]",
+    "encodings": [
+      {
+        "group": "IMM",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3313500160,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "immediate decode / shared scalar operations",
+    "compiler_use": "address offsets, masks and constant shifts",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "movhi",
+    "op": 0,
+    "semantics": "D=zext(imm16 << 16), including on XLEN64.",
+    "extension": "base",
+    "group": "WIDE",
+    "fields": "op6[25:20] rd4[19:16] imm16[15:0]",
+    "encodings": [
+      {
+        "group": "WIDE",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3355443200,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "literal composition / PC adder",
+    "compiler_use": "large constants, symbols and PC-relative addresses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "movlo",
+    "op": 1,
+    "semantics": "D=(oldD & ~65535) | imm16.",
+    "extension": "base",
+    "group": "WIDE",
+    "fields": "op6[25:20] rd4[19:16] imm16[15:0]",
+    "encodings": [
+      {
+        "group": "WIDE",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3356491776,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "literal composition / PC adder",
+    "compiler_use": "large constants, symbols and PC-relative addresses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "li16",
+    "op": 2,
+    "semantics": "D=sext(imm16).",
+    "extension": "base",
+    "group": "WIDE",
+    "fields": "op6[25:20] rd4[19:16] imm16[15:0]",
+    "encodings": [
+      {
+        "group": "WIDE",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3357540352,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "literal composition / PC adder",
+    "compiler_use": "large constants, symbols and PC-relative addresses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "adrpc",
+    "op": 3,
+    "semantics": "D=instruction_PC+2*sext(imm16), modulo XLEN. Intended for PC-relative literal addresses.",
+    "extension": "2C",
+    "group": "WIDE",
+    "fields": "op6[25:20] rd4[19:16] imm16[15:0]",
+    "encodings": [
+      {
+        "group": "WIDE",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3358588928,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "literal composition / PC adder",
+    "compiler_use": "large constants, symbols and PC-relative addresses",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "beq",
+    "op": 0,
+    "semantics": "If A==B: nextPC=sequentialPC+2*sext(rel14).",
+    "extension": "base",
+    "group": "BR",
+    "fields": "op4[25:22] ra4[21:18] rb4[17:14] rel14[13:0]",
+    "encodings": [
+      {
+        "group": "BR",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3422552064,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "comparison / PC-relative adder",
+    "compiler_use": "two-register conditional control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "bne",
+    "op": 1,
+    "semantics": "If A!=B: nextPC=sequentialPC+2*sext(rel14).",
+    "extension": "base",
+    "group": "BR",
+    "fields": "op4[25:22] ra4[21:18] rb4[17:14] rel14[13:0]",
+    "encodings": [
+      {
+        "group": "BR",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3426746368,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "comparison / PC-relative adder",
+    "compiler_use": "two-register conditional control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "blt",
+    "op": 2,
+    "semantics": "If signed(A)<signed(B): nextPC=sequentialPC+2*sext(rel14).",
+    "extension": "base",
+    "group": "BR",
+    "fields": "op4[25:22] ra4[21:18] rb4[17:14] rel14[13:0]",
+    "encodings": [
+      {
+        "group": "BR",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3430940672,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "comparison / PC-relative adder",
+    "compiler_use": "two-register conditional control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "bge",
+    "op": 3,
+    "semantics": "If signed(A)>=signed(B): nextPC=sequentialPC+2*sext(rel14).",
+    "extension": "base",
+    "group": "BR",
+    "fields": "op4[25:22] ra4[21:18] rb4[17:14] rel14[13:0]",
+    "encodings": [
+      {
+        "group": "BR",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3435134976,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "comparison / PC-relative adder",
+    "compiler_use": "two-register conditional control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "bltu",
+    "op": 4,
+    "semantics": "If unsigned(A)<unsigned(B): nextPC=sequentialPC+2*sext(rel14).",
+    "extension": "base",
+    "group": "BR",
+    "fields": "op4[25:22] ra4[21:18] rb4[17:14] rel14[13:0]",
+    "encodings": [
+      {
+        "group": "BR",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3439329280,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "comparison / PC-relative adder",
+    "compiler_use": "two-register conditional control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "bgeu",
+    "op": 5,
+    "semantics": "If unsigned(A)>=unsigned(B): nextPC=sequentialPC+2*sext(rel14).",
+    "extension": "base",
+    "group": "BR",
+    "fields": "op4[25:22] ra4[21:18] rb4[17:14] rel14[13:0]",
+    "encodings": [
+      {
+        "group": "BR",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3443523584,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "comparison / PC-relative adder",
+    "compiler_use": "two-register conditional control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "csrr",
+    "op": 0,
+    "semantics": "D=readCSR(aux8); reject absent or reserved CSR.",
+    "extension": "base",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3556769792,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "CSR decode and commit",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "invalid/unimplemented/read-only CSR accesses trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "csrw",
+    "op": 1,
+    "semantics": "writeCSR(aux8,A); reject absent, reserved or read-only CSR before effects.",
+    "extension": "base",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3557818368,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "CSR decode and commit",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "invalid/unimplemented/read-only CSR accesses trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "lr.w",
+    "op": 2,
+    "semantics": "Set reservation=(A,width); D=old memory value. RAM only; aligned, single-hart sequential reference behavior.",
+    "extension": "A",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3558866944,
+        "requires": [
+          "A"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "sc.w",
+    "op": 3,
+    "semantics": "Test and clear reservation matching address AND width; on success store B; D=0 on success, 1 on failure. RAM only; aligned, single-hart sequential reference behavior.",
+    "extension": "A",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3559915520,
+        "requires": [
+          "A"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "amoadd.w",
+    "op": 4,
+    "semantics": "D=old memory value; memory=old+B. RAM only; aligned, single-hart sequential reference behavior.",
+    "extension": "A",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3560964096,
+        "requires": [
+          "A"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "amoswap.w",
+    "op": 5,
+    "semantics": "D=old memory value; memory=B. RAM only; aligned, single-hart sequential reference behavior.",
+    "extension": "A",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3562012672,
+        "requires": [
+          "A"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "lr.q",
+    "op": 6,
+    "semantics": "Set reservation=(A,width); D=old memory value. RAM only; aligned, single-hart sequential reference behavior.",
+    "extension": "A",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3563061248,
+        "requires": [
+          "A"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "sc.q",
+    "op": 7,
+    "semantics": "Test and clear reservation matching address AND width; on success store B; D=0 on success, 1 on failure. RAM only; aligned, single-hart sequential reference behavior.",
+    "extension": "A",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3564109824,
+        "requires": [
+          "A"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "amoadd.q",
+    "op": 8,
+    "semantics": "D=old memory value; memory=old+B. RAM only; aligned, single-hart sequential reference behavior.",
+    "extension": "A",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3565158400,
+        "requires": [
+          "A"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "amoswap.q",
+    "op": 9,
+    "semantics": "D=old memory value; memory=B. RAM only; aligned, single-hart sequential reference behavior.",
+    "extension": "A",
+    "group": "SYS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] aux8[7:0]",
+    "encodings": [
+      {
+        "group": "SYS",
+        "length": 4,
+        "mask": 4293918720,
+        "value": 3566206976,
+        "requires": [
+          "A"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "capability discovery and trap/timer management",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "clz3",
+    "op": 0,
+    "semantics": "D=clz(A), XLEN for zero.",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3959422976,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ctz3",
+    "op": 1,
+    "semantics": "D=ctz(A), XLEN for zero.",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3960471552,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "popcnt3",
+    "op": 2,
+    "semantics": "D=popcount(A).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3961520128,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "rev8",
+    "op": 3,
+    "semantics": "D=reverse byte order of A.",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3962568704,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ror3",
+    "op": 4,
+    "semantics": "D=rotate right A by B&(XLEN-1).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3963617280,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "rol3",
+    "op": 5,
+    "semantics": "D=rotate left A by B&(XLEN-1).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3964665856,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "min3",
+    "op": 6,
+    "semantics": "D=signed minimum(A,B).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3965714432,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "max3",
+    "op": 7,
+    "semantics": "D=signed maximum(A,B).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3966763008,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "minu3",
+    "op": 8,
+    "semantics": "D=unsigned minimum(A,B).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3967811584,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "maxu3",
+    "op": 9,
+    "semantics": "D=unsigned maximum(A,B).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3968860160,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "bset3",
+    "op": 10,
+    "semantics": "D=A | (1 << (B&(XLEN-1))).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3969908736,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "bclr3",
+    "op": 11,
+    "semantics": "D=A & ~(1 << (B&(XLEN-1))).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3970957312,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "binv3",
+    "op": 12,
+    "semantics": "D=A ^ (1 << (B&(XLEN-1))).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3972005888,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "bext3",
+    "op": 13,
+    "semantics": "D=(A >> (B&(XLEN-1))) & 1.",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3973054464,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "andn3",
+    "op": 14,
+    "semantics": "D=A & ~B.",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3974103040,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "orn3",
+    "op": 15,
+    "semantics": "D=A | ~B.",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3975151616,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "xnor3",
+    "op": 16,
+    "semantics": "D=~(A^B).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3976200192,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sextb3",
+    "op": 17,
+    "semantics": "D=sext8(low8(A)).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3977248768,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sexth3",
+    "op": 18,
+    "semantics": "D=sext16(low16(A)).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3978297344,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "zexth3",
+    "op": 19,
+    "semantics": "D=zext16(low16(A)).",
+    "extension": "B",
+    "group": "BITOPS",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "BITOPS",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3979345920,
+        "requires": [
+          "B"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "optional bit_arithmetic()",
+    "compiler_use": "bit scans, rotates, masks and min/max",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "addw3",
+    "op": 0,
+    "semantics": "Compute A+B using low32 operands and a 32-bit result; D=sext32(result).",
+    "extension": "base",
+    "group": "W32",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "W32",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3690987520,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "word arithmetic / sign extension",
+    "compiler_use": "32-bit arithmetic on XLEN64",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "subw3",
+    "op": 1,
+    "semantics": "Compute A-B using low32 operands and a 32-bit result; D=sext32(result).",
+    "extension": "base",
+    "group": "W32",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "W32",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3692036096,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "word arithmetic / sign extension",
+    "compiler_use": "32-bit arithmetic on XLEN64",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shlw3",
+    "op": 2,
+    "semantics": "Compute A << (B&31) using low32 operands and a 32-bit result; D=sext32(result).",
+    "extension": "base",
+    "group": "W32",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "W32",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3693084672,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "word arithmetic / sign extension",
+    "compiler_use": "32-bit arithmetic on XLEN64",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "shrw3",
+    "op": 3,
+    "semantics": "Compute unsigned(A) >> (B&31) using low32 operands and a 32-bit result; D=sext32(result).",
+    "extension": "base",
+    "group": "W32",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "W32",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3694133248,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "word arithmetic / sign extension",
+    "compiler_use": "32-bit arithmetic on XLEN64",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "sarw3",
+    "op": 4,
+    "semantics": "Compute signed(A) >> (B&31) using low32 operands and a 32-bit result; D=sext32(result).",
+    "extension": "base",
+    "group": "W32",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "W32",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3695181824,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "word arithmetic / sign extension",
+    "compiler_use": "32-bit arithmetic on XLEN64",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "andw3",
+    "op": 5,
+    "semantics": "Compute A&B using low32 operands and a 32-bit result; D=sext32(result).",
+    "extension": "base",
+    "group": "W32",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "W32",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3696230400,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "word arithmetic / sign extension",
+    "compiler_use": "32-bit arithmetic on XLEN64",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "orw3",
+    "op": 6,
+    "semantics": "Compute A|B using low32 operands and a 32-bit result; D=sext32(result).",
+    "extension": "base",
+    "group": "W32",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "W32",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3697278976,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "word arithmetic / sign extension",
+    "compiler_use": "32-bit arithmetic on XLEN64",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "xorw3",
+    "op": 7,
+    "semantics": "Compute A^B using low32 operands and a 32-bit result; D=sext32(result).",
+    "extension": "base",
+    "group": "W32",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "W32",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3698327552,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "word arithmetic / sign extension",
+    "compiler_use": "32-bit arithmetic on XLEN64",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "mulw3",
+    "op": 8,
+    "semantics": "Compute A*B using low32 operands and a 32-bit result; D=sext32(result).",
+    "extension": "M",
+    "group": "W32",
+    "fields": "op6[25:20] rd4[19:16] ra4[15:12] rb4[11:8] zero8[7:0]",
+    "encodings": [
+      {
+        "group": "W32",
+        "length": 4,
+        "mask": 4293918975,
+        "value": 3699376128,
+        "requires": [
+          "M"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "word arithmetic / sign extension",
+    "compiler_use": "32-bit arithmetic on XLEN64",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldpi.b",
+    "op": 0,
+    "semantics": "Use old base as aligned address; D=zext(load8(address)). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+    "extension": "F",
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]; short: op8[13:6] data3[5:3] base3[2:0], implicit natural stride",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3892314112,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      },
+      {
+        "group": "FLOW-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 1472,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldpi.h",
+    "op": 1,
+    "semantics": "Use old base as aligned address; D=zext(load16(address)). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+    "extension": "F",
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]; short: op8[13:6] data3[5:3] base3[2:0], implicit natural stride",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3896508416,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      },
+      {
+        "group": "FLOW-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 1536,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldpi.w",
+    "op": 2,
+    "semantics": "Use old base as aligned address; D=zext(load32(address)). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+    "extension": "F",
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]; short: op8[13:6] data3[5:3] base3[2:0], implicit natural stride",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3900702720,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      },
+      {
+        "group": "FLOW-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 1600,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldpi.q",
+    "op": 3,
+    "semantics": "Use old base as aligned address; D=zext(load64(address)). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+    "extension": "F",
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]; short: op8[13:6] data3[5:3] base3[2:0], implicit natural stride",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3904897024,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      },
+      {
+        "group": "FLOW-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 1664,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "stpi.b",
+    "op": 4,
+    "semantics": "Use old base as aligned address; store8(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+    "extension": "F",
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]; short: op8[13:6] data3[5:3] base3[2:0], implicit natural stride",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3909091328,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      },
+      {
+        "group": "FLOW-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 1728,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "stpi.h",
+    "op": 5,
+    "semantics": "Use old base as aligned address; store16(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+    "extension": "F",
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]; short: op8[13:6] data3[5:3] base3[2:0], implicit natural stride",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3913285632,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      },
+      {
+        "group": "FLOW-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 1792,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "stpi.w",
+    "op": 6,
+    "semantics": "Use old base as aligned address; store32(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+    "extension": "F",
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]; short: op8[13:6] data3[5:3] base3[2:0], implicit natural stride",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3917479936,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      },
+      {
+        "group": "FLOW-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 1856,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "stpi.q",
+    "op": 7,
+    "semantics": "Use old base as aligned address; store64(address,D). Update base by transfer size (compact) or sext(stride14) (extended) only on success; base != x0 and base != data.",
+    "extension": "F",
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]; short: op8[13:6] data3[5:3] base3[2:0], implicit natural stride",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3921674240,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      },
+      {
+        "group": "FLOW-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 1920,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldpi.sb",
+    "op": 8,
+    "semantics": "Load8 at old base and sign-extend to XLEN. On success update destination and base += sext(stride14). Base must be nonzero and distinct from destination; faults preserve both registers.",
+    "extension": "F",
+    "since": "2.0",
+    "requires": [
+      "F",
+      "2C"
+    ],
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3925868544,
+        "requires": [
+          "F",
+          "2C"
+        ],
+        "since": "2.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldpi.sh",
+    "op": 9,
+    "semantics": "Load16 at naturally aligned old base and sign-extend to XLEN. On success update destination and base += sext(stride14). Base must be nonzero and distinct from destination; faults preserve both registers.",
+    "extension": "F",
+    "since": "2.0",
+    "requires": [
+      "F",
+      "2C"
+    ],
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3930062848,
+        "requires": [
+          "F",
+          "2C"
+        ],
+        "since": "2.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldpi.sw",
+    "op": 10,
+    "semantics": "Load32 at naturally aligned old base and sign-extend to XLEN. On success update destination and base += sext(stride14). Base must be nonzero and distinct from destination; faults preserve both registers.",
+    "extension": "F",
+    "since": "2.0",
+    "requires": [
+      "F",
+      "2C"
+    ],
+    "group": "FLOW",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] stride14[13:0]",
+    "encodings": [
+      {
+        "group": "FLOW",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3934257152,
+        "requires": [
+          "F",
+          "2C"
+        ],
+        "since": "2.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "LSU plus second commit slot",
+    "compiler_use": "stream traversal with precise pointer advancement",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldq",
+    "op": 0,
+    "semantics": "D=load64(A).",
+    "extension": "base",
+    "group": "MX",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] off14[13:0]",
+    "encodings": [
+      {
+        "group": "MX",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3758096384,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "transactional LSU / extension",
+    "compiler_use": "64-bit memory and explicit narrow extensions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "stq",
+    "op": 1,
+    "semantics": "store64(A,D).",
+    "extension": "base",
+    "group": "MX",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] off14[13:0]",
+    "encodings": [
+      {
+        "group": "MX",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3762290688,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "transactional LSU / extension",
+    "compiler_use": "64-bit memory and explicit narrow extensions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldws",
+    "op": 2,
+    "semantics": "D=sext(load32(A)).",
+    "extension": "base",
+    "group": "MX",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] off14[13:0]",
+    "encodings": [
+      {
+        "group": "MX",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3766484992,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "transactional LSU / extension",
+    "compiler_use": "64-bit memory and explicit narrow extensions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldwu",
+    "op": 3,
+    "semantics": "D=zext(load32(A)).",
+    "extension": "base",
+    "group": "MX",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] off14[13:0]",
+    "encodings": [
+      {
+        "group": "MX",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3770679296,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "transactional LSU / extension",
+    "compiler_use": "64-bit memory and explicit narrow extensions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldbs",
+    "op": 4,
+    "semantics": "D=sext(load8(A)).",
+    "extension": "base",
+    "group": "MX",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] off14[13:0]",
+    "encodings": [
+      {
+        "group": "MX",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3774873600,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "transactional LSU / extension",
+    "compiler_use": "64-bit memory and explicit narrow extensions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldhs",
+    "op": 5,
+    "semantics": "D=sext(load16(A)).",
+    "extension": "base",
+    "group": "MX",
+    "fields": "op4[25:22] data4[21:18] base4[17:14] off14[13:0]",
+    "encodings": [
+      {
+        "group": "MX",
+        "length": 4,
+        "mask": 4290772992,
+        "value": 3779067904,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      64
+    ],
+    "hardware": "transactional LSU / extension",
+    "compiler_use": "64-bit memory and explicit narrow extensions",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "vadd",
+    "op": 0,
+    "semantics": "lane A+B. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3623878656,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vsub",
+    "op": 1,
+    "semantics": "lane A-B. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3624927232,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vmul",
+    "op": 2,
+    "semantics": "lane A*B. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3625975808,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vand",
+    "op": 3,
+    "semantics": "lane A&B. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3627024384,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vor",
+    "op": 4,
+    "semantics": "lane A|B. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3628072960,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vxor",
+    "op": 5,
+    "semantics": "lane A^B. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3629121536,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vshl",
+    "op": 6,
+    "semantics": "lane A << (B&(bits-1)). See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3630170112,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vshr",
+    "op": 7,
+    "semantics": "unsigned lane A >> (B&(bits-1)). See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3631218688,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vsar",
+    "op": 8,
+    "semantics": "signed lane A >> (B&(bits-1)). See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3632267264,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vmin",
+    "op": 9,
+    "semantics": "lane min(A,B). See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3633315840,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vmax",
+    "op": 10,
+    "semantics": "lane max(A,B). See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3634364416,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vcmpeq",
+    "op": 11,
+    "semantics": "lane all-ones if A==B, else zero. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3635412992,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vcmplt",
+    "op": 12,
+    "semantics": "lane all-ones if A<B, else zero. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3636461568,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vabs",
+    "op": 13,
+    "semantics": "lane abs(A), wrapping. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3637510144,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vneg",
+    "op": 14,
+    "semantics": "lane -A, wrapping. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3638558720,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vdot8",
+    "op": 15,
+    "semantics": "four groups of four byte products summed into 32-bit lanes. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3639607296,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vld",
+    "op": 16,
+    "semantics": "load aligned 16 RAM bytes. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3640655872,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vst",
+    "op": 17,
+    "semantics": "store aligned 16 RAM bytes. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3641704448,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vziplo",
+    "op": 18,
+    "semantics": "interleave lower halves. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3642753024,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vziphi",
+    "op": 19,
+    "semantics": "interleave upper halves. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3643801600,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vunziplo",
+    "op": 20,
+    "semantics": "collect even lanes from A then B. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3644850176,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "vunziphi",
+    "op": 21,
+    "semantics": "collect odd lanes from A then B. See SIMD modifier rules; emulator only.",
+    "extension": "V",
+    "group": "V",
+    "fields": "op6[25:20] vd3[19:17] va3[16:14] vb3[13:11] lane2[10:9] mode3[8:6] zero6[5:0]",
+    "encodings": [
+      {
+        "group": "V",
+        "length": 4,
+        "mask": 4293918783,
+        "value": 3645898752,
+        "requires": [
+          "V"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "Software only; no supported RTL configuration",
+    "compiler_use": "software-only vector experiment",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": null,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Software only"
+  },
+  {
+    "name": "j",
+    "op": 0,
+    "semantics": "nextPC=sequentialPC+2*sext(rel24).",
+    "extension": "base",
+    "group": "J",
+    "fields": "op2[25:24] rel24[23:0]",
+    "encodings": [
+      {
+        "group": "J",
+        "length": 4,
+        "mask": 4278190080,
+        "value": 3489660928,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "PC-relative adder / x6 link write",
+    "compiler_use": "calls and long unconditional control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "call",
+    "op": 1,
+    "semantics": "x6=sequentialPC; nextPC=sequentialPC+2*sext(rel24).",
+    "extension": "base",
+    "group": "J",
+    "fields": "op2[25:24] rel24[23:0]",
+    "encodings": [
+      {
+        "group": "J",
+        "length": 4,
+        "mask": 4278190080,
+        "value": 3506438144,
+        "requires": [
+          "base"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "PC-relative adder / x6 link write",
+    "compiler_use": "calls and long unconditional control",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "dbnz",
+    "op": 0,
+    "semantics": "D=D-1 modulo 2^XLEN; if D!=0 nextPC=sequentialPC+2*sext(rel20); D must not be x0.",
+    "extension": "F",
+    "group": "LOOP",
+    "fields": "op2[25:24] counter4[23:20] rel20[19:0]",
+    "encodings": [
+      {
+        "group": "LOOP",
+        "length": 4,
+        "mask": 4278190080,
+        "value": 3825205248,
+        "requires": [
+          "F"
+        ],
+        "since": "1.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "scalar decrement / branch",
+    "compiler_use": "counted loops with longer reach",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "ldsp",
+    "group": "2C",
+    "extension": "2C",
+    "since": "2.0",
+    "op": 31,
+    "fields": "op8[13:6] data3[5:3] slot3[2:0]",
+    "semantics": "Read XLEN bits at old SP plus unsigned scaled slot; commit destination only on success.",
+    "encodings": [
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 1984,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "stack address / scalar decrement / STOP",
+    "compiler_use": "small stack slots, counters and test termination",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "stsp",
+    "group": "2C",
+    "extension": "2C",
+    "since": "2.0",
+    "op": 32,
+    "fields": "op8[13:6] data3[5:3] slot3[2:0]",
+    "semantics": "Store old source at old SP plus unsigned scaled slot; no base update.",
+    "encodings": [
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2048,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "stack address / scalar decrement / STOP",
+    "compiler_use": "small stack slots, counters and test termination",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 7,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "alignment/access faults; failed access does not commit destination/base; stores require fault-atomic fabric; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "dbnz.s",
+    "group": "2C",
+    "extension": "2C",
+    "since": "2.0",
+    "op": [
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40
+    ],
+    "fields": "op8=33+rel6[5:3] counter3[5:3] rel6[2:0]",
+    "semantics": "D=D-1 modulo 2^XLEN; branch from PC+2 if the result is nonzero; D must not be x0. No hidden loop state.",
+    "encodings": [
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2112,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      },
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2176,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      },
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2240,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      },
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2304,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      },
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2368,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      },
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2432,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      },
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2496,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      },
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2560,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "stack address / scalar decrement / STOP",
+    "compiler_use": "small stack slots, counters and test termination",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "odd target/instruction access fault; precise control transfer; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  },
+  {
+    "name": "stop",
+    "group": "2C",
+    "extension": "2C",
+    "since": "2.0",
+    "op": 41,
+    "fields": "op8[13:6]=41 zero6[5:0]",
+    "semantics": "Terminal halt until reset; not a power-saving sleep instruction.",
+    "encodings": [
+      {
+        "group": "2C-short",
+        "length": 2,
+        "mask": 65472,
+        "value": 2624,
+        "requires": [
+          "2C"
+        ],
+        "since": "2.0"
+      }
+    ],
+    "xlen": [
+      32,
+      64
+    ],
+    "hardware": "stack address / scalar decrement / STOP",
+    "compiler_use": "small stack slots, counters and test termination",
+    "marginal_area": "Not isolated per instruction; shared-region synthesis is reported separately",
+    "minimum_retirement_cycles": 5,
+    "latency_assumptions": "aligned instruction already buffered; request accepted immediately; synchronous response next cycle; no trap/IRQ",
+    "faults": "integer results wrap; no arithmetic overflow trap; reserved fields, unavailable extensions/registers and invalid revision are illegal",
+    "status": "Experimental"
+  }
+]

@@ -7,13 +7,16 @@ import hashlib
 import io
 from pathlib import Path
 import tarfile
+import json
 
 from source_files import source_files
 
 ROOT = Path(__file__).resolve().parents[1]
+VERSION = json.loads((ROOT / "release.json").read_text())["sdk_version"]
+PREFIX = "mica-sdk-" + VERSION
 p = argparse.ArgumentParser()
 p.add_argument(
-    "--output", type=Path, default=ROOT / "build/releases/mica-sdk-2.0-source.tar.gz"
+    "--output", type=Path, default=ROOT / "build/releases" / (PREFIX + "-source.tar.gz")
 )
 p.add_argument("--update-checksums", action="store_true")
 a = p.parse_args()
@@ -43,7 +46,7 @@ with a.output.open("wb") as raw, gzip.GzipFile(
         for name in files:
             path = ROOT / name
             data = path.read_bytes()
-            info = tarfile.TarInfo("mica-sdk-2.0/" + name)
+            info = tarfile.TarInfo(PREFIX + "/" + name)
             info.size = len(data)
             info.mode = path.stat().st_mode & 0o777
             info.mtime = 0

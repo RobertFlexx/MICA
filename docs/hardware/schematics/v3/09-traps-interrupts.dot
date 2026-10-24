@@ -1,0 +1,33 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 09 / 20 | Precise traps, interrupt priority and wakeup</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Timer pending has priority over external/software when both enabled. Global enable gates delivery, not wake.<BR ALIGN="LEFT"/>Enabled interrupts enter directly from SLEEP; other pending events resume START.<BR ALIGN="LEFT"/>Synchronous faults save faulting PC. 2.0 ecall also saves its own PC. No partial GPR commit.<BR ALIGN="LEFT"/>Nested exceptions are not supported; an unrecoverable entry halts with fault_o.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+sources[label="External / software / timer\npending\n----------------------\nOUT N08: pending[32/64]"];
+select[label="Enable and priority selection"];
+fault[label="Decode / alignment / memory faults"];
+entry[label="trap_entry()\n----------------------\nIN N09: interrupt_ready[1]"];
+saved[label="EPC / cause / TVAL / status"];
+pc[label="TVEC / next PC"];
+return[label="eret / restored status"];
+sleep[label="SLEEP / raw pending wake\n----------------------\nIN N08: pending[32/64]\nOUT N09: interrupt_ready[1]"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->sources[style=invis,weight=100];
+{rank=same;sources;select;fault;}
+sources->select[style=invis,weight=100];
+select->fault[style=invis,weight=100];
+{rank=same;entry;saved;pc;}
+entry->saved[style=invis,weight=100];
+saved->pc[style=invis,weight=100];
+{rank=same;return;sleep;}
+return->sleep[style=invis,weight=100];
+sources->entry[style=invis,weight=100];
+entry->return[style=invis,weight=100];
+sources->select[label="irq_i[1]\nip_reg[32/64]\ntimer_count[64]\ntimer_cmp[64]",color="#174a70",style="solid",constraint=false];
+select->entry[label="pending[32/64]\nie_reg[32/64]\nstatus_reg[32/64]\ninterrupt_ready[1]\ninterrupt_cause[32/64]",color="#a12d2d",style="dashed",constraint=false];
+fault->entry[label="decoded_cause[32/64]\ndecoded_tval[32/64]\ni_rsp_error[1]\nd_rsp_error[1]",color="#a12d2d",style="solid",constraint=false];
+entry->saved[label="epc_reg[32/64]\ncause_reg[32/64]\ntval_reg[32/64]\nstatus_reg[32/64]",color="#a12d2d",style="solid",constraint=false];
+entry->pc[label="tvec_reg[32/64]",color="#174a70",style="solid",constraint=false];
+saved->return[label="epc_reg[32/64]\nstatus_reg[32/64]",color="#174a70",style="solid",constraint=false];
+return->pc[label="q_nextpc[32/64]\nq_eret[1]",color="#174a70",style="solid",constraint=false];
+}

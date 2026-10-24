@@ -1,0 +1,24 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 15 / 20 | Memory routing, ownership and synchronous SRAM</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | Enabled SoC interfaces | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Each port owns one held response. Effects occur only on accepted requests.<BR ALIGN="LEFT"/>No arbitration between concurrent harts, cache coherence or multicore fabric exists.<BR ALIGN="LEFT"/>SRAM payload has no reset; response flags reset synchronously. Same-word cross-port read/write is unspecified.<BR ALIGN="LEFT"/>Core phases avoid overlapping instruction fetch and data access. Transaction timeouts are not implemented.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+cpu[label="mica_core_txn"];
+route[label="mica_soc address decode / response\nselection"];
+ram[label="mica_sram_txn\nSynchronous dual-port SRAM"];
+mmio[label="MMIO response register"];
+crc[label="Optional CRC transaction adapter"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->cpu[style=invis,weight=100];
+{rank=same;cpu;route;ram;}
+cpu->route[style=invis,weight=100];
+route->ram[style=invis,weight=100];
+{rank=same;mmio;crc;}
+mmio->crc[style=invis,weight=100];
+cpu->mmio[style=invis,weight=100];
+cpu->route[label="iv[1]\nia[32]\ndv[1]\nda[32]\ndw[1]\nsize[3]\nwd[32]\nstrb[4]",color="#174a70",style="solid",constraint=false];
+route->cpu[label="ir[1]\nsv[1]\ninsn[32]\nse[1]\ndr[1]\nds[1]\nrd[32]\ndse[1]",color="#174a70",style="solid",constraint=false];
+route->ram[label="ram_ready[1]\nram_valid[1]\nram_data[32]\nram_error[1]",color="#a12d2d",style="dashed",constraint=false];
+route->mmio[label="mmio_accept[1]\nmmio_valid[1]\nmmio_data[32]\nmmio_error[1]",color="#a12d2d",style="dashed",constraint=false];
+route->crc[label="crc_ready[1]\ncrc_valid[1]\ncrc_data[32]\ncrc_error[1]",color="#a12d2d",style="dashed",constraint=false];
+}

@@ -1,9 +1,10 @@
-# MICA 2.0 implementation status
+# MICA 3.0 development status
 
-MICA 2.0 has local software, RTL simulation, retirement-comparison and mapped
-synthesis evidence. The [verification report](docs/engineering/MICA2_VERIFICATION.md)
-and [archived results](docs/engineering/results/mica2/README.md) record the commands
-and limits. Original MICA 1.0 evidence remains separately dated.
+MICA 3.0 development retains ISA 2.0 and 1.0 compatibility contracts. The
+[development report](docs/engineering/MICA3_DEVELOPMENT.md) records current
+implementation changes and incomplete gates. The earlier [2.0 verification
+report](docs/engineering/MICA2_VERIFICATION.md) and [archived
+results](docs/engineering/results/mica2/README.md) retain their original scope.
 
 | Area | Status | Evidence / limitation |
 | --- | --- | --- |
@@ -19,12 +20,12 @@ and limits. Original MICA 1.0 evidence remains separately dated.
 | 1.0 compatibility | Retained | 14 frozen images and legacy retirement regressions |
 | ELF ISA revision | Writer, reader, linker, emulator and inspector agree on MICA2 bit 16 | 32/64-bit ELF end-to-end tests; mixed object/runtime versions rejected |
 | Trap diagnostics | Illegal-instruction TVAL contains raw instruction bytes | XLEN32/64 results agree with and without retirement tracing |
-| SDK release workflows | Dependency-free source discovery, installed 1.0/2.0 checks and extracted-source CI | Local validation in the [revision report](docs/engineering/WORKFLOW_ISA_REVISION.md); new remote run pending |
+| SDK release workflows | Version metadata, installed 1.0/2.0 checks and extracted-source CI | 3.0 SDK names preserve ELF ISA flags; LLVM tool discovery repaired after a remote hardware-job failure |
 | Formal checks | Component scope | Adder equivalence, SRAM properties, bounded FIFO; no whole-core proof |
 | Synthesis | Yosys Xilinx 7-series mapping | All three 2.0 profiles and four compatibility configurations |
 | Arty A7 | Board-top simulation, checked pins, restored Vivado script | Physical boot, placement/routing and timing closure pending |
-| Schematics | All 31 drawing paths refreshed | DOT/SVG/PNG/PDF, Yosys port checks, SHA-256 source/preview manifest |
-| RISC-V comparison | Assembler-measured code-size advantage on counted loops | Byte-copy body 6 vs 16 bytes RV32IC, 12 bytes with Zcb |
+| Schematics | New 20-sheet engineering collection; compatibility drawing paths retained | DOT/SVG/PNG/PDF, five elaborated configurations, signal/width/connection/pin checks and source/preview manifests |
+| RISC-V and Thumb comparison | Assembler-measured code-size advantage on counted loops and copy bodies | Byte-copy body 6 vs 16 bytes RV32IC, 12 with Zcb, and 12 for Thumb-M0+ and post-indexed Thumb-M4; counted branch 2 vs 4 |
 | Power / Fmax | Unmeasured | Requires physical power and timing measurements |
 | C compilation | Experimental subset | Clang IR lowering for MICA-2C/2E; calls, recursion, arrays, structures, volatile MMIO and native/RTL checks; full LLVM backend incomplete |
 | Signed F | Implemented in tools and scalar RTL | `ldpi.sb/sh/sw`, sign/stride boundaries and precise faults; requires development r2+ |
@@ -38,5 +39,5 @@ routed timing and electrical measurements are pending. The board constraint
 targets 100 MHz.
 
 The [embedded refinement report](docs/engineering/EMBEDDED_REFINEMENT.md) records
-current code-generation losses, observed wake behavior and remaining acceptance
+earlier code-generation losses, observed wake behavior and remaining acceptance
 gates. Historical evidence above is retained with its original scope.

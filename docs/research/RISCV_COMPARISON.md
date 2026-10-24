@@ -1,4 +1,4 @@
-# MICA 2.0 and RISC-V code-size comparison
+# MICA 2.0, RISC-V and Thumb code-size comparison
 
 MICA's short decrement-and-branch occupies two bytes. With F enabled, a load
 or store can also advance its pointer in two bytes. Together, these instructions
@@ -51,6 +51,42 @@ perform one load, one store, two pointer advances and one counter decrement per
 element. The instruction counts are three for MICA and six for RISC-V.
 Cycle counts and throughput require hardware measurements.
 
+## Thumb loop bodies
+
+The same script assembles Thumb with llvm-mc. Thumb-M0+ is `thumbv6m` and
+`cortex-m0plus`: a separate load, store, two pointer updates, decrement and
+branch. Thumb-M4 is `thumbv7m` and `cortex-m4`. Its copy loops use post-indexed
+loads and stores. The counted branch and stack pair use the same narrow
+instructions on both targets. No literal pool, startup or data is counted.
+
+| Loop or operation | MICA 2.0 bytes | Thumb-M0+ bytes | Thumb-M4 bytes |
+| --- | ---: | ---: | ---: |
+| Decrement and conditional branch | 2 | 4 | 4 |
+| Byte-copy body | 6 | 12 | 12 |
+| Word-copy body | 6 | 12 | 12 |
+| Stack save and restore | 4 | 4 | 4 |
+
+The MICA byte-copy and word-copy bodies are half either Thumb sequence.
+Post-indexed Thumb-2 loads and stores are 32-bit encodings, so they do not
+shrink the copy body below Thumb-1. The counted branch is half the Thumb
+`subs`/`bne` pair. The stack pair ties. Thumb execution is outside this
+measurement.
+
+Thumb-M0+ byte-copy body:
+
+```armasm
+loop:
+    ldrb r3, [r1]
+    strb r3, [r0]
+    adds r0, #1
+    adds r1, #1
+    subs r2, #1
+    bne loop
+```
+
+Thumb-M4 uses `ldrb r3, [r1], #1` and `strb r3, [r0], #1` in place of the
+separate access and pointer update. Both sequences are 12 bytes.
+
 ## Register budget
 
 MICA-2C defines eight register slots, including hardwired zero, link and stack.
@@ -83,10 +119,12 @@ python3 benchmarks/riscv_density.py --assembler build/mica-as --emulator build/m
 ```
 
 The [archived JSON](../engineering/results/mica2/riscv-density.json) contains
-each source, byte count and RISC-V encoding. Complete MICA byte/word copy
-programs execute in the emulator at both XLENs, and the MICA 2.0 retirement suite
-compares F copy execution against RTL. RISC-V is assembled and sized in this
-experiment; RISC-V execution is outside its scope.
+the earlier RISC-V sources, byte counts and encodings. A current run also records
+Thumb sources and encodings under `build/riscv-density/results.json`. Complete
+MICA byte/word copy programs execute in the emulator at both XLENs, and the
+MICA 2.0 retirement suite compares F copy execution against RTL. RISC-V and
+Thumb are assembled and sized in this experiment; their execution is outside
+its scope.
 
 A hardware comparison requires matched memory, peripherals, extensions, clock
 constraints and tool flow, followed by complete workload measurements. Power and

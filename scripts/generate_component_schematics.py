@@ -8,7 +8,9 @@ from pathlib import Path
 import subprocess
 import tempfile
 import shutil
+from schematic_pdf import normalize_pdf
 
+os.environ["SOURCE_DATE_EPOCH"] = "0"
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "schematics/current"
 parser = argparse.ArgumentParser(description=__doc__)
@@ -93,6 +95,8 @@ with tempfile.TemporaryDirectory(prefix="mica-component-draw-") as temp:
                     capture_output=True,
                     check=True,
                 )
+                if fmt == "pdf":
+                    normalize_pdf(target.with_suffix(".pdf"))
     target = OUT / "component-ports.json"
     text = json.dumps(inventory, indent=2, sort_keys=True) + "\n"
     if args.check:

@@ -2,6 +2,7 @@
 // Experimental private machine number 0xff4d, not an assigned ELF e_machine.
 // SPDX-License-Identifier: MIT
 #pragma once
+#include "../../isa/generated/version.hpp"
 #include <algorithm>
 #include <bit>
 #include <cctype>

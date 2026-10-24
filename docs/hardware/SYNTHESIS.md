@@ -1,9 +1,14 @@
 # Synthesis
 
-`scripts/synthesize.py` maps seven SoC configurations through Yosys `synth_xilinx
+`scripts/synthesize.py` maps nine SoC configurations through Yosys `synth_xilinx
 -family xc7`, using 4 KiB initialized SRAM and UART TX/GPIO. The peripheral
 configuration adds UART RX/FIFO and the GHDL-converted VHDL CRC engine. Debug trace
 outputs are unconnected and can be removed by synthesis.
+
+The [3.0 development report](../engineering/MICA3_DEVELOPMENT.md) records current
+matched resource changes. The optional multiplier now shares the scalar read
+muxes and zeros inactive inputs; MUL=0 removes the constant-zero product.
+Earlier tables below retain their dated ISA 1.0/2.0 scope.
 
 Historical MICA 1.0 r2 results (not current 2.0 measurements):
 
@@ -41,9 +46,9 @@ bit-operation and CSR logic. The profile mapping reports make that cost visible.
 Equivalent Ibex, PicoRV32 and CORE-V configurations have not yet been synthesized in
 this flow.
 
-## Current MICA 2.0 run
+## Earlier MICA 2.0 run
 
-The current mapped counts are:
+The earlier 2.0 mapped counts are:
 
 | Configuration | Registers | PERF | LUTs | Flip-flops | DSP48 | RAMB36 |
 | --- | ---: | --- | ---: | ---: | ---: | ---: |

@@ -1,0 +1,14 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 11 / 20 | Pipeline implementation status</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implementation gap</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">This status sheet is not a speculative pipeline schematic.<BR ALIGN="LEFT"/>Any future pipeline design belongs in the separate experimental section until implemented and tested.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+status[label="NOT IMPLEMENTED\nNo pipelined CPU module exists in\nthis baseline",fillcolor="#fff3d6",color="#8a5b16"];
+baseline[label="Verified baseline: mica_core_txn\nSingle instruction in flight",fillcolor="#fff3d6",color="#8a5b16"];
+gate[label="Required before a pipeline is\nadvertised:\nstage registers, hazards,\nforwarding, stalls, flushes,\nprecise retirement and interrupt\nequivalence",fillcolor="#fff3d6",color="#8a5b16"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->status[style=invis,weight=100];
+{rank=same;status;baseline;gate;}
+status->baseline[style=invis,weight=100];
+baseline->gate[style=invis,weight=100];
+}

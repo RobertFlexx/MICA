@@ -1,0 +1,23 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 19 / 20 | Implemented register parity and watchdog supervision</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Parity is updated from committed values and checked before decode effects; no register correction.<BR ALIGN="LEFT"/>The VHDL watchdog is independent of CPU STOP and can signal a level IRQ under platform policy.<BR ALIGN="LEFT"/>No SRAM ECC, scrubber, lockstep core, protected diagnostics or safety qualification is implemented.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+bank[label="regs / scalar state"];
+parity[label="Optional parity bits and\ncomparison"];
+decode[label="DECODE integrity boundary"];
+stop[label="Fail-stop / external recovery\npolicy"];
+watchdog[label="Separate VHDL watchdog in mica_soc"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->bank[style=invis,weight=100];
+{rank=same;bank;parity;decode;}
+bank->parity[style=invis,weight=100];
+parity->decode[style=invis,weight=100];
+{rank=same;stop;watchdog;}
+stop->watchdog[style=invis,weight=100];
+bank->stop[style=invis,weight=100];
+bank->parity[label="regs[1][32/64]\nparity.bits[16]",color="#174a70",style="solid",constraint=false];
+parity->decode[label="register_error[1]",color="#a12d2d",style="solid",constraint=false];
+decode->stop[label="fault_o[1]\nhalt_o[1]",color="#a12d2d",style="solid",constraint=false];
+bank->parity[label="writeback_value[32/64]\nq_value2[32/64]\nq_w1[1]\nq_w2[1]",color="#536574",style="dashed",constraint=false];
+}

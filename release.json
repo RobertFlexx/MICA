@@ -1,0 +1,13 @@
+{
+  "sdk_version": "3.0",
+  "stage": "development",
+  "revision": 1,
+  "architecture_generation": 3,
+  "baseline_isa_contract": "MICA 2.0",
+  "compatibility_modes": [
+    "MICA 1.0",
+    "MICA 2.0"
+  ],
+  "baseline_commit": "d29511c",
+  "encoding_changes": false
+}

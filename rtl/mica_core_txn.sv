@@ -127,13 +127,39 @@ module mica_core_txn
           arithmetic = XLEN'(a < b);
         10:
           arithmetic = XLEN'(a == b);
-        11:
-          arithmetic = (MUL != 0) ? (a * b) : '0;
         default:
           arithmetic = '0;
       endcase
     end
   endfunction
+
+  // All multiply encodings share one low-XLEN product. A word product uses
+  // its low 32 bits, so it needs no separate multiplier on XLEN64.
+  wire short_multiply = lo[15 : 14] == 0 && lo[13 : 6] == 8'd17;
+  wire word_multiply = XLEN == 64 && lo[15 : 14] == 3 &&
+                       major == MICA_MAJOR_W32 && p[25 : 20] == 6'd8;
+  wire long_multiply =
+           lo[15 : 14] == 3 &&
+           ((major == MICA_MAJOR_ALU && p[25 : 20] == 6'd11) || word_multiply);
+  wire multiply_enable =
+           MUL != 0 && state == DECODE && (short_multiply || long_multiply);
+  wire [3 : 0] read_a_index = lo[15 : 14] == 0 ? {1'b0, lo[5 : 3]} : p[15 : 12];
+  wire [3 : 0] read_b_index = lo[15 : 14] == 0 ? {1'b0, lo[2 : 0]} : p[11 : 8];
+  wire [XLEN - 1 : 0] read_a_data = rr(read_a_index);
+  wire [XLEN - 1 : 0] read_b_data = rr(read_b_index);
+  wire [XLEN - 1 : 0] multiply_a =
+                          multiply_enable
+                              ? (word_multiply ? XLEN'(read_a_data[31 : 0])
+                                               : read_a_data)
+                              : '0;
+  wire [XLEN - 1 : 0] multiply_b =
+                          multiply_enable
+                              ? (word_multiply ? XLEN'(read_b_data[31 : 0])
+                                               : read_b_data)
+                              : '0;
+  wire [XLEN - 1 : 0] multiply_product;
+  // MUL=0 makes both operands constant zero, removing the product in synthesis.
+  assign multiply_product = multiply_a * multiply_b;
 
   // Optional B datapath. Variable rotate and population counts are combinational
   // in the reference core; critical path should be measured after synthesis.
@@ -328,8 +354,8 @@ module mica_core_txn
         op = lo[13 : 6];
         d = {1'b0, lo[5 : 3]};
         a = {1'b0, lo[2 : 0]};
-        av = rr(d);
-        bv = rr(a);
+        av = read_a_data;
+        bv = read_b_data;
         dst1 = d;
         value1 = av;
         if (op >= 23 && op <= 30) begin
@@ -385,7 +411,7 @@ module mica_core_txn
         end else if (op == 17) begin
           illegal = MUL == 0;
           w1 = 1;
-          value1 = MUL != 0 ? av * bv : '0;
+          value1 = multiply_product;
         end else if (op >= 18 && op <= 22) begin
           illegal = d != 0 || a != 0;
           case (op)
@@ -466,8 +492,8 @@ module mica_core_txn
         d = p[19 : 16];
         a = p[15 : 12];
         b = p[11 : 8];
-        av = rr(a);
-        bv = rr(b);
+        av = read_a_data;
+        bv = read_b_data;
         dst1 = d;
         case (major)
           MICA_MAJOR_ALU, MICA_MAJOR_W32, MICA_MAJOR_BITOPS: begin
@@ -476,7 +502,7 @@ module mica_core_txn
             w1 = 1;
             if (major == MICA_MAJOR_ALU) begin
               illegal = illegal || op > 11 || (op == 11 && MUL == 0);
-              value1 = arithmetic(6'(op), av, bv);
+              value1 = op == 11 ? multiply_product : arithmetic(6'(op), av, bv);
             end else if (major == MICA_MAJOR_BITOPS) begin
               illegal = illegal || BITOPS == 0 || op > 19 ||
                         ((op <= 3 || op >= 17) && b != 0);
@@ -503,7 +529,7 @@ module mica_core_txn
                   7:
                     word_result = av[31 : 0] ^ bv[31 : 0];
                   8:
-                    word_result = MUL != 0 ? av[31 : 0] * bv[31 : 0] : 32'b0;
+                    word_result = multiply_product[31 : 0];
                   default:
                     word_result = 0;
                 endcase

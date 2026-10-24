@@ -2,6 +2,7 @@
 """End-to-end MICA ELF revision, feature, relocation and loader regressions."""
 
 import argparse
+import json
 from pathlib import Path
 import subprocess
 import tempfile
@@ -50,6 +51,31 @@ class ElfRevision(unittest.TestCase):
             output,
         )
         return output
+
+    def test_sdk_version_does_not_change_elf_isa_contract(self):
+        release = json.loads(
+            (Path(__file__).resolve().parents[1] / "release.json").read_text()
+        )
+        expected = f"{release['sdk_version']} {release['stage']} r{release['revision']}"
+        for tool in (
+            "mica-as",
+            "mica-run",
+            "mica-dis",
+            "mica-ld",
+            "mica-nm",
+            "mica-objdump",
+            "mica-objcopy",
+        ):
+            self.command(tool, "--version", contains=expected)
+        self.assertEqual(release["baseline_isa_contract"], "MICA 2.0")
+        self.assertFalse(release["encoding_changes"])
+        for revision, expected_flags in ((False, 0), (True, 0x10000)):
+            obj = self.assemble(
+                "version" + str(revision), "li8 x1,7\nwfi\n", 32, revision
+            )
+            self.assertEqual(
+                int.from_bytes(obj.read_bytes()[48:52], "little"), expected_flags
+            )
 
     def test_multifile_v2_32_and_64_end_to_end(self):
         for width in (32, 64):

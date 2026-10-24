@@ -71,6 +71,7 @@ class FormatterSafety(unittest.TestCase):
             scripts.mkdir()
             for name in ("format_code.py", "package_source.py", "source_files.py"):
                 shutil.copy2(ROOT / "scripts" / name, scripts / name)
+            shutil.copy2(ROOT / "release.json", folder / "release.json")
             (folder / "sample.json").write_text('{"x":1}')
             for name in ("build", "build-san", "cmake-build-debug", ".aws"):
                 (folder / name).mkdir()
@@ -112,10 +113,11 @@ class FormatterSafety(unittest.TestCase):
                 self.assertEqual(
                     set(archive.getnames()),
                     {
-                        "mica-sdk-2.0/sample.json",
-                        "mica-sdk-2.0/SHA256SUMS",
+                        "mica-sdk-3.0/sample.json",
+                        "mica-sdk-3.0/SHA256SUMS",
+                        "mica-sdk-3.0/release.json",
                         *(
-                            f"mica-sdk-2.0/scripts/{name}"
+                            f"mica-sdk-3.0/scripts/{name}"
                             for name in (
                                 "format_code.py",
                                 "package_source.py",

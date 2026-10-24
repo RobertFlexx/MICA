@@ -447,6 +447,105 @@ class IsaContract(unittest.TestCase):
             self.assertIn("x1=0x2a", result.stderr)
             self.assertIn("x3=0x1", result.stderr)
 
+    def test_concise_operand_selection_preserves_explicit_forms(self):
+        for width in (32, 64):
+            for operation in (
+                "add",
+                "sub",
+                "and",
+                "or",
+                "xor",
+                "shl",
+                "shr",
+                "sar",
+                "slt",
+                "sltu",
+                "seq",
+                "mul",
+            ):
+                flags = ("--xreg", "--mul")
+                short = self.assemble(
+                    "short", f"{operation} x1,x2\n", width, False, False, *flags
+                ).read_bytes()
+                selected = self.assemble(
+                    "selected", f"{operation} x1,x1,x2\n", width, False, False, *flags
+                ).read_bytes()
+                self.assertEqual(selected, short)
+                explicit = self.assemble(
+                    "explicit", f"{operation}3 x9,x8,x2\n", width, False, False, *flags
+                ).read_bytes()
+                selected = self.assemble(
+                    "selected", f"{operation} x9,x8,x2\n", width, False, False, *flags
+                ).read_bytes()
+                self.assertEqual(selected, explicit)
+                self.assertEqual(len(explicit), 4)
+            wide_copy = self.assemble(
+                "copy", "mov x9,x8\n", width, False, False, "--xreg"
+            ).read_bytes()
+            explicit_copy = self.assemble(
+                "copy_explicit", "add3 x9,x8,x0\n", width, False, False, "--xreg"
+            ).read_bytes()
+            self.assertEqual(wide_copy, explicit_copy)
+
+    def test_concise_forms_reject_high_registers_without_x(self):
+        source, target = self.root / "requires_x.mica", self.root / "requires_x.bin"
+        for width in (32, 64):
+            for instruction in (
+                "mov x8,x1",
+                "mov x1,x15",
+                "mov x15,x8",
+                "add x8,x1,x2",
+                "add x1,x8,x2",
+                "add x1,x2,x8",
+                "mul x8,x1,x2",
+                "mul x1,x8,x2",
+                "mul x1,x2,x8",
+            ):
+                source.write_text(instruction + "\n")
+                target.write_bytes(b"previous output")
+                result = self.command(
+                    "mica-as",
+                    "--mica2",
+                    "--mul",
+                    "--xlen",
+                    width,
+                    source,
+                    "-o",
+                    target,
+                    ok=False,
+                )
+                self.assertIn("X disabled", result.stderr)
+                self.assertEqual(target.read_bytes(), b"previous output")
+
+    def test_ecall_saved_pc_preserves_each_revision_contract(self):
+        for width in (32, 64):
+            for legacy in (False, True):
+                finish = "wfi" if legacy else "stop"
+                image = self.assemble(
+                    "ecall_pc",
+                    "li8 x5,32\ncsrw tvec,x5\necall\n"
+                    + finish
+                    + "\n.org 32\ncsrr x1,epc\ncsrr x2,cause\n"
+                    + finish
+                    + "\n",
+                    width,
+                    False,
+                    legacy,
+                    "--trap",
+                )
+                for engine in ((), ("--fast",), ("--native-loops",)):
+                    result = self.command(
+                        "mica-run",
+                        "--xlen",
+                        width,
+                        "--trap",
+                        *([] if legacy else ["--mica2"]),
+                        *engine,
+                        image,
+                    )
+                    self.assertIn("x1=0x8" if legacy else "x1=0x6", result.stderr)
+                    self.assertIn("x2=0xb", result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main(argv=[__file__, *EXTRA], verbosity=2)

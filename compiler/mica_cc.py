@@ -7,16 +7,22 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import json
 
 from mica_ir import Module, Unsupported
 
 
 def main():
+    folder = Path(__file__).resolve().parents[1]
+    metadata = folder / "release.json"
+    if not metadata.exists():
+        metadata = folder / "share/mica/release.json"
+    release = json.loads(metadata.read_text())
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--version",
         action="version",
-        version="mica-cc 2.0 development (restricted Clang IR lowering)",
+        version=f"mica-cc {release['sdk_version']} {release['stage']} r{release['revision']} (restricted Clang IR lowering)",
     )
     parser.add_argument("source", type=Path)
     parser.add_argument("-o", type=Path, required=True)

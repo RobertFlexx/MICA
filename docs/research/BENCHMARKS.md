@@ -20,9 +20,10 @@ ISA baseline are not available.
 
 ## MICA 2.0 versus RISC-V encoding
 
-`benchmarks/riscv_density.py` measures actual MICA and LLVM RISC-V assembler
-output. The [comparison](RISCV_COMPARISON.md) records 6-byte MICA copy bodies
-versus 12/16-byte compressed RISC-V examples, and the stack-access tie.
+`benchmarks/riscv_density.py` measures actual MICA, LLVM RISC-V and Thumb
+assembler output. The [comparison](RISCV_COMPARISON.md) records 6-byte MICA copy
+bodies versus 12/16-byte compressed RISC-V examples and 12-byte Thumb sequences,
+and the stack-access tie.
 It measures handwritten body bytes, not complete C applications, RISC-V CPU
 execution, routed timing or power. New evidence is archived under
 [mica2](../engineering/results/mica2/README.md).

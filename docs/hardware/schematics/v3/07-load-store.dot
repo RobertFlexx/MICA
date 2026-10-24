@@ -1,0 +1,33 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 07 / 20 | Transactional load/store and precise pointer updates</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">One outstanding data transaction. Narrow writes use byte strobes at the selected XLEN bus lane.<BR ALIGN="LEFT"/>F uses old base for access; successful COMMIT writes result and updated base together.<BR ALIGN="LEFT"/>Signed F sign-extends to XLEN; base/destination alias is illegal. Errors write neither.<BR ALIGN="LEFT"/>Fabric must not commit a failed store. Memory response time currently has no finite hardware timeout.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+decode[label="Address / access classification"];
+request[label="DREQ / held request"];
+fabric[label="Data fabric interface"];
+response[label="DWAIT / response capture"];
+align[label="Lane selection / sign or zero\nextension"];
+commit[label="COMMIT / destination and base"];
+fault[label="Access error / discard pending\neffects"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->decode[style=invis,weight=100];
+{rank=same;decode;request;fabric;}
+decode->request[style=invis,weight=100];
+request->fabric[style=invis,weight=100];
+{rank=same;response;align;commit;}
+response->align[style=invis,weight=100];
+align->commit[style=invis,weight=100];
+{rank=same;fault;}
+decode->response[style=invis,weight=100];
+response->fault[style=invis,weight=100];
+decode->request[label="addr[32/64]\nstore_data[32/64]\nsize_log[3]\nmemwrite[1]\nmemsign[1]",color="#174a70",style="solid",constraint=false];
+request->fabric[label="d_req_valid[1]\nd_req_addr[32/64]\nd_req_write[1]\nd_req_size[3]\nd_req_wdata[32/64]\nd_req_wstrb[4/8]",color="#536574",style="dashed",constraint=false];
+fabric->request[label="d_req_ready[1]",color="#536574",style="dashed",constraint=false];
+fabric->response[label="d_rsp_valid[1]\nd_rsp_rdata[32/64]\nd_rsp_error[1]",color="#a12d2d",style="dashed",constraint=false];
+response->fabric[label="d_rsp_ready[1]",color="#536574",style="dashed",constraint=false];
+response->align[label="response_data[32/64]\nq_addr[32/64]\nq_size[3]\nq_memsign[1]",color="#174a70",style="solid",constraint=false];
+align->commit[label="writeback_value[32/64]\nq_value2[32/64]\nq_w1[1]\nq_w2[1]",color="#536574",style="dashed",constraint=false];
+response->fault[label="d_rsp_error[1]\nq_memwrite[1]",color="#a12d2d",style="solid",constraint=false];
+fault->commit[label="trace_trap[1]\ntrace_cause[32/64]",color="#a12d2d",style="solid",constraint=false];
+}

@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/release.json" MICA_RELEASE_JSON)
+string(JSON MICA_SDK_VERSION GET "${MICA_RELEASE_JSON}" sdk_version)
 project(
   MICA_SDK
-  VERSION 2.0
+  VERSION ${MICA_SDK_VERSION}
   LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -33,6 +35,7 @@ install(
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY stdlib/ DESTINATION ${CMAKE_INSTALL_DATADIR}/mica/stdlib)
 install(DIRECTORY isa/ DESTINATION ${CMAKE_INSTALL_DATADIR}/mica/isa)
+install(FILES release.json DESTINATION ${CMAKE_INSTALL_DATADIR}/mica)
 install(
   PROGRAMS compiler/mica_cc.py
   DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -44,8 +47,15 @@ enable_testing()
 add_test(NAME generated_isa
          COMMAND ${Python3_EXECUTABLE}
                  ${CMAKE_SOURCE_DIR}/scripts/generate_isa.py --check)
+add_test(
+  NAME instruction_inventory
+  COMMAND ${Python3_EXECUTABLE}
+          ${CMAKE_SOURCE_DIR}/scripts/generate_instruction_inventory.py --check)
 add_test(NAME isa_schema COMMAND ${Python3_EXECUTABLE}
                                  ${CMAKE_SOURCE_DIR}/tests/isa_schema.py)
+add_test(NAME schematic_validation
+         COMMAND ${Python3_EXECUTABLE}
+                 ${CMAKE_SOURCE_DIR}/tests/schematic_validation.py)
 add_test(
   NAME instruction_matrix
   COMMAND
@@ -156,9 +166,10 @@ install(DIRECTORY docs/ DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(FILES README.md BUILDING.md SDK_STATUS.md LICENSE CHANGELOG.md
         DESTINATION ${CMAKE_INSTALL_DOCDIR})
 set(CPACK_PACKAGE_NAME "mica-sdk")
-set(CPACK_PACKAGE_VERSION "2.0")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 set(CPACK_PACKAGE_FILE_NAME
-    "mica-sdk-2.0-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+    "mica-sdk-${PROJECT_VERSION}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}"
+)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 include(CPack)
 add_test(

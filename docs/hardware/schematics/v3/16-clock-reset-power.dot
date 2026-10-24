@@ -1,0 +1,30 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 16 / 20 | Clock, reset, sleep and activity controls</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | Arty A7-100 board interface | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">One internal clock domain. UART input and external IRQ use synchronizers where instantiated.<BR ALIGN="LEFT"/>No generated internal clock, physical clock gate, voltage scaling or power-rail controller exists.<BR ALIGN="LEFT"/>WFI prevents new CPU requests/retirement; clock and enabled timer/counters continue.<BR ALIGN="LEFT"/>100 MHz is the board source and constraint request, not routed Fmax evidence.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+clock[label="Board 100 MHz clock"];
+reset[label="Asynchronous assert / two-flop\nrelease\n----------------------\nIN N02: btn_reset[1]"];
+soc[label="Single-clock mica_soc"];
+core[label="CPU state enables / WFI"];
+uart[label="UART synchronization / baud\nenables"];
+status[label="LED status outputs"];
+button[label="btn_reset / active high\n----------------------\nOUT N02: btn_reset[1]"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->clock[style=invis,weight=100];
+{rank=same;clock;reset;soc;}
+clock->reset[style=invis,weight=100];
+reset->soc[style=invis,weight=100];
+{rank=same;core;uart;status;}
+core->uart[style=invis,weight=100];
+uart->status[style=invis,weight=100];
+{rank=same;button;}
+clock->core[style=invis,weight=100];
+core->button[style=invis,weight=100];
+clock->reset[label="CLK100MHZ[1]",color="#174a70",style="solid",constraint=false];
+reset->soc[label="rst_ni[1]\nrst_release[2]",color="#174a70",style="solid",constraint=false];
+clock->soc[label="CLK100MHZ[1]",color="#174a70",style="solid",constraint=false];
+core->soc[label="halted[1]\nfault[1]",color="#a12d2d",style="solid",constraint=false];
+soc->uart[label="uart_rxd[1]\nuart_txd[1]",color="#174a70",style="solid",constraint=false];
+core->status[label="led[4]\nunused_gpio[8]",color="#174a70",style="solid",constraint=false];
+}

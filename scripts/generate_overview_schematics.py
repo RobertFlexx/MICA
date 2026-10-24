@@ -9,7 +9,9 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+from schematic_pdf import normalize_pdf
 
+os.environ["SOURCE_DATE_EPOCH"] = "0"
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "schematics"
 
@@ -237,6 +239,7 @@ def fingerprint():
             *ROOT.glob("isa/**/*.json"),
             *ROOT.glob("scripts/generate*schematic*.py"),
             ROOT / "scripts/generate_mica2_diagrams.py",
+            ROOT / "scripts/schematic_pdf.py",
             ROOT / "sim/emulator.cpp",
         }
     )
@@ -293,6 +296,8 @@ def main():
                         capture_output=True,
                         check=True,
                     )
+                    if fmt == "pdf":
+                        normalize_pdf(target.with_suffix(".pdf"))
     manifest = OUT / "manifest.json"
     content = fingerprint()
     if args.check:

@@ -176,7 +176,7 @@
       {
         "name": "wfi",
         "op": 18,
-        "semantics": "Retire and halt the current execution run.",
+        "semantics": "ISA 2.0: retire then sleep until a pending event; masked events wake, enabled interrupts enter a handler. ISA 1.0 compatibility: retire and halt the current run.",
         "extension": "base"
       },
       {
@@ -188,7 +188,7 @@
       {
         "name": "ecall",
         "op": 20,
-        "semantics": "With T: enter cause 11 with EPC=sequentialPC. Without T: retire and halt.",
+        "semantics": "With T: retire and enter cause 11; ISA 2.0 saves EPC=instruction PC, ISA 1.0 saves EPC=sequentialPC. Without T: retire and halt.",
         "extension": "base"
       },
       {
@@ -259,7 +259,7 @@
         "name": "ldw",
         "op": 0,
         "bytes": 4,
-        "semantics": "D=zext(load32(A)).",
+        "semantics": "ISA 2.0: D=sext(load32(A)) at XLEN64; XLEN32 retains all 32 bits. ISA 1.0 compatibility: zero extension.",
         "extension": "base"
       },
       {

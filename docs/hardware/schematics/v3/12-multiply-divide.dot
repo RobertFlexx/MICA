@@ -1,0 +1,28 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 12 / 20 | Optional multiplication and software division</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">MUL=0 removes multiplication. Short, ALU3 and W32 forms share the product; W32 zeros the upper operand halves.<BR ALIGN="LEFT"/>No divider exists in RTL. stdlib/math32.mica and math64.mica provide software division.<BR ALIGN="LEFT"/>No iterative multiplier, high-half product, MAC accumulator or claimed clock frequency is drawn.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+select[label="Common scalar read indices"];
+rf[label="Shared read muxes"];
+isolate[label="Multiply operand isolation"];
+product[label="One combinational low-XLEN product"];
+word[label="W32 low product / sign extension"];
+result[label="Decoded result selection"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->select[style=invis,weight=100];
+{rank=same;select;rf;isolate;}
+select->rf[style=invis,weight=100];
+rf->isolate[style=invis,weight=100];
+{rank=same;product;word;result;}
+product->word[style=invis,weight=100];
+word->result[style=invis,weight=100];
+select->product[style=invis,weight=100];
+select->rf[label="read_a_index[4]\nread_b_index[4]",color="#174a70",style="solid",constraint=false];
+rf->isolate[label="read_a_data[32/64]\nread_b_data[32/64]",color="#174a70",style="solid",constraint=false];
+select->isolate[label="multiply_enable[1]\nshort_multiply[1]\nlong_multiply[1]\nword_multiply[1]",color="#536574",style="dashed",constraint=false];
+isolate->product[label="multiply_a[32/64]\nmultiply_b[32/64]",color="#174a70",style="solid",constraint=false];
+product->word[label="multiply_product[32/64]",color="#174a70",style="solid",constraint=false];
+product->result[label="multiply_product[32/64]",color="#174a70",style="solid",constraint=false];
+word->result[label="decode.word_result[32]\nvalue1[32/64]",color="#174a70",style="solid",constraint=false];
+}

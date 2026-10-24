@@ -1,0 +1,2008 @@
+{
+  "sheets": [
+    {
+      "notes": [
+        "Single issue, multicycle; no implemented pipeline or speculative state.",
+        "Dashed regions are logical portions of mica_core_txn, not invented RTL modules.",
+        "clk_i: rising edge. rst_ni: asynchronous active low. Two effects may commit together for F."
+      ],
+      "number": 1,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Complete scalar processor organization",
+      "validated_nets": [
+        {
+          "from": "pc",
+          "net": "pc",
+          "to": "fetch",
+          "width": 32
+        },
+        {
+          "from": "fetch",
+          "net": "lo",
+          "to": "decode",
+          "width": 16
+        },
+        {
+          "from": "fetch",
+          "net": "hi",
+          "to": "decode",
+          "width": 16
+        },
+        {
+          "from": "fetch",
+          "net": "p",
+          "to": "decode",
+          "width": 26
+        },
+        {
+          "from": "fetch",
+          "net": "major",
+          "to": "decode",
+          "width": 4
+        },
+        {
+          "from": "rf",
+          "net": "read_a_data",
+          "to": "decode",
+          "width": 32
+        },
+        {
+          "from": "rf",
+          "net": "read_b_data",
+          "to": "decode",
+          "width": 32
+        },
+        {
+          "from": "decode",
+          "net": "decode.av",
+          "to": "alu",
+          "width": 32
+        },
+        {
+          "from": "decode",
+          "net": "decode.bv",
+          "to": "alu",
+          "width": 32
+        },
+        {
+          "from": "decode",
+          "net": "decode.op",
+          "to": "alu",
+          "width": 8
+        },
+        {
+          "from": "alu",
+          "net": "value1",
+          "to": "pending",
+          "width": 32
+        },
+        {
+          "from": "decode",
+          "net": "dst1",
+          "to": "pending",
+          "width": 4
+        },
+        {
+          "from": "decode",
+          "net": "dst2",
+          "to": "pending",
+          "width": 4
+        },
+        {
+          "from": "decode",
+          "net": "w1",
+          "to": "pending",
+          "width": 1
+        },
+        {
+          "from": "decode",
+          "net": "w2",
+          "to": "pending",
+          "width": 1
+        },
+        {
+          "from": "decode",
+          "net": "nextpc",
+          "to": "pending",
+          "width": 32
+        },
+        {
+          "from": "decode",
+          "net": "value2",
+          "to": "pending",
+          "width": 32
+        },
+        {
+          "from": "pending",
+          "net": "q_addr",
+          "to": "lsu",
+          "width": 32
+        },
+        {
+          "from": "pending",
+          "net": "q_store",
+          "to": "lsu",
+          "width": 32
+        },
+        {
+          "from": "pending",
+          "net": "q_size",
+          "to": "lsu",
+          "width": 3
+        },
+        {
+          "from": "pending",
+          "net": "q_memwrite",
+          "to": "lsu",
+          "width": 1
+        },
+        {
+          "from": "lsu",
+          "net": "response_data",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "lsu",
+          "net": "d_rsp_error",
+          "to": "commit",
+          "width": 1
+        },
+        {
+          "from": "pending",
+          "net": "q_w1",
+          "to": "commit",
+          "width": 1
+        },
+        {
+          "from": "pending",
+          "net": "q_w2",
+          "to": "commit",
+          "width": 1
+        },
+        {
+          "from": "pending",
+          "net": "q_dst1",
+          "to": "commit",
+          "width": 4
+        },
+        {
+          "from": "pending",
+          "net": "q_dst2",
+          "to": "commit",
+          "width": 4
+        },
+        {
+          "from": "pending",
+          "net": "writeback_value",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "commit",
+          "net": "writeback_value",
+          "to": "rf",
+          "width": 32
+        },
+        {
+          "from": "commit",
+          "net": "q_value2",
+          "to": "rf",
+          "width": 32
+        },
+        {
+          "from": "commit",
+          "net": "q_dst1",
+          "to": "rf",
+          "width": 4
+        },
+        {
+          "from": "commit",
+          "net": "q_dst2",
+          "to": "rf",
+          "width": 4
+        },
+        {
+          "from": "commit",
+          "net": "q_w1",
+          "to": "rf",
+          "width": 1
+        },
+        {
+          "from": "commit",
+          "net": "q_w2",
+          "to": "rf",
+          "width": 1
+        },
+        {
+          "from": "csr",
+          "net": "status_reg",
+          "to": "trap",
+          "width": 32
+        },
+        {
+          "from": "csr",
+          "net": "ie_reg",
+          "to": "trap",
+          "width": 32
+        },
+        {
+          "from": "csr",
+          "net": "pending",
+          "to": "trap",
+          "width": 32
+        },
+        {
+          "from": "trap",
+          "net": "tvec_reg",
+          "to": "pc",
+          "width": 32
+        },
+        {
+          "from": "trap",
+          "net": "epc_reg",
+          "to": "pc",
+          "width": 32
+        },
+        {
+          "from": "commit",
+          "net": "q_nextpc",
+          "to": "pc",
+          "width": 32
+        },
+        {
+          "from": "decode",
+          "net": "csr_id",
+          "to": "csr",
+          "width": 8
+        },
+        {
+          "from": "decode",
+          "net": "csrwrite",
+          "to": "csr",
+          "width": 1
+        },
+        {
+          "from": "decode",
+          "net": "csr_value",
+          "to": "csr",
+          "width": 32
+        },
+        {
+          "from": "csr",
+          "net": "value1",
+          "to": "pending",
+          "width": 32
+        },
+        {
+          "from": "trap",
+          "net": "trace_trap",
+          "to": "commit",
+          "width": 1
+        },
+        {
+          "from": "trap",
+          "net": "trace_cause",
+          "to": "commit",
+          "width": 32
+        }
+      ]
+    },
+    {
+      "notes": [
+        "Fetch requests are four-byte aligned and return one 32-bit word. One outstanding request.",
+        "FAST_FETCH=1: an aligned long instruction captures both parcels without another lookup.",
+        "Cross-word long instructions fetch the second word. Redirects use tags; overlapping stores and fence.i invalidate.",
+        "Request fields remain stable under backpressure; response errors never retire the instruction."
+      ],
+      "number": 2,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Instruction fetch and parcel assembly",
+      "validated_nets": [
+        {
+          "from": "pc",
+          "net": "fetch_addr",
+          "to": "lookup",
+          "width": 32
+        },
+        {
+          "from": "cache",
+          "net": "cache_tag",
+          "to": "lookup",
+          "width": 32
+        },
+        {
+          "from": "cache",
+          "net": "cache_valid",
+          "to": "lookup",
+          "width": 1
+        },
+        {
+          "from": "lookup",
+          "net": "cache_data",
+          "to": "parcel",
+          "width": 32
+        },
+        {
+          "from": "lookup",
+          "net": "i_req_valid",
+          "to": "bus",
+          "width": 1
+        },
+        {
+          "from": "lookup",
+          "net": "i_req_addr",
+          "to": "bus",
+          "width": 32
+        },
+        {
+          "from": "bus",
+          "net": "i_req_ready",
+          "to": "parcel",
+          "width": 1
+        },
+        {
+          "from": "bus",
+          "net": "i_rsp_valid",
+          "to": "parcel",
+          "width": 1
+        },
+        {
+          "from": "bus",
+          "net": "i_rsp_rdata",
+          "to": "parcel",
+          "width": 32
+        },
+        {
+          "from": "parcel",
+          "net": "i_rsp_ready",
+          "to": "bus",
+          "width": 1
+        },
+        {
+          "from": "parcel",
+          "net": "lo",
+          "to": "decode",
+          "width": 16
+        },
+        {
+          "from": "parcel",
+          "net": "hi",
+          "to": "decode",
+          "width": 16
+        },
+        {
+          "from": "parcel",
+          "net": "p",
+          "to": "decode",
+          "width": 26
+        },
+        {
+          "from": "parcel",
+          "net": "ilen",
+          "to": "decode",
+          "width": 3
+        },
+        {
+          "from": "bus",
+          "net": "i_rsp_error",
+          "to": "trap",
+          "width": 1
+        },
+        {
+          "from": "invalidate",
+          "net": "q_invalidate",
+          "to": "cache",
+          "width": 1
+        },
+        {
+          "from": "invalidate",
+          "net": "q_addr",
+          "to": "cache",
+          "width": 32
+        },
+        {
+          "from": "invalidate",
+          "net": "q_size",
+          "to": "cache",
+          "width": 3
+        },
+        {
+          "from": "invalidate",
+          "net": "q_memwrite",
+          "to": "cache",
+          "width": 1
+        },
+        {
+          "from": "decode",
+          "net": "nextpc",
+          "to": "pc",
+          "width": 32
+        }
+      ]
+    },
+    {
+      "notes": [
+        "Class = lo[15:14]; long major = lo[13:10]; payload p = {lo[9:0],hi}.",
+        "Unused fields and unassigned encodings are illegal. Schema overlap checks supplement RTL guards.",
+        "No mandatory vector, atomic, DSP accumulator or hidden loop state."
+      ],
+      "number": 3,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Instruction fields, extension guards and control",
+      "validated_nets": [
+        {
+          "from": "parcel",
+          "net": "lo",
+          "to": "fields",
+          "width": 16
+        },
+        {
+          "from": "parcel",
+          "net": "hi",
+          "to": "fields",
+          "width": 16
+        },
+        {
+          "from": "parcel",
+          "net": "p",
+          "to": "fields",
+          "width": 26
+        },
+        {
+          "from": "parcel",
+          "net": "major",
+          "to": "fields",
+          "width": 4
+        },
+        {
+          "from": "parcel",
+          "net": "ilen",
+          "to": "fields",
+          "width": 3
+        },
+        {
+          "from": "fields",
+          "net": "decode.d",
+          "to": "regs",
+          "width": 4
+        },
+        {
+          "from": "fields",
+          "net": "decode.a",
+          "to": "regs",
+          "width": 4
+        },
+        {
+          "from": "fields",
+          "net": "decode.b",
+          "to": "regs",
+          "width": 4
+        },
+        {
+          "from": "fields",
+          "net": "read_a_index",
+          "to": "regs",
+          "width": 4
+        },
+        {
+          "from": "fields",
+          "net": "read_b_index",
+          "to": "regs",
+          "width": 4
+        },
+        {
+          "from": "regs",
+          "net": "decode.av",
+          "to": "effects",
+          "width": 32
+        },
+        {
+          "from": "regs",
+          "net": "decode.bv",
+          "to": "effects",
+          "width": 32
+        },
+        {
+          "from": "fields",
+          "net": "p",
+          "to": "immediate",
+          "width": 26
+        },
+        {
+          "from": "immediate",
+          "net": "nextpc",
+          "to": "effects",
+          "width": 32
+        },
+        {
+          "from": "immediate",
+          "net": "addr",
+          "to": "effects",
+          "width": 32
+        },
+        {
+          "from": "immediate",
+          "net": "value1",
+          "to": "effects",
+          "width": 32
+        },
+        {
+          "from": "immediate",
+          "net": "value2",
+          "to": "effects",
+          "width": 32
+        },
+        {
+          "from": "guards",
+          "net": "illegal",
+          "to": "trap",
+          "width": 1
+        },
+        {
+          "from": "guards",
+          "net": "decoded_cause",
+          "to": "trap",
+          "width": 32
+        },
+        {
+          "from": "guards",
+          "net": "decoded_tval",
+          "to": "trap",
+          "width": 32
+        },
+        {
+          "from": "effects",
+          "net": "mem",
+          "to": "trap",
+          "width": 1
+        },
+        {
+          "from": "effects",
+          "net": "size_log",
+          "to": "trap",
+          "width": 3
+        },
+        {
+          "from": "effects",
+          "net": "w1",
+          "to": "guards",
+          "width": 1
+        },
+        {
+          "from": "effects",
+          "net": "w2",
+          "to": "guards",
+          "width": 1
+        },
+        {
+          "from": "effects",
+          "net": "memwrite",
+          "to": "guards",
+          "width": 1
+        },
+        {
+          "from": "effects",
+          "net": "memsign",
+          "to": "guards",
+          "width": 1
+        },
+        {
+          "from": "effects",
+          "net": "csrwrite",
+          "to": "guards",
+          "width": 1
+        },
+        {
+          "from": "effects",
+          "net": "do_ecall",
+          "to": "guards",
+          "width": 1
+        },
+        {
+          "from": "effects",
+          "net": "do_eret",
+          "to": "guards",
+          "width": 1
+        }
+      ]
+    },
+    {
+      "notes": [
+        "Displayed E32 configuration has 16 registers. C32 has 8; L64 has 16 x 64 bits.",
+        "Two logical writeback slots, used together by F; source RTL uses individually reset registers.",
+        "Read paths include hardwired SP and format-specific address reads; this is not a claimed two-port SRAM.",
+        "x0 reads zero, writes are suppressed. Reset: others zero; x7=(RAM_BYTES-16) rounded down to 16."
+      ],
+      "number": 4,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Scalar register storage and writeback",
+      "validated_nets": [
+        {
+          "from": "select",
+          "net": "read_a_index",
+          "to": "reads",
+          "width": 4
+        },
+        {
+          "from": "select",
+          "net": "read_b_index",
+          "to": "reads",
+          "width": 4
+        },
+        {
+          "from": "bank",
+          "net": "regs[1]",
+          "to": "reads",
+          "width": 32
+        },
+        {
+          "from": "bank",
+          "net": "regs[7]",
+          "to": "reads",
+          "width": 32
+        },
+        {
+          "from": "reads",
+          "net": "read_a_data",
+          "to": "execute",
+          "width": 32
+        },
+        {
+          "from": "reads",
+          "net": "read_b_data",
+          "to": "execute",
+          "width": 32
+        },
+        {
+          "from": "load",
+          "net": "writeback_value",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "commit",
+          "net": "q_dst1",
+          "to": "bank",
+          "width": 4
+        },
+        {
+          "from": "commit",
+          "net": "q_dst2",
+          "to": "bank",
+          "width": 4
+        },
+        {
+          "from": "commit",
+          "net": "q_w1",
+          "to": "bank",
+          "width": 1
+        },
+        {
+          "from": "commit",
+          "net": "q_w2",
+          "to": "bank",
+          "width": 1
+        },
+        {
+          "from": "commit",
+          "net": "writeback_value",
+          "to": "bank",
+          "width": 32
+        },
+        {
+          "from": "commit",
+          "net": "q_value2",
+          "to": "bank",
+          "width": 32
+        },
+        {
+          "from": "bank",
+          "net": "regs[1]",
+          "to": "parity",
+          "width": 32
+        },
+        {
+          "from": "parity",
+          "net": "register_error",
+          "to": "commit",
+          "width": 1
+        },
+        {
+          "from": "zero",
+          "net": "regs[0]",
+          "to": "reads",
+          "width": 32
+        }
+      ]
+    },
+    {
+      "notes": [
+        "Combinational RTL operations; implementation carry topology and timing require mapped reports.",
+        "Shift counts are masked to XLEN-1. Comparisons produce integer 0 or 1; no condition-code register.",
+        "W32 results sign-extend to XLEN64. Multiply is optional and not a mandatory C32 datapath."
+      ],
+      "number": 5,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Arithmetic, logic, shifts and comparison",
+      "validated_nets": [
+        {
+          "from": "rf",
+          "net": "read_a_data",
+          "to": "alu",
+          "width": 32
+        },
+        {
+          "from": "rf",
+          "net": "read_b_data",
+          "to": "alu",
+          "width": 32
+        },
+        {
+          "from": "select",
+          "net": "decode.op",
+          "to": "alu",
+          "width": 8
+        },
+        {
+          "from": "alu",
+          "net": "value1",
+          "to": "mux",
+          "width": 32
+        },
+        {
+          "from": "word",
+          "net": "decode.word_result",
+          "to": "mux",
+          "width": 32
+        },
+        {
+          "from": "multiply",
+          "net": "multiply_product",
+          "to": "mux",
+          "width": 32
+        },
+        {
+          "from": "mux",
+          "net": "value1",
+          "to": "pending",
+          "width": 32
+        },
+        {
+          "from": "mux",
+          "net": "w1",
+          "to": "pending",
+          "width": 1
+        },
+        {
+          "from": "mux",
+          "net": "dst1",
+          "to": "pending",
+          "width": 4
+        }
+      ]
+    },
+    {
+      "notes": [
+        "Branch displacements are halfwords from sequential PC. ADRPC alone uses instruction PC.",
+        "Calls write x6; ret is jr x6. dbnz.s uses an ordinary register and no loop-state CSRs.",
+        "Odd control targets trap before commit. There is no pipeline flush circuit in this implementation."
+      ],
+      "number": 6,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Branches, calls, returns and counted loops",
+      "validated_nets": [
+        {
+          "from": "operands",
+          "net": "decode.av",
+          "to": "compare",
+          "width": 32
+        },
+        {
+          "from": "operands",
+          "net": "decode.bv",
+          "to": "compare",
+          "width": 32
+        },
+        {
+          "from": "compare",
+          "net": "decode.take",
+          "to": "target",
+          "width": 1
+        },
+        {
+          "from": "pc",
+          "net": "pc",
+          "to": "target",
+          "width": 32
+        },
+        {
+          "from": "pc",
+          "net": "ilen",
+          "to": "target",
+          "width": 3
+        },
+        {
+          "from": "pc",
+          "net": "p",
+          "to": "target",
+          "width": 26
+        },
+        {
+          "from": "target",
+          "net": "nextpc",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "pc",
+          "net": "pc",
+          "to": "link",
+          "width": 32
+        },
+        {
+          "from": "pc",
+          "net": "ilen",
+          "to": "link",
+          "width": 3
+        },
+        {
+          "from": "count",
+          "net": "value1",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "count",
+          "net": "nextpc",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "commit",
+          "net": "q_nextpc",
+          "to": "fetch",
+          "width": 32
+        },
+        {
+          "from": "link",
+          "net": "value1",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "link",
+          "net": "dst1",
+          "to": "commit",
+          "width": 4
+        },
+        {
+          "from": "link",
+          "net": "w1",
+          "to": "commit",
+          "width": 1
+        }
+      ]
+    },
+    {
+      "notes": [
+        "One outstanding data transaction. Narrow writes use byte strobes at the selected XLEN bus lane.",
+        "F uses old base for access; successful COMMIT writes result and updated base together.",
+        "Signed F sign-extends to XLEN; base/destination alias is illegal. Errors write neither.",
+        "Fabric must not commit a failed store. Memory response time currently has no finite hardware timeout."
+      ],
+      "number": 7,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Transactional load/store and precise pointer updates",
+      "validated_nets": [
+        {
+          "from": "decode",
+          "net": "addr",
+          "to": "request",
+          "width": 32
+        },
+        {
+          "from": "decode",
+          "net": "store_data",
+          "to": "request",
+          "width": 32
+        },
+        {
+          "from": "decode",
+          "net": "size_log",
+          "to": "request",
+          "width": 3
+        },
+        {
+          "from": "decode",
+          "net": "memwrite",
+          "to": "request",
+          "width": 1
+        },
+        {
+          "from": "decode",
+          "net": "memsign",
+          "to": "request",
+          "width": 1
+        },
+        {
+          "from": "request",
+          "net": "d_req_valid",
+          "to": "fabric",
+          "width": 1
+        },
+        {
+          "from": "request",
+          "net": "d_req_addr",
+          "to": "fabric",
+          "width": 32
+        },
+        {
+          "from": "request",
+          "net": "d_req_write",
+          "to": "fabric",
+          "width": 1
+        },
+        {
+          "from": "request",
+          "net": "d_req_size",
+          "to": "fabric",
+          "width": 3
+        },
+        {
+          "from": "request",
+          "net": "d_req_wdata",
+          "to": "fabric",
+          "width": 32
+        },
+        {
+          "from": "request",
+          "net": "d_req_wstrb",
+          "to": "fabric",
+          "width": 4
+        },
+        {
+          "from": "fabric",
+          "net": "d_req_ready",
+          "to": "request",
+          "width": 1
+        },
+        {
+          "from": "fabric",
+          "net": "d_rsp_valid",
+          "to": "response",
+          "width": 1
+        },
+        {
+          "from": "fabric",
+          "net": "d_rsp_rdata",
+          "to": "response",
+          "width": 32
+        },
+        {
+          "from": "fabric",
+          "net": "d_rsp_error",
+          "to": "response",
+          "width": 1
+        },
+        {
+          "from": "response",
+          "net": "d_rsp_ready",
+          "to": "fabric",
+          "width": 1
+        },
+        {
+          "from": "response",
+          "net": "response_data",
+          "to": "align",
+          "width": 32
+        },
+        {
+          "from": "response",
+          "net": "q_addr",
+          "to": "align",
+          "width": 32
+        },
+        {
+          "from": "response",
+          "net": "q_size",
+          "to": "align",
+          "width": 3
+        },
+        {
+          "from": "response",
+          "net": "q_memsign",
+          "to": "align",
+          "width": 1
+        },
+        {
+          "from": "align",
+          "net": "writeback_value",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "align",
+          "net": "q_value2",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "align",
+          "net": "q_w1",
+          "to": "commit",
+          "width": 1
+        },
+        {
+          "from": "align",
+          "net": "q_w2",
+          "to": "commit",
+          "width": 1
+        },
+        {
+          "from": "response",
+          "net": "d_rsp_error",
+          "to": "fault",
+          "width": 1
+        },
+        {
+          "from": "response",
+          "net": "q_memwrite",
+          "to": "fault",
+          "width": 1
+        },
+        {
+          "from": "fault",
+          "net": "trace_trap",
+          "to": "commit",
+          "width": 1
+        },
+        {
+          "from": "fault",
+          "net": "trace_cause",
+          "to": "commit",
+          "width": 32
+        }
+      ]
+    },
+    {
+      "notes": [
+        "Addresses and masks are indexed in the generated ISA/CSR tables; unimplemented IDs are illegal.",
+        "coreid/features/arch/counters are read-only. TRAP=0 removes privileged trap/timer state.",
+        "PERF controls cycle/instret implementation. Timer ticks in SLEEP; STOP stops core counters.",
+        "One active handler; no implemented privilege levels or memory protection."
+      ],
+      "number": 8,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "CSR permissions, counters and trap state",
+      "validated_nets": [
+        {
+          "from": "decode",
+          "net": "csr_id",
+          "to": "read",
+          "width": 8
+        },
+        {
+          "from": "decode",
+          "net": "decode.op",
+          "to": "read",
+          "width": 8
+        },
+        {
+          "from": "status",
+          "net": "status_reg",
+          "to": "read",
+          "width": 32
+        },
+        {
+          "from": "status",
+          "net": "ie_reg",
+          "to": "read",
+          "width": 32
+        },
+        {
+          "from": "status",
+          "net": "pending",
+          "to": "read",
+          "width": 32
+        },
+        {
+          "from": "trap",
+          "net": "epc_reg",
+          "to": "read",
+          "width": 32
+        },
+        {
+          "from": "trap",
+          "net": "cause_reg",
+          "to": "read",
+          "width": 32
+        },
+        {
+          "from": "trap",
+          "net": "tval_reg",
+          "to": "read",
+          "width": 32
+        },
+        {
+          "from": "trap",
+          "net": "tvec_reg",
+          "to": "read",
+          "width": 32
+        },
+        {
+          "from": "timer",
+          "net": "timer_count",
+          "to": "read",
+          "width": 64
+        },
+        {
+          "from": "timer",
+          "net": "timer_cmp",
+          "to": "read",
+          "width": 64
+        },
+        {
+          "from": "counter",
+          "net": "cycle_count",
+          "to": "read",
+          "width": 64
+        },
+        {
+          "from": "counter",
+          "net": "instret",
+          "to": "read",
+          "width": 64
+        },
+        {
+          "from": "read",
+          "net": "value1",
+          "to": "result",
+          "width": 32
+        },
+        {
+          "from": "read",
+          "net": "illegal",
+          "to": "result",
+          "width": 1
+        },
+        {
+          "from": "decode",
+          "net": "csr_value",
+          "to": "write",
+          "width": 32
+        },
+        {
+          "from": "decode",
+          "net": "csrwrite",
+          "to": "write",
+          "width": 1
+        },
+        {
+          "from": "write",
+          "net": "q_csr",
+          "to": "status",
+          "width": 8
+        },
+        {
+          "from": "write",
+          "net": "q_csr_value",
+          "to": "status",
+          "width": 32
+        },
+        {
+          "from": "write",
+          "net": "q_csrwrite",
+          "to": "status",
+          "width": 1
+        },
+        {
+          "from": "write",
+          "net": "q_csr_value",
+          "to": "timer",
+          "width": 32
+        }
+      ]
+    },
+    {
+      "notes": [
+        "Timer pending has priority over external/software when both enabled. Global enable gates delivery, not wake.",
+        "Enabled interrupts enter directly from SLEEP; other pending events resume START.",
+        "Synchronous faults save faulting PC. 2.0 ecall also saves its own PC. No partial GPR commit.",
+        "Nested exceptions are not supported; an unrecoverable entry halts with fault_o."
+      ],
+      "number": 9,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Precise traps, interrupt priority and wakeup",
+      "validated_nets": [
+        {
+          "from": "sources",
+          "net": "irq_i",
+          "to": "select",
+          "width": 1
+        },
+        {
+          "from": "sources",
+          "net": "ip_reg",
+          "to": "select",
+          "width": 32
+        },
+        {
+          "from": "sources",
+          "net": "timer_count",
+          "to": "select",
+          "width": 64
+        },
+        {
+          "from": "sources",
+          "net": "timer_cmp",
+          "to": "select",
+          "width": 64
+        },
+        {
+          "from": "select",
+          "net": "pending",
+          "to": "entry",
+          "width": 32
+        },
+        {
+          "from": "select",
+          "net": "ie_reg",
+          "to": "entry",
+          "width": 32
+        },
+        {
+          "from": "select",
+          "net": "status_reg",
+          "to": "entry",
+          "width": 32
+        },
+        {
+          "from": "select",
+          "net": "interrupt_ready",
+          "to": "entry",
+          "width": 1
+        },
+        {
+          "from": "select",
+          "net": "interrupt_cause",
+          "to": "entry",
+          "width": 32
+        },
+        {
+          "from": "fault",
+          "net": "decoded_cause",
+          "to": "entry",
+          "width": 32
+        },
+        {
+          "from": "fault",
+          "net": "decoded_tval",
+          "to": "entry",
+          "width": 32
+        },
+        {
+          "from": "fault",
+          "net": "i_rsp_error",
+          "to": "entry",
+          "width": 1
+        },
+        {
+          "from": "fault",
+          "net": "d_rsp_error",
+          "to": "entry",
+          "width": 1
+        },
+        {
+          "from": "entry",
+          "net": "epc_reg",
+          "to": "saved",
+          "width": 32
+        },
+        {
+          "from": "entry",
+          "net": "cause_reg",
+          "to": "saved",
+          "width": 32
+        },
+        {
+          "from": "entry",
+          "net": "tval_reg",
+          "to": "saved",
+          "width": 32
+        },
+        {
+          "from": "entry",
+          "net": "status_reg",
+          "to": "saved",
+          "width": 32
+        },
+        {
+          "from": "entry",
+          "net": "tvec_reg",
+          "to": "pc",
+          "width": 32
+        },
+        {
+          "from": "saved",
+          "net": "epc_reg",
+          "to": "return",
+          "width": 32
+        },
+        {
+          "from": "saved",
+          "net": "status_reg",
+          "to": "return",
+          "width": 32
+        },
+        {
+          "from": "return",
+          "net": "q_nextpc",
+          "to": "pc",
+          "width": 32
+        },
+        {
+          "from": "return",
+          "net": "q_eret",
+          "to": "pc",
+          "width": 1
+        },
+        {
+          "from": "sources",
+          "net": "pending",
+          "to": "sleep",
+          "width": 32
+        },
+        {
+          "from": "sleep",
+          "net": "interrupt_ready",
+          "to": "entry",
+          "width": 1
+        }
+      ]
+    },
+    {
+      "notes": [
+        "All eleven states are represented. State graph is checked against the state_t enum and RTL anchors.",
+        "Sequential registers update on clk_i; rst_ni asynchronously enters START and clears pending effects.",
+        "Request ownership persists through waits. Reset cancellation requires the fabric to reset with the core."
+      ],
+      "number": 10,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Minimal multicycle controller",
+      "validated_nets": []
+    },
+    {
+      "notes": [
+        "This status sheet is not a speculative pipeline schematic.",
+        "Any future pipeline design belongs in the separate experimental section until implemented and tested."
+      ],
+      "number": 11,
+      "rtl_module": "mica_core_txn",
+      "status": "implementation gap",
+      "title": "Pipeline implementation status",
+      "validated_nets": []
+    },
+    {
+      "notes": [
+        "MUL=0 removes multiplication. Short, ALU3 and W32 forms share the product; W32 zeros the upper operand halves.",
+        "No divider exists in RTL. stdlib/math32.mica and math64.mica provide software division.",
+        "No iterative multiplier, high-half product, MAC accumulator or claimed clock frequency is drawn."
+      ],
+      "number": 12,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Optional multiplication and software division",
+      "validated_nets": [
+        {
+          "from": "select",
+          "net": "read_a_index",
+          "to": "rf",
+          "width": 4
+        },
+        {
+          "from": "select",
+          "net": "read_b_index",
+          "to": "rf",
+          "width": 4
+        },
+        {
+          "from": "rf",
+          "net": "read_a_data",
+          "to": "isolate",
+          "width": 32
+        },
+        {
+          "from": "rf",
+          "net": "read_b_data",
+          "to": "isolate",
+          "width": 32
+        },
+        {
+          "from": "select",
+          "net": "multiply_enable",
+          "to": "isolate",
+          "width": 1
+        },
+        {
+          "from": "select",
+          "net": "short_multiply",
+          "to": "isolate",
+          "width": 1
+        },
+        {
+          "from": "select",
+          "net": "long_multiply",
+          "to": "isolate",
+          "width": 1
+        },
+        {
+          "from": "select",
+          "net": "word_multiply",
+          "to": "isolate",
+          "width": 1
+        },
+        {
+          "from": "isolate",
+          "net": "multiply_a",
+          "to": "product",
+          "width": 32
+        },
+        {
+          "from": "isolate",
+          "net": "multiply_b",
+          "to": "product",
+          "width": 32
+        },
+        {
+          "from": "product",
+          "net": "multiply_product",
+          "to": "word",
+          "width": 32
+        },
+        {
+          "from": "product",
+          "net": "multiply_product",
+          "to": "result",
+          "width": 32
+        },
+        {
+          "from": "word",
+          "net": "decode.word_result",
+          "to": "result",
+          "width": 32
+        },
+        {
+          "from": "word",
+          "net": "value1",
+          "to": "result",
+          "width": 32
+        }
+      ]
+    },
+    {
+      "notes": [
+        "BITOPS=0 removes the optional unit. Unary instructions require a zero unused source field.",
+        "Source loops and variable rotates are combinational; area and timing are synthesis-dependent.",
+        "This is a functional RTL region, not a separately instantiated barrel-shifter or popcount module."
+      ],
+      "number": 13,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Optional bit operations and result selection",
+      "validated_nets": [
+        {
+          "from": "decode",
+          "net": "decode.op",
+          "to": "bits",
+          "width": 8
+        },
+        {
+          "from": "rf",
+          "net": "decode.av",
+          "to": "bits",
+          "width": 32
+        },
+        {
+          "from": "rf",
+          "net": "decode.bv",
+          "to": "bits",
+          "width": 32
+        },
+        {
+          "from": "bits",
+          "net": "value1",
+          "to": "result",
+          "width": 32
+        },
+        {
+          "from": "bits",
+          "net": "dst1",
+          "to": "result",
+          "width": 4
+        },
+        {
+          "from": "bits",
+          "net": "w1",
+          "to": "result",
+          "width": 1
+        },
+        {
+          "from": "decode",
+          "net": "illegal",
+          "to": "illegal",
+          "width": 1
+        }
+      ]
+    },
+    {
+      "notes": [
+        "The signed dot-product kernel uses ordinary GPRs and M/F; no hidden accumulator state.",
+        "Packed arithmetic and 128-bit SIMD are NOT implemented in RTL. Eight vector registers exist only in the emulator.",
+        "No saturation, rounding, vector load/store or vector datapath is depicted as hardware."
+      ],
+      "number": 14,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Implemented scalar DSP stream and SIMD status",
+      "validated_nets": [
+        {
+          "from": "flow",
+          "net": "writeback_value",
+          "to": "rf",
+          "width": 32
+        },
+        {
+          "from": "flow",
+          "net": "q_value2",
+          "to": "rf",
+          "width": 32
+        },
+        {
+          "from": "flow",
+          "net": "q_w1",
+          "to": "rf",
+          "width": 1
+        },
+        {
+          "from": "flow",
+          "net": "q_w2",
+          "to": "rf",
+          "width": 1
+        },
+        {
+          "from": "rf",
+          "net": "multiply_a",
+          "to": "mul",
+          "width": 32
+        },
+        {
+          "from": "rf",
+          "net": "multiply_b",
+          "to": "mul",
+          "width": 32
+        },
+        {
+          "from": "mul",
+          "net": "multiply_product",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "add",
+          "net": "value1",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "add",
+          "net": "nextpc",
+          "to": "commit",
+          "width": 32
+        },
+        {
+          "from": "commit",
+          "net": "q_nextpc",
+          "to": "flow",
+          "width": 32
+        }
+      ]
+    },
+    {
+      "notes": [
+        "Each port owns one held response. Effects occur only on accepted requests.",
+        "No arbitration between concurrent harts, cache coherence or multicore fabric exists.",
+        "SRAM payload has no reset; response flags reset synchronously. Same-word cross-port read/write is unspecified.",
+        "Core phases avoid overlapping instruction fetch and data access. Transaction timeouts are not implemented."
+      ],
+      "number": 15,
+      "rtl_module": "mica_soc",
+      "status": "implemented RTL",
+      "title": "Memory routing, ownership and synchronous SRAM",
+      "validated_nets": [
+        {
+          "from": "cpu",
+          "net": "iv",
+          "to": "route",
+          "width": 1
+        },
+        {
+          "from": "cpu",
+          "net": "ia",
+          "to": "route",
+          "width": 32
+        },
+        {
+          "from": "cpu",
+          "net": "dv",
+          "to": "route",
+          "width": 1
+        },
+        {
+          "from": "cpu",
+          "net": "da",
+          "to": "route",
+          "width": 32
+        },
+        {
+          "from": "cpu",
+          "net": "dw",
+          "to": "route",
+          "width": 1
+        },
+        {
+          "from": "cpu",
+          "net": "size",
+          "to": "route",
+          "width": 3
+        },
+        {
+          "from": "cpu",
+          "net": "wd",
+          "to": "route",
+          "width": 32
+        },
+        {
+          "from": "cpu",
+          "net": "strb",
+          "to": "route",
+          "width": 4
+        },
+        {
+          "from": "route",
+          "net": "ir",
+          "to": "cpu",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "sv",
+          "to": "cpu",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "insn",
+          "to": "cpu",
+          "width": 32
+        },
+        {
+          "from": "route",
+          "net": "se",
+          "to": "cpu",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "dr",
+          "to": "cpu",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "ds",
+          "to": "cpu",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "rd",
+          "to": "cpu",
+          "width": 32
+        },
+        {
+          "from": "route",
+          "net": "dse",
+          "to": "cpu",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "ram_ready",
+          "to": "ram",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "ram_valid",
+          "to": "ram",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "ram_data",
+          "to": "ram",
+          "width": 32
+        },
+        {
+          "from": "route",
+          "net": "ram_error",
+          "to": "ram",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "mmio_accept",
+          "to": "mmio",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "mmio_valid",
+          "to": "mmio",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "mmio_data",
+          "to": "mmio",
+          "width": 32
+        },
+        {
+          "from": "route",
+          "net": "mmio_error",
+          "to": "mmio",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "crc_ready",
+          "to": "crc",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "crc_valid",
+          "to": "crc",
+          "width": 1
+        },
+        {
+          "from": "route",
+          "net": "crc_data",
+          "to": "crc",
+          "width": 32
+        },
+        {
+          "from": "route",
+          "net": "crc_error",
+          "to": "crc",
+          "width": 1
+        }
+      ]
+    },
+    {
+      "notes": [
+        "One internal clock domain. UART input and external IRQ use synchronizers where instantiated.",
+        "No generated internal clock, physical clock gate, voltage scaling or power-rail controller exists.",
+        "WFI prevents new CPU requests/retirement; clock and enabled timer/counters continue.",
+        "100 MHz is the board source and constraint request, not routed Fmax evidence."
+      ],
+      "number": 16,
+      "rtl_module": "mica_arty_a7",
+      "status": "implemented RTL",
+      "title": "Clock, reset, sleep and activity controls",
+      "validated_nets": [
+        {
+          "from": "clock",
+          "net": "CLK100MHZ",
+          "to": "reset",
+          "width": 1
+        },
+        {
+          "from": "button",
+          "net": "btn_reset",
+          "to": "reset",
+          "width": 1
+        },
+        {
+          "from": "reset",
+          "net": "rst_ni",
+          "to": "soc",
+          "width": 1
+        },
+        {
+          "from": "reset",
+          "net": "rst_release",
+          "to": "soc",
+          "width": 2
+        },
+        {
+          "from": "clock",
+          "net": "CLK100MHZ",
+          "to": "soc",
+          "width": 1
+        },
+        {
+          "from": "core",
+          "net": "halted",
+          "to": "soc",
+          "width": 1
+        },
+        {
+          "from": "core",
+          "net": "fault",
+          "to": "soc",
+          "width": 1
+        },
+        {
+          "from": "soc",
+          "net": "uart_rxd",
+          "to": "uart",
+          "width": 1
+        },
+        {
+          "from": "soc",
+          "net": "uart_txd",
+          "to": "uart",
+          "width": 1
+        },
+        {
+          "from": "core",
+          "net": "led",
+          "to": "status",
+          "width": 4
+        },
+        {
+          "from": "core",
+          "net": "unused_gpio",
+          "to": "status",
+          "width": 8
+        }
+      ]
+    },
+    {
+      "notes": [
+        "Instance interfaces are generated from elaborated mica_soc connections; all port widths and directions are recorded.",
+        "CPU requests pass through real address decode and response selection in mica_soc.",
+        "UART RX, CRC and watchdog are enabled here. Standalone SPI is not falsely attached to this SoC."
+      ],
+      "number": 17,
+      "rtl_module": "mica_soc",
+      "status": "implemented RTL",
+      "title": "Complete implemented SoC integration",
+      "validated_nets": []
+    },
+    {
+      "notes": [
+        "Only the eight connections present in boards/arty_a7/arty_a7.xdc are shown.",
+        "Pin map checked against the Digilent Arty-A7-100 master constraints, Rev D/E.",
+        "This is an FPGA interface drawing, not a new PCB or an electrical schematic.",
+        "Vivado placement/routing, physical boot and board timing remain unverified."
+      ],
+      "number": 18,
+      "rtl_module": "mica_arty_a7",
+      "status": "implemented RTL",
+      "title": "Arty A7-100 board boundary and verified pins",
+      "validated_nets": []
+    },
+    {
+      "notes": [
+        "Parity is updated from committed values and checked before decode effects; no register correction.",
+        "The VHDL watchdog is independent of CPU STOP and can signal a level IRQ under platform policy.",
+        "No SRAM ECC, scrubber, lockstep core, protected diagnostics or safety qualification is implemented."
+      ],
+      "number": 19,
+      "rtl_module": "mica_core_txn",
+      "status": "implemented RTL",
+      "title": "Implemented register parity and watchdog supervision",
+      "validated_nets": [
+        {
+          "from": "bank",
+          "net": "regs[1]",
+          "to": "parity",
+          "width": 32
+        },
+        {
+          "from": "bank",
+          "net": "parity.bits",
+          "to": "parity",
+          "width": 16
+        },
+        {
+          "from": "parity",
+          "net": "register_error",
+          "to": "decode",
+          "width": 1
+        },
+        {
+          "from": "decode",
+          "net": "fault_o",
+          "to": "stop",
+          "width": 1
+        },
+        {
+          "from": "decode",
+          "net": "halt_o",
+          "to": "stop",
+          "width": 1
+        },
+        {
+          "from": "bank",
+          "net": "writeback_value",
+          "to": "parity",
+          "width": 32
+        },
+        {
+          "from": "bank",
+          "net": "q_value2",
+          "to": "parity",
+          "width": 32
+        },
+        {
+          "from": "bank",
+          "net": "q_w1",
+          "to": "parity",
+          "width": 1
+        },
+        {
+          "from": "bank",
+          "net": "q_w2",
+          "to": "parity",
+          "width": 1
+        }
+      ]
+    },
+    {
+      "notes": [
+        "No fictitious security datapath or protected connection is included.",
+        "Any future design belongs in the separate experimental section, with explicit trust assumptions."
+      ],
+      "number": 20,
+      "rtl_module": "mica_core_txn",
+      "status": "implementation gap",
+      "title": "Security hardware implementation status",
+      "validated_nets": []
+    }
+  ],
+  "source_sha256": {
+    "boards/arty_a7/arty_a7.xdc": "05740d70a526b1aa8d76f3ea81f2302da7d343f4f4fa322a8f97fa65eeb197bd",
+    "boards/arty_a7/mica_arty_a7.sv": "e923000b36b08f724d42aa741fe6cb26b202cb903c898e867478f2fe6c17e201",
+    "boards/arty_a7/pin_reference.json": "0a162e57d876265eea5e79ad8780fa58f4103695cba98f65fdf5e2064745bff4",
+    "isa/generated/mica_isa.svh": "8121d3b918d5ce65c6d156dbfc3a48e004b32bd1776c863f463a982d6e819b8e",
+    "release.json": "f483bfe9d9376abe3dc7f7d04fcf4ecc13d3e7ce239205d753f3e295b2f92046",
+    "rtl/mica_core_txn.sv": "eab7d1eb12532bcf02a442b529d59657cfeb500a74cd66ca450ef802878a3c07",
+    "rtl/mica_crc_mmio.sv": "fe5d3ad0501711e94054491bd9bb53f2515060a2981c275b0d39c8292bf1a887",
+    "rtl/mica_soc.sv": "1abfba32425bd8b3398fb2d54696e765f1998810ca8cac367383814b08230a53",
+    "rtl/mica_uart_tx.sv": "e005e15862e04c7101e269e6b9c2fdbed01f0cb5f3db028d08eff9b62c098d4a",
+    "rtl/verilog/mica_sram_txn.v": "4a3cb42974f33e90720e6d977de846ab7e2808fe0946c0ae2e1b42dc942ba764",
+    "rtl/verilog/mica_sync_fifo.v": "f13ad86f55fb6f8375584c637a281a1e47a430a06e54d63a87cbb55f1c3ca81c",
+    "rtl/verilog/mica_uart_rx.v": "e97749314687931166689add7c83858cecc06e758d5d9592315df14ea2684505",
+    "rtl/verilog/mica_uart_tx_portable.v": "9f01dd0f52b5fa0826b62184133e32e75e63a01d7d82a63fcbe8e610e8daef42",
+    "rtl/vhdl/mica_crc32.vhd": "95b9b6748c6f98176efb2e3cd8db1e498048e738c04e52b8cdcb0aa431c421a0",
+    "rtl/vhdl/mica_event_counter.vhd": "e1898103fdfdcafd495182124788960dfdf349ca62e5fe49b664377883cbf98c",
+    "rtl/vhdl/mica_watchdog.vhd": "a3bc15f6057ede7f000b321a4be6ceb64e0c06bf2afdc7ff7cc94f1dbfc3eeee",
+    "schematics/v3_sheets.py": "cffd4e7f36f63fb4a25561f926c803ccc14fe0b276b187c46c90f6d2be8b52dd",
+    "scripts/generate_v3_schematics.py": "ff0183169205d846a4eda4c488fbf9e1534e1c141a4d1f6d3d1eb64391374a42",
+    "scripts/schematic_pdf.py": "e6a8223e7f2049fd6f1717203cc5f492d31a959a12ab0f7a4d7bfbaaf5b59d52"
+  }
+}

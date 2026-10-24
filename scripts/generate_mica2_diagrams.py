@@ -5,7 +5,10 @@ from pathlib import Path
 import argparse
 import shutil
 import subprocess
+import os
+from schematic_pdf import normalize_pdf
 
+os.environ["SOURCE_DATE_EPOCH"] = "0"
 root = Path(__file__).resolve().parents[1]
 rtl = (root / "rtl/mica_core_txn.sv").read_text()
 soc = (root / "rtl/mica_soc.sv").read_text()
@@ -335,4 +338,6 @@ for name, src in pages.items():
             subprocess.run(
                 ["dot", "-T" + fmt, str(dot), "-o", str(preview)], check=True
             )
+            if fmt == "pdf":
+                normalize_pdf(preview)
 print(f"PASS: {len(pages)} drawings tied to MICA-2C core/SoC signal names")

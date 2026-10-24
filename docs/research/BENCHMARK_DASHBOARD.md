@@ -1,8 +1,11 @@
-# Benchmark dashboard, development r3
+# Benchmark dashboard
 
-Values below come from the [archived results](../engineering/results/embedded-r3/README.md).
-The [engineering report](../engineering/EMBEDDED_REFINEMENT.md) gives commands,
-tool versions, complete comparisons and limits. Missing metrics remain missing.
+The complete-ROM row is the current Clang 21.1.8 measurement from
+`benchmarks/compiled_density.py`. The other rows remain the
+[r3 archive](../engineering/results/embedded-r3/README.md). The
+[r3 report](../engineering/EMBEDDED_REFINEMENT.md) and the
+[3.0 development report](../engineering/MICA3_DEVELOPMENT.md) give the commands
+and limits. Missing metrics remain missing.
 
 | Metric | Observed value | Scope |
 | --- | --- | --- |
@@ -10,7 +13,7 @@ tool versions, complete comparisons and limits. Missing metrics remain missing.
 | Sensor execution | 53,715 clocks; 45,847 active, 7,868 asleep | Finite four-measurement SoC simulation |
 | Wake entry | 1 clock maximum observed | Enabled timer pending while asleep; excludes external synchronization and stalled-memory arrival |
 | Stable sleep datapath | 0 selected-signal transitions | Clock and timer continue switching; not physical power |
-| Complete C ROM | MICA-2C 896; MICA-2E 920; RV32EC 244; Cortex-M0+ 208 bytes | Same C at frontend -O0; different backends; competitor images not target-executed |
+| Complete C ROM | MICA-2C 712; MICA-2E 736; RV32I 404; RV32IC/EC/IC+Zcb 300; Cortex-M0+ 208; Cortex-M4 204 bytes | Clang 21.1.8, same C at frontend -O0; different backends; competitor images not target-executed. The r3 Clang 23.1.3 archive recorded MICA 896/920 and compressed RISC-V 244 |
 | C memory requests | 335 on 2C, 149 on 2E | Array/structure/call/recursion ABI test; not a pure spill count |
 | Optional parity cost | +298 LUTs, +16 flip-flops | Matched 4 KiB MICA-2E SoCs, Yosys XC7 mapping |
 | Register injection | All 32 tested single-bit errors detected with parity | One register, one injection boundary; no correction |

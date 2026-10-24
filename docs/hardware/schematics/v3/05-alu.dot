@@ -1,0 +1,30 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 05 / 20 | Arithmetic, logic, shifts and comparison</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Combinational RTL operations; implementation carry topology and timing require mapped reports.<BR ALIGN="LEFT"/>Shift counts are masked to XLEN-1. Comparisons produce integer 0 or 1; no condition-code register.<BR ALIGN="LEFT"/>W32 results sign-extend to XLEN64. Multiply is optional and not a mandatory C32 datapath.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+rf[label="Register read selection"];
+select[label="decode arithmetic operation"];
+alu[label="arithmetic():\nadd/sub/logic/shift/compare"];
+word[label="W32 result / sign extension"];
+multiply[label="Optional shared multiply"];
+mux[label="Decoded result selection"];
+pending[label="q_value1"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->rf[style=invis,weight=100];
+{rank=same;rf;select;alu;}
+rf->select[style=invis,weight=100];
+select->alu[style=invis,weight=100];
+{rank=same;word;multiply;mux;}
+word->multiply[style=invis,weight=100];
+multiply->mux[style=invis,weight=100];
+{rank=same;pending;}
+rf->word[style=invis,weight=100];
+word->pending[style=invis,weight=100];
+rf->alu[label="read_a_data[32/64]\nread_b_data[32/64]",color="#174a70",style="solid",constraint=false];
+select->alu[label="decode.op[8]",color="#174a70",style="solid",constraint=false];
+alu->mux[label="value1[32/64]",color="#174a70",style="solid",constraint=false];
+word->mux[label="decode.word_result[32]",color="#174a70",style="solid",constraint=false];
+multiply->mux[label="multiply_product[32/64]",color="#174a70",style="solid",constraint=false];
+mux->pending[label="value1[32/64]\nw1[1]\ndst1[4]",color="#174a70",style="solid",constraint=false];
+}

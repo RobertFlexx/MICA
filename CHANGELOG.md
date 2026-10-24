@@ -1,5 +1,25 @@
 # Change log
 
+## MICA 3.0 development r1
+
+Start the 3.0 SDK development line while retaining ISA 2.0 encodings, ELF flags,
+profiles and the explicit 1.0 compatibility contract. Centralize release metadata
+for tool versions, installation and archives. No mandatory instruction is added.
+
+Select existing short literals, destructive scalar operations, fitting addi/shli/shri
+forms, and omit zero displacements in C output.
+Accept concise three-operand scalar assembly and high-register moves through
+existing encodings; preserve explicit long forms. Share the optional multiplier
+and operand read muxes, isolate inactive inputs and zero W32 upper operands.
+Correct the machine-readable legacy-only WFI/ldw/ecall descriptions.
+
+Create a new 20-sheet hardware collection with editable DOT, SVG, PDF and PNG,
+elaborated port/width/connection checks, vendor-checked FPGA pins and negative
+width tests. Add a complete instruction engineering inventory, actual compiler
+retirement counts and independent multiply-oracle regression. Repair LLVM
+discovery in hardware CI. See the [development report](docs/engineering/MICA3_DEVELOPMENT.md)
+for measurements and incomplete gates.
+
 ## MICA 2.0
 
 ### Development r3, 2026-10-23

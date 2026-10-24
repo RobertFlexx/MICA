@@ -874,6 +874,23 @@ class Assembler {
         throw Error("requires --mica2");
       if (op == "mul" && !multiply)
         throw Error("mul needs --mul");
+      if (a.size() == 3 &&
+          ((it->second >= 2 && it->second <= 12) || op == "mul")) {
+        const int d = reg(a[0], xreg), left = reg(a[1], xreg),
+                  right = reg(a[2], xreg);
+        const int code = op == "mul" ? 11 : it->second - 2;
+        if (d == left && d < 8 && right < 8)
+          return r16(it->second, d, right);
+        return e32(0,
+                   U(code << 20) | U(d << 16) | U(left << 12) | U(right << 8));
+      }
+      if (op == "mov") {
+        nargs(l, 2);
+        const int d = reg(a[0], xreg), source = reg(a[1], xreg);
+        if (d >= 8 || source >= 8)
+          return e32(0, U(d << 16) | U(source << 12));
+        return r16(it->second, d, source);
+      }
       if (op == "nop" || op == "wfi" || op == "fence" || op == "ecall" ||
           op == "eret" || op == "fence.i") {
         nargs(l, 0);
@@ -1428,7 +1445,7 @@ int main(int argc, char **argv) {
       else if (s == "--map")
         mapfile = next();
       else if (s == "--version") {
-        std::cout << "mica-as 2.0 development\n";
+        std::cout << "mica-as " << mica::sdk_version << "\n";
         return 0;
       } else if (s == "--help") {
         std::cout

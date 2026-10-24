@@ -1,5 +1,10 @@
 # Engineering revisions
 
+The current SDK is MICA 3.0 development r1. It retains the ISA 2.0 development
+contract and explicit 1.0 compatibility mode. The [3.0 report](engineering/MICA3_DEVELOPMENT.md)
+records instruction selection, shared multiplication, source-backed schematics
+and executed verification. No 3.0-only encoding or ELF flag is introduced.
+
 MICA's current instruction-set version is 2.0. Select it with MICA2=1 or a
 MICA-2 profile. MICA2=0 preserves the 1.0 compatibility decode. The
 [2.0 verification report](engineering/MICA2_VERIFICATION.md) records current

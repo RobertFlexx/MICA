@@ -1,0 +1,29 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 04 / 20 | Scalar register storage and writeback</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Displayed E32 configuration has 16 registers. C32 has 8; L64 has 16 x 64 bits.<BR ALIGN="LEFT"/>Two logical writeback slots, used together by F; source RTL uses individually reset registers.<BR ALIGN="LEFT"/>Read paths include hardwired SP and format-specific address reads; this is not a claimed two-port SRAM.<BR ALIGN="LEFT"/>x0 reads zero, writes are suppressed. Reset: others zero; x7=(RAM_BYTES-16) rounded down to 16.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+select[label="Register index selection"];
+bank[label="regs[0:15] / 16 x 32 bits\n----------------------\nIN N05: q_dst1[4], q_dst2[4],\nq_w1[1], q_w2[1],\nwriteback_value[32/64],\nq_value2[32/64]\nOUT N06: regs[1][32/64]"];
+reads[label="rr() / read muxes\n----------------------\nOUT N03: read_a_data[32/64],\nread_b_data[32/64]\nIN N08: regs[0][32/64]"];
+commit[label="COMMIT write enables\n----------------------\nOUT N05: q_dst1[4], q_dst2[4],\nq_w1[1], q_w2[1],\nwriteback_value[32/64],\nq_value2[32/64]\nIN N07: register_error[1]"];
+load[label="Load alignment and extension"];
+parity[label="Optional parity / integrity check\n----------------------\nIN N06: regs[1][32/64]\nOUT N07: register_error[1]"];
+zero[label="x0 / constant zero rule\n----------------------\nOUT N08: regs[0][32/64]"];
+execute[label="Operand consumers in decode\n----------------------\nIN N03: read_a_data[32/64],\nread_b_data[32/64]"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->select[style=invis,weight=100];
+{rank=same;select;bank;reads;}
+select->bank[style=invis,weight=100];
+bank->reads[style=invis,weight=100];
+{rank=same;commit;load;parity;}
+commit->load[style=invis,weight=100];
+load->parity[style=invis,weight=100];
+{rank=same;zero;execute;}
+zero->execute[style=invis,weight=100];
+select->commit[style=invis,weight=100];
+commit->zero[style=invis,weight=100];
+select->reads[label="read_a_index[4]\nread_b_index[4]",color="#174a70",style="solid",constraint=false];
+bank->reads[label="regs[1][32/64]\nregs[7][32/64]",color="#174a70",style="solid",constraint=false];
+load->commit[label="writeback_value[32/64]",color="#174a70",style="solid",constraint=false];
+}

@@ -59,7 +59,7 @@
       },
       "req_valid": {
         "direction": "input",
-        "net": "$mica_soc.sv:292$logic_and$2468_Y",
+        "net": "$mica_soc.sv:292$logic_and$2466_Y",
         "width": 1
       },
       "req_wdata": {
@@ -264,7 +264,7 @@
       },
       "irq_i": {
         "direction": "input",
-        "net": "$mica_soc.sv:164$logic_or$2458_Y",
+        "net": "$mica_soc.sv:164$logic_or$2456_Y",
         "width": 1
       },
       "pc_o": {
@@ -304,7 +304,7 @@
       },
       "d_req_valid": {
         "direction": "input",
-        "net": "$mica_soc.sv:216$logic_and$2459_Y",
+        "net": "$mica_soc.sv:216$logic_and$2457_Y",
         "width": 1
       },
       "d_req_wdata": {

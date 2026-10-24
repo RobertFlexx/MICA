@@ -1,4 +1,4 @@
-# MICA 2.0
+# MICA 3.0 development
 > ***Microcontroller Instruction Core Architecture***
 
 MICA is an experimental 32-bit and 64-bit processor architecture for embedded
@@ -6,15 +6,21 @@ systems. It uses mixed 16-bit and 32-bit instructions and comes with a C++23
 toolchain, an emulator, a multicycle SystemVerilog CPU and an Arty A7 SoC target.
 The SDK includes assembly libraries, firmware, tests and editable hardware drawings.
 
-Version 2.0 adds compact stack accesses, a two-byte counted branch, PC-relative
-addressing and wakeable `wfi`. MICA-2C keeps eight register slots; MICA-2E and
-MICA-2L offer sixteen. The 1.0 compatibility mode and all 14 frozen firmware
-fixtures are preserved.
+The 3.0 development line starts with smaller compiler output, a shared optional
+multiplier and a new [20-sheet hardware reference](docs/hardware/schematics/v3/README.md).
+It retains the ISA 2.0 binary contract: compact stack accesses, counted branches,
+PC-relative addressing and wakeable `wfi`. MICA-2C keeps eight register slots;
+MICA-2E and MICA-2L offer sixteen. The explicit 1.0 compatibility mode and all
+14 frozen firmware fixtures remain supported. Existing CLI defaults are retained;
+select a profile or `--mica2` for the 2.0 contract. No new ISA version flag or
+mandatory instruction is introduced. See the [3.0 contract](docs/architecture/MICA3.md).
 
 With F enabled, one handwritten byte-copy loop body takes 6 bytes, versus 16
-for RV32IC or 12 with Zcb. This does not establish an application-wide advantage.
+for RV32IC, 12 with Zcb, and 12 for the measured Thumb-M0+ and post-indexed
+Thumb-M4 sequences. The counted branch takes 2 bytes versus 4. This does not
+establish an application-wide advantage.
 The experimental C path currently produces larger complete programs than the
-tested RISC-V and Thumb compilers. The [engineering report](docs/engineering/EMBEDDED_REFINEMENT.md)
+tested RISC-V and Thumb compilers. The [development report](docs/engineering/MICA3_DEVELOPMENT.md)
 publishes those results alongside the [loop comparison](docs/research/RISCV_COMPARISON.md).
 
 ## Build and run
@@ -57,11 +63,11 @@ Use `stop` to end a test and `wfi` to sleep until a pending event wakes the core
 
 | Component | Current implementation |
 | --- | --- |
-| CPU | 32/64-bit scalar multicycle core, compact loops, precise traps, timer interrupts and fetch-word reuse |
+| CPU | 32/64-bit scalar multicycle core, shared optional multiplication, compact loops, precise traps, timer interrupts and fetch-word reuse |
 | Memory and devices | SRAM, GPIO, UART TX/RX, optional VHDL CRC/watchdog and register parity; standalone Verilog SPI |
 | Tools | `mica-as`, `mica-ld`, `mica-dis`, `mica-run`, `mica-objdump`, `mica-nm`, `mica-objcopy` |
 | Firmware | Linked startup and CRC, UART echo, FIR filtering, scheduler, compact loops and timer wake tests |
-| C support | Restricted Clang IR lowering for MICA-2C/2E, scalar ABI, local register allocation and a compiled sensor simulation |
+| C support | Restricted Clang IR lowering for MICA-2C/2E, short instruction selection, scalar ABI, local register allocation and a compiled sensor simulation |
 | Verification | Retirement comparison, randomized memory latency, HDL simulations, component formal checks, sanitizers and fuzzing |
 | Hardware target | Arty A7-100 board top, pin constraints and Vivado build script; board-top simulation passes |
 

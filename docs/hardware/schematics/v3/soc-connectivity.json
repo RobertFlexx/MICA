@@ -1,0 +1,1795 @@
+{
+  "checksum.bridge": {
+    "module": "mica_crc_mmio",
+    "ports": {
+      "busy_i": {
+        "bits": [
+          723
+        ],
+        "direction": "input",
+        "label": "crc_busy",
+        "net": "crc_busy",
+        "width": 1
+      },
+      "byte_o": {
+        "bits": [
+          725,
+          726,
+          727,
+          728,
+          729,
+          730,
+          731,
+          732
+        ],
+        "direction": "output",
+        "label": "crc_byte",
+        "net": "crc_byte",
+        "width": 8
+      },
+      "byte_ready_i": {
+        "bits": [
+          724
+        ],
+        "direction": "input",
+        "label": "crc_byte_ready",
+        "net": "crc_byte_ready",
+        "width": 1
+      },
+      "byte_valid_o": {
+        "bits": [
+          733
+        ],
+        "direction": "output",
+        "label": "crc_push",
+        "net": "crc_push",
+        "width": 1
+      },
+      "clear_o": {
+        "bits": [
+          734
+        ],
+        "direction": "output",
+        "label": "crc_clear",
+        "net": "crc_clear",
+        "width": 1
+      },
+      "clk_i": {
+        "bits": [
+          2
+        ],
+        "direction": "input",
+        "label": "clk_i",
+        "net": "clk_i",
+        "width": 1
+      },
+      "count_i": {
+        "bits": [
+          659,
+          660,
+          661,
+          662,
+          663,
+          664,
+          665,
+          666,
+          667,
+          668,
+          669,
+          670,
+          671,
+          672,
+          673,
+          674,
+          675,
+          676,
+          677,
+          678,
+          679,
+          680,
+          681,
+          682,
+          683,
+          684,
+          685,
+          686,
+          687,
+          688,
+          689,
+          690
+        ],
+        "direction": "input",
+        "label": "crc_count",
+        "net": "crc_count",
+        "width": 32
+      },
+      "crc_i": {
+        "bits": [
+          691,
+          692,
+          693,
+          694,
+          695,
+          696,
+          697,
+          698,
+          699,
+          700,
+          701,
+          702,
+          703,
+          704,
+          705,
+          706,
+          707,
+          708,
+          709,
+          710,
+          711,
+          712,
+          713,
+          714,
+          715,
+          716,
+          717,
+          718,
+          719,
+          720,
+          721,
+          722
+        ],
+        "direction": "input",
+        "label": "crc_result",
+        "net": "crc_result",
+        "width": 32
+      },
+      "req_addr": {
+        "bits": [
+          30,
+          31,
+          32,
+          33
+        ],
+        "direction": "input",
+        "label": "N003",
+        "net": null,
+        "width": 4
+      },
+      "req_ready": {
+        "bits": [
+          808
+        ],
+        "direction": "output",
+        "label": "crc_ready",
+        "net": "crc_ready",
+        "width": 1
+      },
+      "req_size": {
+        "bits": [
+          432,
+          433,
+          434
+        ],
+        "direction": "input",
+        "label": "size",
+        "net": "size",
+        "width": 3
+      },
+      "req_valid": {
+        "bits": [
+          446
+        ],
+        "direction": "input",
+        "label": "N004",
+        "net": "$mica_soc.sv:292$logic_and$2467_Y",
+        "width": 1
+      },
+      "req_wdata": {
+        "bits": [
+          443,
+          530,
+          531,
+          532,
+          533,
+          534,
+          535,
+          536,
+          537,
+          538,
+          539,
+          540,
+          541,
+          542,
+          543,
+          544,
+          545,
+          546,
+          547,
+          548,
+          549,
+          550,
+          551,
+          552,
+          553,
+          554,
+          555,
+          556,
+          557,
+          558,
+          559,
+          560
+        ],
+        "direction": "input",
+        "label": "unshifted",
+        "net": "unshifted",
+        "width": 32
+      },
+      "req_write": {
+        "bits": [
+          65
+        ],
+        "direction": "input",
+        "label": "dw",
+        "net": "dw",
+        "width": 1
+      },
+      "rsp_error": {
+        "bits": [
+          1046
+        ],
+        "direction": "output",
+        "label": "crc_error",
+        "net": "crc_error",
+        "width": 1
+      },
+      "rsp_rdata": {
+        "bits": [
+          851,
+          852,
+          853,
+          854,
+          855,
+          856,
+          857,
+          858,
+          859,
+          860,
+          861,
+          862,
+          863,
+          864,
+          865,
+          866,
+          867,
+          868,
+          869,
+          870,
+          871,
+          872,
+          873,
+          874,
+          875,
+          876,
+          877,
+          878,
+          879,
+          880,
+          881,
+          882
+        ],
+        "direction": "output",
+        "label": "crc_data",
+        "net": "crc_data",
+        "width": 32
+      },
+      "rsp_ready": {
+        "bits": [
+          461
+        ],
+        "direction": "input",
+        "label": "dsr",
+        "net": "dsr",
+        "width": 1
+      },
+      "rsp_valid": {
+        "bits": [
+          814
+        ],
+        "direction": "output",
+        "label": "crc_valid",
+        "net": "crc_valid",
+        "width": 1
+      },
+      "rst_ni": {
+        "bits": [
+          3
+        ],
+        "direction": "input",
+        "label": "rst_ni",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "checksum.engine": {
+    "module": "mica_crc32",
+    "ports": {
+      "busy_o": {
+        "bits": [
+          723
+        ],
+        "direction": "output",
+        "label": "crc_busy",
+        "net": "crc_busy",
+        "width": 1
+      },
+      "byte_i": {
+        "bits": [
+          725,
+          726,
+          727,
+          728,
+          729,
+          730,
+          731,
+          732
+        ],
+        "direction": "input",
+        "label": "crc_byte",
+        "net": "crc_byte",
+        "width": 8
+      },
+      "byte_ready_o": {
+        "bits": [
+          724
+        ],
+        "direction": "output",
+        "label": "crc_byte_ready",
+        "net": "crc_byte_ready",
+        "width": 1
+      },
+      "byte_valid_i": {
+        "bits": [
+          733
+        ],
+        "direction": "input",
+        "label": "crc_push",
+        "net": "crc_push",
+        "width": 1
+      },
+      "clear_i": {
+        "bits": [
+          734
+        ],
+        "direction": "input",
+        "label": "crc_clear",
+        "net": "crc_clear",
+        "width": 1
+      },
+      "clk_i": {
+        "bits": [
+          2
+        ],
+        "direction": "input",
+        "label": "clk_i",
+        "net": "clk_i",
+        "width": 1
+      },
+      "count_o": {
+        "bits": [
+          659,
+          660,
+          661,
+          662,
+          663,
+          664,
+          665,
+          666,
+          667,
+          668,
+          669,
+          670,
+          671,
+          672,
+          673,
+          674,
+          675,
+          676,
+          677,
+          678,
+          679,
+          680,
+          681,
+          682,
+          683,
+          684,
+          685,
+          686,
+          687,
+          688,
+          689,
+          690
+        ],
+        "direction": "output",
+        "label": "crc_count",
+        "net": "crc_count",
+        "width": 32
+      },
+      "crc_o": {
+        "bits": [
+          691,
+          692,
+          693,
+          694,
+          695,
+          696,
+          697,
+          698,
+          699,
+          700,
+          701,
+          702,
+          703,
+          704,
+          705,
+          706,
+          707,
+          708,
+          709,
+          710,
+          711,
+          712,
+          713,
+          714,
+          715,
+          716,
+          717,
+          718,
+          719,
+          720,
+          721,
+          722
+        ],
+        "direction": "output",
+        "label": "crc_result",
+        "net": "crc_result",
+        "width": 32
+      },
+      "rst_ni": {
+        "bits": [
+          3
+        ],
+        "direction": "input",
+        "label": "rst_ni",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "core": {
+    "module": "mica_core_txn",
+    "ports": {
+      "clk_i": {
+        "bits": [
+          2
+        ],
+        "direction": "input",
+        "label": "clk_i",
+        "net": "clk_i",
+        "width": 1
+      },
+      "d_req_addr": {
+        "bits": [
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61
+        ],
+        "direction": "output",
+        "label": "da",
+        "net": "da",
+        "width": 32
+      },
+      "d_req_ready": {
+        "bits": [
+          811
+        ],
+        "direction": "input",
+        "label": "dr",
+        "net": "dr",
+        "width": 1
+      },
+      "d_req_size": {
+        "bits": [
+          432,
+          433,
+          434
+        ],
+        "direction": "output",
+        "label": "size",
+        "net": "size",
+        "width": 3
+      },
+      "d_req_valid": {
+        "bits": [
+          429
+        ],
+        "direction": "output",
+        "label": "dv",
+        "net": "dv",
+        "width": 1
+      },
+      "d_req_wdata": {
+        "bits": [
+          498,
+          499,
+          500,
+          501,
+          502,
+          503,
+          504,
+          505,
+          506,
+          507,
+          508,
+          509,
+          510,
+          511,
+          512,
+          513,
+          514,
+          515,
+          516,
+          517,
+          518,
+          519,
+          520,
+          521,
+          522,
+          523,
+          524,
+          525,
+          526,
+          527,
+          528,
+          529
+        ],
+        "direction": "output",
+        "label": "wd",
+        "net": "wd",
+        "width": 32
+      },
+      "d_req_write": {
+        "bits": [
+          65
+        ],
+        "direction": "output",
+        "label": "dw",
+        "net": "dw",
+        "width": 1
+      },
+      "d_req_wstrb": {
+        "bits": [
+          3101,
+          3102,
+          3103,
+          3104
+        ],
+        "direction": "output",
+        "label": "strb",
+        "net": "strb",
+        "width": 4
+      },
+      "d_rsp_error": {
+        "bits": [
+          1047
+        ],
+        "direction": "input",
+        "label": "dse",
+        "net": "dse",
+        "width": 1
+      },
+      "d_rsp_rdata": {
+        "bits": [
+          947,
+          948,
+          949,
+          950,
+          951,
+          952,
+          953,
+          954,
+          955,
+          956,
+          957,
+          958,
+          959,
+          960,
+          961,
+          962,
+          963,
+          964,
+          965,
+          966,
+          967,
+          968,
+          969,
+          970,
+          971,
+          972,
+          973,
+          974,
+          975,
+          976,
+          977,
+          978
+        ],
+        "direction": "input",
+        "label": "rd",
+        "net": "rd",
+        "width": 32
+      },
+      "d_rsp_ready": {
+        "bits": [
+          461
+        ],
+        "direction": "output",
+        "label": "dsr",
+        "net": "dsr",
+        "width": 1
+      },
+      "d_rsp_valid": {
+        "bits": [
+          815
+        ],
+        "direction": "input",
+        "label": "ds",
+        "net": "ds",
+        "width": 1
+      },
+      "debug_a0_o": {
+        "bits": [
+          743,
+          744,
+          745,
+          746,
+          747,
+          748,
+          749,
+          750,
+          751,
+          752,
+          753,
+          754,
+          755,
+          756,
+          757,
+          758,
+          759,
+          760,
+          761,
+          762,
+          763,
+          764,
+          765,
+          766,
+          767,
+          768,
+          769,
+          770,
+          771,
+          772,
+          773,
+          774
+        ],
+        "direction": "output",
+        "label": "a0",
+        "net": "a0",
+        "width": 32
+      },
+      "fault_o": {
+        "bits": [
+          16
+        ],
+        "direction": "output",
+        "label": "fault_o",
+        "net": "fault_o",
+        "width": 1
+      },
+      "halt_o": {
+        "bits": [
+          15
+        ],
+        "direction": "output",
+        "label": "halted_o",
+        "net": "halted_o",
+        "width": 1
+      },
+      "i_req_addr": {
+        "bits": [
+          3105,
+          3106,
+          3107,
+          3108,
+          3109,
+          3110,
+          3111,
+          3112,
+          3113,
+          3114,
+          3115,
+          3116,
+          3117,
+          3118,
+          3119,
+          3120,
+          3121,
+          3122,
+          3123,
+          3124,
+          3125,
+          3126,
+          3127,
+          3128,
+          3129,
+          3130,
+          3131,
+          3132,
+          3133,
+          3134,
+          3135,
+          3136
+        ],
+        "direction": "output",
+        "label": "ia",
+        "net": "ia",
+        "width": 32
+      },
+      "i_req_ready": {
+        "bits": [
+          3137
+        ],
+        "direction": "input",
+        "label": "ir",
+        "net": "ir",
+        "width": 1
+      },
+      "i_req_valid": {
+        "bits": [
+          3138
+        ],
+        "direction": "output",
+        "label": "iv",
+        "net": "iv",
+        "width": 1
+      },
+      "i_rsp_error": {
+        "bits": [
+          3139
+        ],
+        "direction": "input",
+        "label": "se",
+        "net": "se",
+        "width": 1
+      },
+      "i_rsp_rdata": {
+        "bits": [
+          3140,
+          3141,
+          3142,
+          3143,
+          3144,
+          3145,
+          3146,
+          3147,
+          3148,
+          3149,
+          3150,
+          3151,
+          3152,
+          3153,
+          3154,
+          3155,
+          3156,
+          3157,
+          3158,
+          3159,
+          3160,
+          3161,
+          3162,
+          3163,
+          3164,
+          3165,
+          3166,
+          3167,
+          3168,
+          3169,
+          3170,
+          3171
+        ],
+        "direction": "input",
+        "label": "insn",
+        "net": "insn",
+        "width": 32
+      },
+      "i_rsp_ready": {
+        "bits": [
+          3172
+        ],
+        "direction": "output",
+        "label": "sr",
+        "net": "sr",
+        "width": 1
+      },
+      "i_rsp_valid": {
+        "bits": [
+          3173
+        ],
+        "direction": "input",
+        "label": "sv",
+        "net": "sv",
+        "width": 1
+      },
+      "irq_i": {
+        "bits": [
+          424
+        ],
+        "direction": "input",
+        "label": "N001",
+        "net": "$mica_soc.sv:164$logic_or$2457_Y",
+        "width": 1
+      },
+      "pc_o": {
+        "bits": [
+          775,
+          776,
+          777,
+          778,
+          779,
+          780,
+          781,
+          782,
+          783,
+          784,
+          785,
+          786,
+          787,
+          788,
+          789,
+          790,
+          791,
+          792,
+          793,
+          794,
+          795,
+          796,
+          797,
+          798,
+          799,
+          800,
+          801,
+          802,
+          803,
+          804,
+          805,
+          806
+        ],
+        "direction": "output",
+        "label": "pc",
+        "net": "pc",
+        "width": 32
+      },
+      "rst_ni": {
+        "bits": [
+          3
+        ],
+        "direction": "input",
+        "label": "rst_ni",
+        "net": "rst_ni",
+        "width": 1
+      },
+      "trace_cause": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_insn": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_length": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_mem_addr": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_mem_bytes": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_mem_data": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_mem_valid": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_mem_write": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_next_pc": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_order": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_pc": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_regs": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_retired": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_trap": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      },
+      "trace_valid": {
+        "bits": [],
+        "direction": "output",
+        "label": "0'b",
+        "net": null,
+        "width": 0
+      }
+    }
+  },
+  "ram": {
+    "module": "mica_sram_txn",
+    "ports": {
+      "clk_i": {
+        "bits": [
+          2
+        ],
+        "direction": "input",
+        "label": "clk_i",
+        "net": "clk_i",
+        "width": 1
+      },
+      "d_req_addr": {
+        "bits": [
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61
+        ],
+        "direction": "input",
+        "label": "da",
+        "net": "da",
+        "width": 32
+      },
+      "d_req_ready": {
+        "bits": [
+          810
+        ],
+        "direction": "output",
+        "label": "ram_ready",
+        "net": "ram_ready",
+        "width": 1
+      },
+      "d_req_size": {
+        "bits": [
+          432,
+          433,
+          434
+        ],
+        "direction": "input",
+        "label": "size",
+        "net": "size",
+        "width": 3
+      },
+      "d_req_valid": {
+        "bits": [
+          431
+        ],
+        "direction": "input",
+        "label": "N002",
+        "net": "$mica_soc.sv:216$logic_and$2458_Y",
+        "width": 1
+      },
+      "d_req_wdata": {
+        "bits": [
+          498,
+          499,
+          500,
+          501,
+          502,
+          503,
+          504,
+          505,
+          506,
+          507,
+          508,
+          509,
+          510,
+          511,
+          512,
+          513,
+          514,
+          515,
+          516,
+          517,
+          518,
+          519,
+          520,
+          521,
+          522,
+          523,
+          524,
+          525,
+          526,
+          527,
+          528,
+          529
+        ],
+        "direction": "input",
+        "label": "wd",
+        "net": "wd",
+        "width": 32
+      },
+      "d_req_write": {
+        "bits": [
+          65
+        ],
+        "direction": "input",
+        "label": "dw",
+        "net": "dw",
+        "width": 1
+      },
+      "d_req_wstrb": {
+        "bits": [
+          3101,
+          3102,
+          3103,
+          3104
+        ],
+        "direction": "input",
+        "label": "strb",
+        "net": "strb",
+        "width": 4
+      },
+      "d_rsp_error": {
+        "bits": [
+          1043
+        ],
+        "direction": "output",
+        "label": "ram_error",
+        "net": "ram_error",
+        "width": 1
+      },
+      "d_rsp_rdata": {
+        "bits": [
+          979,
+          980,
+          981,
+          982,
+          983,
+          984,
+          985,
+          986,
+          987,
+          988,
+          989,
+          990,
+          991,
+          992,
+          993,
+          994,
+          995,
+          996,
+          997,
+          998,
+          999,
+          1000,
+          1001,
+          1002,
+          1003,
+          1004,
+          1005,
+          1006,
+          1007,
+          1008,
+          1009,
+          1010
+        ],
+        "direction": "output",
+        "label": "ram_data",
+        "net": "ram_data",
+        "width": 32
+      },
+      "d_rsp_ready": {
+        "bits": [
+          461
+        ],
+        "direction": "input",
+        "label": "dsr",
+        "net": "dsr",
+        "width": 1
+      },
+      "d_rsp_valid": {
+        "bits": [
+          812
+        ],
+        "direction": "output",
+        "label": "ram_valid",
+        "net": "ram_valid",
+        "width": 1
+      },
+      "i_req_addr": {
+        "bits": [
+          3105,
+          3106,
+          3107,
+          3108,
+          3109,
+          3110,
+          3111,
+          3112,
+          3113,
+          3114,
+          3115,
+          3116,
+          3117,
+          3118,
+          3119,
+          3120,
+          3121,
+          3122,
+          3123,
+          3124,
+          3125,
+          3126,
+          3127,
+          3128,
+          3129,
+          3130,
+          3131,
+          3132,
+          3133,
+          3134,
+          3135,
+          3136
+        ],
+        "direction": "input",
+        "label": "ia",
+        "net": "ia",
+        "width": 32
+      },
+      "i_req_ready": {
+        "bits": [
+          3137
+        ],
+        "direction": "output",
+        "label": "ir",
+        "net": "ir",
+        "width": 1
+      },
+      "i_req_valid": {
+        "bits": [
+          3138
+        ],
+        "direction": "input",
+        "label": "iv",
+        "net": "iv",
+        "width": 1
+      },
+      "i_rsp_error": {
+        "bits": [
+          3139
+        ],
+        "direction": "output",
+        "label": "se",
+        "net": "se",
+        "width": 1
+      },
+      "i_rsp_rdata": {
+        "bits": [
+          3140,
+          3141,
+          3142,
+          3143,
+          3144,
+          3145,
+          3146,
+          3147,
+          3148,
+          3149,
+          3150,
+          3151,
+          3152,
+          3153,
+          3154,
+          3155,
+          3156,
+          3157,
+          3158,
+          3159,
+          3160,
+          3161,
+          3162,
+          3163,
+          3164,
+          3165,
+          3166,
+          3167,
+          3168,
+          3169,
+          3170,
+          3171
+        ],
+        "direction": "output",
+        "label": "insn",
+        "net": "insn",
+        "width": 32
+      },
+      "i_rsp_ready": {
+        "bits": [
+          3172
+        ],
+        "direction": "input",
+        "label": "sr",
+        "net": "sr",
+        "width": 1
+      },
+      "i_rsp_valid": {
+        "bits": [
+          3173
+        ],
+        "direction": "output",
+        "label": "sv",
+        "net": "sv",
+        "width": 1
+      },
+      "rst_ni": {
+        "bits": [
+          3
+        ],
+        "direction": "input",
+        "label": "rst_ni",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "receive.fifo": {
+    "module": "mica_sync_fifo",
+    "ports": {
+      "clk_i": {
+        "bits": [
+          2
+        ],
+        "direction": "input",
+        "label": "clk_i",
+        "net": "clk_i",
+        "width": 1
+      },
+      "level_o": {
+        "bits": [
+          2776,
+          2777,
+          2778,
+          2779,
+          2780
+        ],
+        "direction": "output",
+        "label": "rx_level",
+        "net": "rx_level",
+        "width": 5
+      },
+      "pop_data_o": {
+        "bits": [
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105
+        ],
+        "direction": "output",
+        "label": "rx_front",
+        "net": "rx_front",
+        "width": 8
+      },
+      "pop_ready_i": {
+        "bits": [
+          1054
+        ],
+        "direction": "input",
+        "label": "rx_pop",
+        "net": "rx_pop",
+        "width": 1
+      },
+      "pop_valid_o": {
+        "bits": [
+          419
+        ],
+        "direction": "output",
+        "label": "rx_available",
+        "net": "rx_available",
+        "width": 1
+      },
+      "push_data_i": {
+        "bits": [
+          735,
+          736,
+          737,
+          738,
+          739,
+          740,
+          741,
+          742
+        ],
+        "direction": "input",
+        "label": "rx_byte",
+        "net": "rx_byte",
+        "width": 8
+      },
+      "push_ready_o": {
+        "bits": [
+          418
+        ],
+        "direction": "output",
+        "label": "rx_ready",
+        "net": "rx_ready",
+        "width": 1
+      },
+      "push_valid_i": {
+        "bits": [
+          415
+        ],
+        "direction": "input",
+        "label": "rx_valid",
+        "net": "rx_valid",
+        "width": 1
+      },
+      "rst_ni": {
+        "bits": [
+          3
+        ],
+        "direction": "input",
+        "label": "rst_ni",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "receive.rx": {
+    "module": "mica_uart_rx",
+    "ports": {
+      "byte_o": {
+        "bits": [
+          735,
+          736,
+          737,
+          738,
+          739,
+          740,
+          741,
+          742
+        ],
+        "direction": "output",
+        "label": "rx_byte",
+        "net": "rx_byte",
+        "width": 8
+      },
+      "byte_valid_o": {
+        "bits": [
+          415
+        ],
+        "direction": "output",
+        "label": "rx_valid",
+        "net": "rx_valid",
+        "width": 1
+      },
+      "clk_i": {
+        "bits": [
+          2
+        ],
+        "direction": "input",
+        "label": "clk_i",
+        "net": "clk_i",
+        "width": 1
+      },
+      "framing_error_o": {
+        "bits": [
+          2380
+        ],
+        "direction": "output",
+        "label": "rx_error",
+        "net": "rx_error",
+        "width": 1
+      },
+      "rst_ni": {
+        "bits": [
+          3
+        ],
+        "direction": "input",
+        "label": "rst_ni",
+        "net": "rst_ni",
+        "width": 1
+      },
+      "uart_rx_i": {
+        "bits": [
+          5
+        ],
+        "direction": "input",
+        "label": "uart_rx_i",
+        "net": "uart_rx_i",
+        "width": 1
+      }
+    }
+  },
+  "safety.watchdog": {
+    "module": "mica_watchdog",
+    "ports": {
+      "clear_i": {
+        "bits": [
+          444
+        ],
+        "direction": "input",
+        "label": "safety.watchdog_clear",
+        "net": "safety.watchdog_clear",
+        "width": 1
+      },
+      "clk_i": {
+        "bits": [
+          2
+        ],
+        "direction": "input",
+        "label": "clk_i",
+        "net": "clk_i",
+        "width": 1
+      },
+      "count_o": {
+        "bits": [
+          319,
+          320,
+          321,
+          322,
+          323,
+          324,
+          325,
+          326,
+          327,
+          328,
+          329,
+          330,
+          331,
+          332,
+          333,
+          334,
+          335,
+          336,
+          337,
+          338,
+          339,
+          340,
+          341,
+          342,
+          343,
+          344,
+          345,
+          346,
+          347,
+          348,
+          349,
+          350
+        ],
+        "direction": "output",
+        "label": "watchdog_count",
+        "net": "watchdog_count",
+        "width": 32
+      },
+      "early_o": {
+        "bits": [
+          428
+        ],
+        "direction": "output",
+        "label": "watchdog_early",
+        "net": "watchdog_early",
+        "width": 1
+      },
+      "enable_i": {
+        "bits": [
+          1440
+        ],
+        "direction": "input",
+        "label": "N005",
+        "net": null,
+        "width": 1
+      },
+      "expired_o": {
+        "bits": [
+          427
+        ],
+        "direction": "output",
+        "label": "watchdog_expired",
+        "net": "watchdog_expired",
+        "width": 1
+      },
+      "kick_i": {
+        "bits": [
+          440
+        ],
+        "direction": "input",
+        "label": "safety.watchdog_kick",
+        "net": "safety.watchdog_kick",
+        "width": 1
+      },
+      "max_ticks_i": {
+        "bits": [
+          1505,
+          1506,
+          1507,
+          1508,
+          1509,
+          1510,
+          1511,
+          1512,
+          1513,
+          1514,
+          1515,
+          1516,
+          1517,
+          1518,
+          1519,
+          1520,
+          1521,
+          1522,
+          1523,
+          1524,
+          1525,
+          1526,
+          1527,
+          1528,
+          1529,
+          1530,
+          1531,
+          1532,
+          1533,
+          1534,
+          1535,
+          1536
+        ],
+        "direction": "input",
+        "label": "watchdog_max",
+        "net": "watchdog_max",
+        "width": 32
+      },
+      "min_ticks_i": {
+        "bits": [
+          212,
+          213,
+          214,
+          215,
+          216,
+          217,
+          218,
+          219,
+          220,
+          221,
+          222,
+          223,
+          224,
+          225,
+          226,
+          227,
+          228,
+          229,
+          230,
+          231,
+          232,
+          233,
+          234,
+          235,
+          236,
+          237,
+          238,
+          239,
+          240,
+          241,
+          242,
+          243
+        ],
+        "direction": "input",
+        "label": "watchdog_min",
+        "net": "watchdog_min",
+        "width": 32
+      },
+      "rst_ni": {
+        "bits": [
+          3
+        ],
+        "direction": "input",
+        "label": "rst_ni",
+        "net": "rst_ni",
+        "width": 1
+      }
+    }
+  },
+  "uart": {
+    "module": "mica_uart_tx",
+    "ports": {
+      "busy_o": {
+        "bits": [
+          459
+        ],
+        "direction": "output",
+        "label": "uart_busy",
+        "net": "uart_busy",
+        "width": 1
+      },
+      "clk_i": {
+        "bits": [
+          2
+        ],
+        "direction": "input",
+        "label": "clk_i",
+        "net": "clk_i",
+        "width": 1
+      },
+      "data_i": {
+        "bits": [
+          443,
+          530,
+          531,
+          532,
+          533,
+          534,
+          535,
+          536
+        ],
+        "direction": "input",
+        "label": "uart_byte",
+        "net": "uart_byte",
+        "width": 8
+      },
+      "rst_ni": {
+        "bits": [
+          3
+        ],
+        "direction": "input",
+        "label": "rst_ni",
+        "net": "rst_ni",
+        "width": 1
+      },
+      "send_i": {
+        "bits": [
+          1048
+        ],
+        "direction": "input",
+        "label": "uart_send",
+        "net": "uart_send",
+        "width": 1
+      },
+      "uart_tx_o": {
+        "bits": [
+          6
+        ],
+        "direction": "output",
+        "label": "uart_tx_o",
+        "net": "uart_tx_o",
+        "width": 1
+      }
+    }
+  }
+}

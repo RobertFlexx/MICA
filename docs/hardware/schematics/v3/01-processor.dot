@@ -1,0 +1,42 @@
+digraph sheet {
+graph[rankdir=TB,bgcolor="white",fontname="DejaVu Sans",pad=0.35,nodesep=0.65,ranksep=0.9,splines=polyline,outputorder=edgesfirst,size="16.54,11.69",ratio=compress];
+node[shape=box,style="rounded,filled,dashed",fillcolor="#edf3f8",color="#334e68",fontname="DejaVu Sans",fontsize=11,margin="0.16,0.13",penwidth=1.2];
+edge[color="#174a70",fontname="DejaVu Sans Mono",fontsize=9,arrowsize=0.65,penwidth=1.2];
+graph[labelloc=t,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7"><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="19"><B>MICA 3.0 development | 01 / 20 | Complete scalar processor organization</B></FONT></TD></TR><TR><TD ALIGN="LEFT">ISA 2.0 compatibility baseline | E32: XLEN=32, XREG/MUL/FLOW/BITOPS/TRAP/REG_PARITY=1 | implemented RTL</TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">RTL source set 5fbe88e7b5ecdbe5 | internal clock: clk_i rising edge; reset: rst_ni active low</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="10">Single issue, multicycle; no implemented pipeline or speculative state.<BR ALIGN="LEFT"/>Dashed regions are logical portions of mica_core_txn, not invented RTL modules.<BR ALIGN="LEFT"/>clk_i: rising edge. rst_ni: asynchronous active low. Two effects may commit together for F.</FONT></TD></TR><TR><TD ALIGN="LEFT"><FONT POINT-SIZE="9">Blue: data. Dashed gray: control/handshake. Red: fault. Repeated Nxx labels connect without a wire. Crossings do not join.</FONT></TD></TR></TABLE>>];
+fetch[label="Fetch and parcel registers\n----------------------\nIN N01: pc[32/64]"];
+decode[label="decode / instruction validation\n----------------------\nOUT N14: csr_id[8], csrwrite[1],\ncsr_value[32/64]"];
+rf[label="regs / scalar register bank\n----------------------\nIN N10: writeback_value[32/64],\nq_value2[32/64], q_dst1[4],\nq_dst2[4], q_w1[1], q_w2[1]"];
+alu[label="arithmetic() / bit_arithmetic()"];
+pending[label="Pending effects / q_* registers\n----------------------\nOUT N09: q_w1[1], q_w2[1],\nq_dst1[4], q_dst2[4],\nwriteback_value[32/64]\nIN N15: value1[32/64]"];
+lsu[label="Transactional load/store"];
+csr[label="CSR read and write selection\n----------------------\nIN N14: csr_id[8], csrwrite[1],\ncsr_value[32/64]\nOUT N15: value1[32/64]"];
+trap[label="trap_entry() / interrupt selection"];
+commit[label="COMMIT / architectural retirement\n----------------------\nIN N09: q_w1[1], q_w2[1],\nq_dst1[4], q_dst2[4],\nwriteback_value[32/64]\nOUT N10: writeback_value[32/64],\nq_value2[32/64], q_dst1[4],\nq_dst2[4], q_w1[1], q_w2[1]"];
+pc[label="Program counter\n----------------------\nOUT N01: pc[32/64]"];
+spacer[style=invis,width=0.1,height=0.5,label=""];
+spacer->fetch[style=invis,weight=100];
+{rank=same;fetch;decode;rf;}
+fetch->decode[style=invis,weight=100];
+decode->rf[style=invis,weight=100];
+{rank=same;alu;pending;lsu;}
+alu->pending[style=invis,weight=100];
+pending->lsu[style=invis,weight=100];
+{rank=same;csr;trap;commit;}
+csr->trap[style=invis,weight=100];
+trap->commit[style=invis,weight=100];
+{rank=same;pc;}
+fetch->alu[style=invis,weight=100];
+alu->csr[style=invis,weight=100];
+csr->pc[style=invis,weight=100];
+fetch->decode[label="lo[16]\nhi[16]\np[26]\nmajor[4]",color="#174a70",style="solid",constraint=false];
+rf->decode[label="read_a_data[32/64]\nread_b_data[32/64]",color="#174a70",style="solid",constraint=false];
+decode->alu[label="decode.av[32/64]\ndecode.bv[32/64]\ndecode.op[8]",color="#174a70",style="solid",constraint=false];
+alu->pending[label="value1[32/64]",color="#174a70",style="solid",constraint=false];
+decode->pending[label="dst1[4]\ndst2[4]\nw1[1]\nw2[1]\nnextpc[32/64]\nvalue2[32/64]",color="#174a70",style="solid",constraint=false];
+pending->lsu[label="q_addr[32/64]\nq_store[32/64]\nq_size[3]\nq_memwrite[1]",color="#174a70",style="solid",constraint=false];
+lsu->commit[label="response_data[32/64]\nd_rsp_error[1]",color="#a12d2d",style="solid",constraint=false];
+csr->trap[label="status_reg[32/64]\nie_reg[32/64]\npending[32/64]",color="#174a70",style="solid",constraint=false];
+trap->pc[label="tvec_reg[32/64]\nepc_reg[32/64]",color="#174a70",style="solid",constraint=false];
+commit->pc[label="q_nextpc[32/64]",color="#174a70",style="solid",constraint=false];
+trap->commit[label="trace_trap[1]\ntrace_cause[32/64]",color="#a12d2d",style="solid",constraint=false];
+}

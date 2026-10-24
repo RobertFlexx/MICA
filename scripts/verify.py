@@ -172,6 +172,10 @@ if a.all:
         [sys.executable, "verification/differential/mica2.py", "--tools", out],
     )
     run(
+        "multiply-oracle",
+        [sys.executable, "verification/differential/multiply.py", "--tools", out],
+    )
+    run(
         "differential-parity",
         [
             sys.executable,
@@ -240,7 +244,31 @@ if a.all:
         "overview-diagrams",
         [sys.executable, "scripts/generate_overview_schematics.py", "--check"],
     )
+    run(
+        "v3-schematics",
+        [sys.executable, "scripts/generate_v3_schematics.py", "--check"],
+    )
+    if shutil.which("clang") and (
+        shutil.which("llvm-objcopy") or shutil.which("llvm-objcopy-18")
+    ):
+        run(
+            "compiled-density",
+            [sys.executable, "benchmarks/compiled_density.py", "--tools", out],
+        )
+        run(
+            "instruction-mix",
+            [
+                sys.executable,
+                "benchmarks/instruction_mix.py",
+                "--traces",
+                out / "compiler-rtl",
+            ],
+        )
     if shutil.which("llvm-mc") and shutil.which("llvm-objcopy"):
+        run(
+            "control-density",
+            [sys.executable, "benchmarks/control_density.py", "--tools", out],
+        )
         run(
             "riscv-density",
             [

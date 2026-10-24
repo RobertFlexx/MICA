@@ -8,7 +8,9 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+from schematic_pdf import normalize_pdf
 
+os.environ["SOURCE_DATE_EPOCH"] = "0"
 ROOT = Path(__file__).resolve().parents[1]
 p = argparse.ArgumentParser()
 p.add_argument("--check", action="store_true")
@@ -145,4 +147,6 @@ with tempfile.TemporaryDirectory(prefix="mica-draw-") as temp:
                         env=render_env,
                         capture_output=True,
                     )
+                    if fmt == "pdf":
+                        normalize_pdf(target.with_suffix(".pdf"))
 print("PASS diagram signals and ports match elaborated RTL")
